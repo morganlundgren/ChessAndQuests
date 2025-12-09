@@ -17,7 +17,7 @@ namespace ChessAndQuests.DAL
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string query = "Select player_id, username, password FROM player";
+                string query = "Select * FROM tbl_player";
                 SqlCommand cmd = new SqlCommand(query, conn);
 
                 conn.Open();
@@ -49,7 +49,7 @@ namespace ChessAndQuests.DAL
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string query = "SELECT player_id, username, password FROM player WHERE player_id = @PlayerId";
+                string query = "SELECT * FROM tbl_player WHERE pl_id = @PlayerId";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@PlayerId", playerId);
 
@@ -107,9 +107,8 @@ namespace ChessAndQuests.DAL
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string query = @"INSERT INTO player (username, password) 
-                               VALUES (@Username, @Password);
-                               SELECT CAST(SCOPE_IDENTITY() as int)";
+                string query = @"INSERT INTO tbl_player (pl_username, pl_password) 
+                               VALUES (@Username, @Password)";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@Username", player.PlayerUserName);
@@ -128,9 +127,9 @@ namespace ChessAndQuests.DAL
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"UPDATE player 
-                               SET username = @Username, 
-                                   password = @Password 
-                               WHERE player_id = @PlayerId";
+                               SET pl_username = @Username, 
+                                   pl_password = @Password 
+                               WHERE pl_id = @PlayerId";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@PlayerId", player.PlayerId);
@@ -150,7 +149,7 @@ namespace ChessAndQuests.DAL
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string query = "DELETE FROM player WHERE player_id = @PlayerId";
+                string query = "DELETE FROM tbl_player WHERE pl_id = @PlayerId";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@PlayerId", playerId);
