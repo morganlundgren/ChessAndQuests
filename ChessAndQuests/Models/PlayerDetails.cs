@@ -1,6 +1,6 @@
 ﻿namespace ChessAndQuests.Models
 {
-    public class PlayerDetailscs
+    public class PlayerDetails
     {
         public int PlayerId { get; set; }
         public string PlayerUserName { get; set; }
