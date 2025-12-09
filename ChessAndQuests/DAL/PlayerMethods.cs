@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using System;
 
+
 namespace ChessAndQuests.DAL
 {
 
@@ -19,8 +20,9 @@ namespace ChessAndQuests.DAL
         {
             var players = new List<PlayerDetails>();
             errormsg = "";
+            string connectionString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
 
-            using (SqlConnection conn = new SqlConnection(conString))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = "Select * FROM tbl_player";
                 SqlCommand cmd = new SqlCommand(query, conn);
@@ -38,7 +40,6 @@ namespace ChessAndQuests.DAL
 
                     });
 
-
                 }
 
             }
@@ -46,12 +47,14 @@ namespace ChessAndQuests.DAL
 
         }
 
-        // get player by Id
+        
         public PlayerDetails GetById(int playerId)
         {
             PlayerDetails player = null;
 
-            using (SqlConnection conn = new SqlConnection(conString))
+            string connectionString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = "SELECT * FROM tbl_player WHERE pl_id = @PlayerId";
                 SqlCommand cmd = new SqlCommand(query, conn);
@@ -75,11 +78,41 @@ namespace ChessAndQuests.DAL
             return player;
 
         }
+        public PlayerDetails GetByUserName(string username)
+        {
+            PlayerDetails player = null;
 
+            string connectionString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+
+                string query = "Slect player_id,username, password FROM player WHERE username = @Username";
+                SqlCommand command = new SqlCommand(query, conn);
+                command.Parameters.AddWithValue("@Username", username);
+                conn.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    player = new PlayerDetails
+                    {
+                        PlayerId = reader.GetInt32(0),
+                        PlayerUserName = reader.GetString(1),
+                        PlayerPassword = reader.GetString(2)
+
+                    };
+                }
+            }
+
+            return player;
+        }
 
         public int InsertUser(PlayerDetails player)
         {
-            using (SqlConnection conn = new SqlConnection(conString))
+            string connectionString = "Server=YOUR_SERVER;Database=YOUR_DATABASE;User Id=YOUR_USER;Password=YOUR_PASSWORD;";
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"INSERT INTO tbl_player (pl_username, pl_password) 
                                VALUES (@Username, @Password)";
@@ -96,7 +129,9 @@ namespace ChessAndQuests.DAL
         }
         public bool Update(PlayerDetails player)
         {
-            using (SqlConnection conn = new SqlConnection(conString))
+            string connectionString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"UPDATE tbl_player 
                                SET pl_username = @Username, 
@@ -117,7 +152,9 @@ namespace ChessAndQuests.DAL
 
         public bool Delete(int playerId)
         {
-            using (SqlConnection conn = new SqlConnection(conString))
+            string connectionString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = "DELETE FROM tbl_player WHERE pl_id = @PlayerId";
 
