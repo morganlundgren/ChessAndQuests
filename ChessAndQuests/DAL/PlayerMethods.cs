@@ -7,9 +7,12 @@ namespace ChessAndQuests.DAL
 
     public class PlayerMethods
     {
-        private readonly string conString; 
+        private SqlConnection sqlconnection;
+        private string conString;
         public PlayerMethods() {
+            sqlconnection = new SqlConnection();
             conString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
+            sqlconnection.ConnectionString = conString;
         }
         // get all players
         public List<PlayerDetails> GetAll(out string errormsg)
@@ -86,7 +89,7 @@ namespace ChessAndQuests.DAL
                 cmd.Parameters.AddWithValue("@Password", player.PlayerPassword);
 
                 conn.Open();
-                int newId = (int)cmd.ExecuteScalar();
+                int newId = (int)cmd.ExecuteNonQuery();
 
                 return newId;
             }
@@ -95,7 +98,7 @@ namespace ChessAndQuests.DAL
         {
             using (SqlConnection conn = new SqlConnection(conString))
             {
-                string query = @"UPDATE player 
+                string query = @"UPDATE tbl_player 
                                SET pl_username = @Username, 
                                    pl_password = @Password 
                                WHERE pl_id = @PlayerId";
