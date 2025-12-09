@@ -20,9 +20,8 @@ namespace ChessAndQuests.DAL
         {
             var players = new List<PlayerDetails>();
             errormsg = "";
-            string connectionString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(conString))
             {
                 string query = "Select * FROM tbl_player";
                 SqlCommand cmd = new SqlCommand(query, conn);
@@ -52,9 +51,7 @@ namespace ChessAndQuests.DAL
         {
             PlayerDetails player = null;
 
-            string connectionString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(conString))
             {
                 string query = "SELECT * FROM tbl_player WHERE pl_id = @PlayerId";
                 SqlCommand cmd = new SqlCommand(query, conn);
@@ -82,12 +79,10 @@ namespace ChessAndQuests.DAL
         {
             PlayerDetails player = null;
 
-            string connectionString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(conString))
             {
 
-                string query = "Slect player_id,username, password FROM player WHERE username = @Username";
+                string query = "SELECT * FROM player WHERE username = @Username";
                 SqlCommand command = new SqlCommand(query, conn);
                 command.Parameters.AddWithValue("@Username", username);
                 conn.Open();
@@ -110,9 +105,8 @@ namespace ChessAndQuests.DAL
 
         public int InsertUser(PlayerDetails player)
         {
-            string connectionString = "Server=YOUR_SERVER;Database=YOUR_DATABASE;User Id=YOUR_USER;Password=YOUR_PASSWORD;";
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(conString))
             {
                 string query = @"INSERT INTO tbl_player (pl_username, pl_password) 
                                VALUES (@Username, @Password)";
@@ -129,9 +123,7 @@ namespace ChessAndQuests.DAL
         }
         public bool Update(PlayerDetails player)
         {
-            string connectionString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(conString))
             {
                 string query = @"UPDATE tbl_player 
                                SET pl_username = @Username, 
@@ -152,9 +144,7 @@ namespace ChessAndQuests.DAL
 
         public bool Delete(int playerId)
         {
-            string connectionString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(conString))
             {
                 string query = "DELETE FROM tbl_player WHERE pl_id = @PlayerId";
 
