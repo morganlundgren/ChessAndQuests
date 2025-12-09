@@ -136,5 +136,30 @@ namespace ChessAndQuests.DAL
             }
 
         }
+
+        public int DeleteGame(int gameId, out string errormsg)
+        {
+            string sqlString = "DELETE FROM tbl_game WHERE gm_id = @gm_id;";
+            SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@gm_id", gameId);
+            try
+            {
+                sqlConnection.Open();
+                int i = 0;
+                i = sqlCommand.ExecuteNonQuery();
+                if (i == 1) { errormsg = ""; }
+                else { errormsg = "Delete failed"; }
+                return i;
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
     }
 }
