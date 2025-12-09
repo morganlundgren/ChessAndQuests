@@ -4,7 +4,7 @@ using System.Data;
 
 namespace ChessAndQuests.DAL
 {
-    
+
 
 
     public class GameMethods
@@ -20,7 +20,7 @@ namespace ChessAndQuests.DAL
         }
         public List<GameDetails> GetAllGames(out string errormsg)
         {
-            String sqlString ="SELECT * FROM tbl_game";
+            String sqlString = "SELECT * FROM tbl_game";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
 
             SqlDataReader reader = null;
@@ -31,7 +31,7 @@ namespace ChessAndQuests.DAL
                 // Fyll dataset och mappa rader till modeller
                 sqlConnection.Open();
                 reader = sqlCommand.ExecuteReader();
-               
+
                 if (!reader.HasRows)
                 {
                     errormsg = "No data found";
@@ -42,7 +42,7 @@ namespace ChessAndQuests.DAL
                     GameDetails gameDetails = new GameDetails();
                     gameDetails.GameId = Convert.ToUInt16(reader["gm_Id"]);
                     gameDetails.PLayerWhiteId = Convert.ToUInt16(reader["pl_white_id"]);
-                    gameDetails.PlyerBlackId = Convert.ToUInt16(reader["pl_black_id"]);
+                    gameDetails.PlayerBlackId = Convert.ToUInt16(reader["pl_black_id"]);
                     gameDetails.GameKey = Convert.ToString(reader["gm_key"]);
                     gameDetails.CurrentFEN = Convert.ToString(reader["gm_current_fen"]);
                     gameDetails.status = Convert.ToUInt16(reader["gm_status"]);
@@ -52,7 +52,7 @@ namespace ChessAndQuests.DAL
                 }
                 errormsg = "";
                 return gameDetailsList;
-              
+
             }
             catch (Exception e)
             {
@@ -70,5 +70,71 @@ namespace ChessAndQuests.DAL
             }
         }
 
+        public int CreateGame(GameDetails gameDetails, out string errormsg)
+        {
+            string sqlString = "INASERT INTO tbl_game (pl_white_id, pl_black_id, gm_key, gm_current_fen, gm_status, gm_turn) " +
+                "VALUES (@pl_white_id, @pl_black_id, @gm_key, @gm_current_fen, @gm_status, @gm_turn); ";
+            SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@pl_white_id", gameDetails.PLayerWhiteId);
+            sqlCommand.Parameters.AddWithValue("@pl_black_id", gameDetails.PlayerBlackId);
+            sqlCommand.Parameters.AddWithValue("@gm_key", gameDetails.GameKey);
+            sqlCommand.Parameters.AddWithValue("@gm_current_fen", gameDetails.CurrentFEN);
+            sqlCommand.Parameters.AddWithValue("@gm_status", gameDetails.status);
+            sqlCommand.Parameters.AddWithValue("@gm_turn", gameDetails.turnId);
+
+            try
+            {
+                sqlConnection.Open();
+                int i = 0;
+                i = sqlCommand.ExecuteNonQuery();
+                if (i == 1) { errormsg = ""; }
+                else { errormsg = "Insert failed"; }
+                return i;
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+
+
+        }
+
+        public int UpdateGame(GameDetails gameDetails, out string errormsg)
+        {
+            string sqlString = "UPDATE tbl_game SET pl_white_id = @pl_white_id, pl_black_id = @pl_black_id, gm_key = @gm_key, " +
+                "gm_current_fen = @gm_current_fen, gm_status = @gm_status, gm_turn = @gm_turn WHERE gm_id = @gm_id;";
+            SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@pl_white_id", gameDetails.PLayerWhiteId);
+            sqlCommand.Parameters.AddWithValue("@pl_black_id", gameDetails.PlayerBlackId);
+            sqlCommand.Parameters.AddWithValue("@gm_key", gameDetails.GameKey);
+            sqlCommand.Parameters.AddWithValue("@gm_current_fen", gameDetails.CurrentFEN);
+            sqlCommand.Parameters.AddWithValue("@gm_status", gameDetails.status);
+            sqlCommand.Parameters.AddWithValue("@gm_turn", gameDetails.turnId);
+            sqlCommand.Parameters.AddWithValue("@gm_id", gameDetails.GameId);
+            try
+            {
+                sqlConnection.Open();
+                int i = 0;
+                i = sqlCommand.ExecuteNonQuery();
+                if (i == 1) { errormsg = ""; }
+                else { errormsg = "Update failed"; }
+                return i;
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+
+        }
     }
 }
