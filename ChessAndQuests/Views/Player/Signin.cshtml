@@ -1,7 +1,7 @@
 ﻿@model ChessAndQuests.Models.PlayerDetails
 
 @{
-    ViewData["Title"] = "Signin";
+    ViewData["Title"] = "SignIn";
 }
 
 <h1>Signin</h1>
@@ -19,7 +19,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="PlayerPassword" class="control-label">Password</label>
-                <input asp-for="PlayerPassword" class="form-control" />
+                <input asp-for="PlayerPassword" type="password" class="form-control" />
                 <span asp-validation-for="PlayerPassword" class="text-danger"> @ViewBag.errorSignin </span>
             </div>
             <div class="form-group">
@@ -30,7 +30,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="SignUp">Don't have an acocunt? Sign up now!</a>
 </div>
 
 @section Scripts {

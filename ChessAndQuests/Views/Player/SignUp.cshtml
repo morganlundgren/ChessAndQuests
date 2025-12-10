@@ -9,7 +9,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateAccount" method="post">
+        <form asp-action="SignUp" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
@@ -20,7 +20,7 @@
             <div class="form-group">
                 <label asp-for="PlayerPassword" class="control-label"> Password</label>
                 <input asp-for="PlayerPassword" type="password" class="form-control" />
-                <span asp-validation-for="PlayerPassword" class="text-danger"></span>
+                <span asp-validation-for="PlayerPassword" class="text-danger"> @ViewBag.errorSignUp </span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create Account" class="btn btn-primary" style="margin:10px;" />

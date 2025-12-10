@@ -17,7 +17,7 @@ namespace ChessAndQuests.Controllers
         {
             if (HttpContext.Session.GetString("PlayerUsername") == null)
             {
-                return RedirectToAction("Login", "Home");
+                return RedirectToAction("SignIn", "Player");
             }
             return View();
         }

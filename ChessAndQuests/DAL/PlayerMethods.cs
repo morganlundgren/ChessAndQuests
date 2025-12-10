@@ -13,7 +13,7 @@ namespace ChessAndQuests.DAL
         private string conString;
         public PlayerMethods() {
             sqlConnection = new SqlConnection();
-            conString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
+            conString = "Server=tcp:chesserver.database.windows.net,1433;Initial Catalog=chessquestserver;Persist Security Info=False;User ID=adminlogin;Password=ilovechess123.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
             sqlConnection.ConnectionString = conString;
         }
         // get all players
@@ -153,9 +153,9 @@ namespace ChessAndQuests.DAL
         // Add a new player
         public int CreatePlayer(PlayerDetails player, out string errormsg)
         {
-
-            string sqlString = @"INSERT INTO tbl_player (pl_username, pl_password)
-                VALUES (@Username, @Password);";
+          
+            string sqlString = "INSERT INTO tbl_player (pl_username, pl_password)" +
+                "VALUES (@Username, @Password)";
 
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
             sqlCommand.Parameters.AddWithValue("@Username", player.PlayerUserName);
@@ -189,8 +189,8 @@ namespace ChessAndQuests.DAL
         public int UpdatePlayer(PlayerDetails player, out string errormsg)
         {
 
-            string sqlString = @"UPDATE tbl_player SET pl_username = @Username, 
-                pl_password = @Password WHERE pl_id = @PlayerId;";
+            string sqlString = "UPDATE tbl_player SET pl_username = @Username" +
+                "pl_password = @Password WHERE pl_id = @PlayerId;";
 
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
             sqlCommand.Parameters.AddWithValue("@PlayerId", player.PlayerId);

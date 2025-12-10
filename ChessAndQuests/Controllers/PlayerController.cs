@@ -21,14 +21,20 @@ namespace ChessAndQuests.Controllers
             string error = "";
 
             i = playerMethods.CreatePlayer(playerDetails, out error);
+            if( i == 0)
+            {
+                ViewBag.errorSignUp = error;
+                return View();
 
-            ViewBag.errorSignUp = error;
+            }
+
+            
 
             return RedirectToAction("SignIn");
         }
 
         [HttpGet]
-        public IActionResult Signin()
+        public IActionResult SignIn()
         {
             return View();
 
