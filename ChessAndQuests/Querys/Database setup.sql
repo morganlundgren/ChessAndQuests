@@ -49,3 +49,15 @@ CREATE TABLE [tbl_player_quest]
 	[pq_currentmoves] INT NOT NULL,
 	
 );
+
+
+INSERT INTO [tbl_quest] (qu_id, qu_name, qu_description, qu_max_moves, qu_reward) VALUES
+(1, 'Pawn Collector', 'Första spelaren som tar motståndarens bonde blir belönad:', 5, 'Extra bonde'),
+(2, 'Knight March', 'Första spelaren att flytta hästen 3 steg i rad blir belönad:', 10, 'Extra drag'),
+(3, 'First Capture', 'Första spelaren att ta en motståndarpjäst blir belönad:', 5, 'Återfå senast förlorade pjäs'),
+(4, 'Center Control', 'Placera en ny pjäs i centrum (d4, d5, e4, e5)', 5, 'Extra bonde'),
+(5, 'Queen''s Move', 'Flytta drottningen minst två rutor', 5, 'Extra drag'),
+(6, 'Rook Rampage', 'Flytta ett torn över två rutor horisontellt', 5, 'Återfå senast förlorade pjäs'),
+(7, 'Knight Fork', 'Sätt hästen i position för att hota två värdefulla pjäser', 8, 'Extra drag'),
+(8, 'Capture Pawn', 'Ta tre motståndar-bönder under spelet', 10, 'Återfå senast förlorade pjäs'),
+(9, 'Table has turned', 'Gå 5 steg i rad med kungen.', 5, 'Extra drottning');
