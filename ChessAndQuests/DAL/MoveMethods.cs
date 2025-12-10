@@ -17,6 +17,7 @@ namespace ChessAndQuests.DAL
             sqlConnection.ConnectionString = conString;
         }
 
+
         //
         public List<MoveDetails> GetMoves(int gameId, out string errormsg)
         {
