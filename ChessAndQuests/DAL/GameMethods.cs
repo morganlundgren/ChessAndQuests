@@ -70,7 +70,7 @@ namespace ChessAndQuests.DAL
 
         public int CreateGame(GameDetails gameDetails, out string errormsg)
         {
-            string sqlString = "INASERT INTO tbl_game (pl_white_id, pl_black_id, gm_key, gm_current_fen, gm_status, gm_turn) " +
+            string sqlString = "INSERT INTO tbl_game (pl_white_id, pl_black_id, gm_key, gm_current_fen, gm_status, gm_turn) " +
                 "VALUES (@pl_white_id, @pl_black_id, @gm_key, @gm_current_fen, @gm_status, @gm_turn); ";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
             sqlCommand.Parameters.AddWithValue("@pl_white_id", gameDetails.PLayerWhiteId);
