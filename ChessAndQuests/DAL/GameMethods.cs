@@ -5,8 +5,6 @@ using System.Data;
 namespace ChessAndQuests.DAL
 {
 
-
-
     public class GameMethods
     {
         private SqlConnection sqlConnection;
