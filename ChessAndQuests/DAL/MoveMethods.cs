@@ -13,7 +13,7 @@ namespace ChessAndQuests.DAL
         public MoveMethods()
         {
             sqlConnection = new SqlConnection();
-            conString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
+            conString = "Server=tcp:chesserver.database.windows.net,1433;Initial Catalog=chessquestserver;Persist Security Info=False;User ID=adminlogin;Password=ilovechess123.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
             sqlConnection.ConnectionString = conString;
         }
 
@@ -66,7 +66,8 @@ namespace ChessAndQuests.DAL
         
         public int create(MoveDetails moveDetails, out string errormsg)
         {
-            String sqlString = "INSERT INTO tbl_move (gm_id, pl_id, mv_number, mv_from_square, mv_to_square) OUTPUT INSERTED.mv_Id VALUES (@GameId, @PlayerMoveId, @MoveNumber, @MoveFromSquare, @MoveToSquare)";
+            String sqlString = "INSERT INTO tbl_move (gm_id, pl_id, mv_number, mv_from_square, mv_to_square) " +
+                "OUTPUT INSERTED.mv_Id VALUES (@GameId, @PlayerMoveId, @MoveNumber, @MoveFromSquare, @MoveToSquare)";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
             sqlCommand.Parameters.AddWithValue("@GameId", moveDetails.GameId);
             sqlCommand.Parameters.AddWithValue("@PlayerMoveId", moveDetails.PlayerMoveId);
@@ -95,7 +96,8 @@ namespace ChessAndQuests.DAL
         // Update existing move
         public int Update(MoveDetails moveDetails, out string errormsg)
         {
-            String sqlString = "UPDATE tbl_move SET gm_id = @GameId, pl_id = @PlayerMoveId, mv_number = @MoveNumber, mv_from_square = @MoveFromSquare, mv_to_square = @MoveToSquare WHERE mv_id = @MoveId";
+            String sqlString = "UPDATE tbl_move SET gm_id = @GameId, pl_id = @PlayerMoveId, mv_number = @MoveNumber, " +
+                "mv_from_square = @MoveFromSquare, mv_to_square = @MoveToSquare WHERE mv_id = @MoveId";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
             sqlCommand.Parameters.AddWithValue("@GameId", moveDetails.GameId);
             sqlCommand.Parameters.AddWithValue("@PlayerMoveId", moveDetails.PlayerMoveId);
