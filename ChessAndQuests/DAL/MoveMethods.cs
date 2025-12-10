@@ -3,6 +3,7 @@ using ChessAndQuests.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Identity.Client;
 
+// Data Access Layer for Move-related database operations
 namespace ChessAndQuests.DAL
 {
     public class MoveMethods
