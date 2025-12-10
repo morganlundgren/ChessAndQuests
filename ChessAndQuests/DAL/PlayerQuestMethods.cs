@@ -54,7 +54,42 @@ namespace ChessAndQuests.DAL
             }
         }
 
-
+        // Update playerQuest status or current move
+        public int UpdatePlayerQuest(PlayerQuestDetails playerQuest, out string errormsg)
+        {
+            string sqlString = "UPDATE tbl_player_quests SET pq_currentmoves = @CurrentMoves, pq_status = @Status WHERE pl_id = @PlayerId AND qu_id = @QuestId";
+            SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@CurrentMoves", playerQuest.PlayerQuestCurrentMove);
+            sqlCommand.Parameters.AddWithValue("@Status", playerQuest.PlayerQuestStatus);
+            sqlCommand.Parameters.AddWithValue("@PlayerId", playerQuest.PlayerId);
+            sqlCommand.Parameters.AddWithValue("@QuestId", playerQuest.QuestId);
+            try
+            {
+                sqlConnection.Open();
+                int rowsAffected = sqlCommand.ExecuteNonQuery();
+                if (rowsAffected > 0)
+                {
+                    errormsg = "";
+                }
+                else
+                {
+                    errormsg = "No rows were updated.";
+                }
+                return rowsAffected;
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                if (sqlConnection.State == System.Data.ConnectionState.Open)
+                {
+                    sqlConnection.Close();
+                }
+            }
+        }
 
 
 
