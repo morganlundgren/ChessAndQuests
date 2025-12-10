@@ -1,6 +1,7 @@
 ﻿using ChessAndQuests.Models;
 using Microsoft.Data.SqlClient;
 using System;
+using System.Data;
 
 
 namespace ChessAndQuests.DAL
@@ -8,154 +9,201 @@ namespace ChessAndQuests.DAL
 
     public class PlayerMethods
     {
-        private SqlConnection sqlconnection;
+        private SqlConnection sqlConnection;
         private string conString;
         public PlayerMethods() {
-            sqlconnection = new SqlConnection();
+            sqlConnection = new SqlConnection();
             conString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
-            sqlconnection.ConnectionString = conString;
+            sqlConnection.ConnectionString = conString;
         }
         // get all players
-        public List<PlayerDetails> GetAll(out string errormsg)
+        public List<PlayerDetails> GetAllPlayers(out string errormsg)
         {
-            var players = new List<PlayerDetails>();
-            errormsg = "";
+            string sqlString = "SELECT * FROM tbl_players";
+            SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
 
-            using (SqlConnection conn = new SqlConnection(conString))
+            SqlDataReader reader = null;
+            List<PlayerDetails> playerDetailsList = new List<PlayerDetails>();
+
+            try
             {
-                string query = "Select * FROM tbl_player";
-                SqlCommand cmd = new SqlCommand(query, conn);
+                // Fyll dataset och mappa rader till modeller
+                sqlConnection.Open();
+                reader = sqlCommand.ExecuteReader();
 
-                conn.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-
+                if (!reader.HasRows)
+                {
+                    errormsg = "No players found";
+                    return null;
+                }
                 while (reader.Read())
                 {
-                    players.Add(new PlayerDetails()
-                    {
-                        PlayerId = reader.GetInt32(0),
-                        PlayerUserName = reader.GetString(1),
-                        PlayerPassword = reader.GetString(2)
+                    PlayerDetails playerDetails = new PlayerDetails();
+                    playerDetails.PlayerId = Convert.ToUInt16(reader["pl_Id"]);
+                    playerDetails.PlayerUserName = Convert.ToString(reader["pl_username"]);
+                    playerDetails.PlayerPassword = Convert.ToString(reader["pl_password"]);
 
-                    });
-
+                    playerDetailsList.Add(playerDetails);
                 }
+                errormsg = "";
+                return playerDetailsList;
 
             }
-            return players;
+            catch (Exception e)
+            {
+                // Returnera felmeddelande för att visa vad som gick fel
+                errormsg = e.Message;
+                return null;
+            }
+            finally
+            {
+                if (reader != null && !reader.IsClosed)
+                    reader.Close();
 
+                    sqlConnection.Close();
+            }
         }
 
-        
-        public PlayerDetails GetById(int playerId)
+        // Select player by id
+        public PlayerDetails GetById(int playerId, out string errormsg)
         {
-            PlayerDetails player = null;
+            SqlDataReader reader = null;
+            PlayerDetails player = new PlayerDetails();
+            string sqlString = "SELECT * FROM tbl_player WHERE pl_id = @PlayerId";
+            SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@PlayerId", playerId);
 
-            using (SqlConnection conn = new SqlConnection(conString))
+            try
             {
-                string query = "SELECT * FROM tbl_player WHERE pl_id = @PlayerId";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@PlayerId", playerId);
+                sqlConnection.Open();
+                reader = sqlCommand.ExecuteReader();
 
-                conn.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    errormsg = "No player found with given ID";
+                    return null;
+                }
 
                 if (reader.Read())
                 {
-                    player = new PlayerDetails
-                    {
-                        PlayerId = reader.GetInt32(0),
-                        PlayerUserName = reader.GetString(1),
-                        PlayerPassword = reader.GetString(2)
-                    };
+
+                    player.PlayerId = Convert.ToInt32(reader["pl_id"]);
+                    player.PlayerUserName = Convert.ToString(reader["pl_username"]);
+                    player.PlayerPassword = Convert.ToString(reader["pl_password"]);
+                    
                 }
-
-
+                errormsg = "";
+                return player;
             }
-            return player;
-
-        }
-        public PlayerDetails GetByUserName(string username)
-        {
-            PlayerDetails player = null;
-
-            using (SqlConnection conn = new SqlConnection(conString))
+            catch (Exception e)
             {
-
-                string query = "SELECT * FROM player WHERE username = @Username";
-                SqlCommand command = new SqlCommand(query, conn);
-                command.Parameters.AddWithValue("@Username", username);
-                conn.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    player = new PlayerDetails
-                    {
-                        PlayerId = reader.GetInt32(0),
-                        PlayerUserName = reader.GetString(1),
-                        PlayerPassword = reader.GetString(2)
-
-                    };
-                }
+                errormsg = e.Message;
+                return null;
             }
-
-            return player;
-        }
-
-        public int InsertUser(PlayerDetails player)
-        {
-
-            using (SqlConnection conn = new SqlConnection(conString))
+            finally
             {
-                string query = @"INSERT INTO tbl_player (pl_username, pl_password) 
-                               VALUES (@Username, @Password)";
+                if (reader != null && !reader.IsClosed)
+                    reader.Close();
 
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Username", player.PlayerUserName);
-                cmd.Parameters.AddWithValue("@Password", player.PlayerPassword);
-
-                conn.Open();
-                int newId = (int)cmd.ExecuteNonQuery();
-
-                return newId;
-            }
-        }
-        public bool Update(PlayerDetails player)
-        {
-            using (SqlConnection conn = new SqlConnection(conString))
-            {
-                string query = @"UPDATE tbl_player 
-                               SET pl_username = @Username, 
-                                   pl_password = @Password 
-                               WHERE pl_id = @PlayerId";
-
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@PlayerId", player.PlayerId);
-                cmd.Parameters.AddWithValue("@Username", player.PlayerUserName);
-                cmd.Parameters.AddWithValue("@Password", player.PlayerPassword);
-
-                conn.Open();
-                int rowsAffected = cmd.ExecuteNonQuery();
-
-                return rowsAffected > 0;
+                    sqlConnection.Close();
             }
         }
 
-        public bool Delete(int playerId)
+        // Add a new player
+        public int CreatePlayer(PlayerDetails player, out string errormsg)
         {
-            using (SqlConnection conn = new SqlConnection(conString))
+
+            string sqlString = @"INSERT INTO tbl_player (pl_username, pl_password)
+                VALUES (@Username, @Password);";
+
+            SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@Username", player.PlayerUserName);
+            sqlCommand.Parameters.AddWithValue("@Password", player.PlayerPassword);
+
+
+            try
             {
-                string query = "DELETE FROM tbl_player WHERE pl_id = @PlayerId";
-
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@PlayerId", playerId);
-
-                conn.Open();
-                int rowsAffected = cmd.ExecuteNonQuery();
-
-                return rowsAffected > 0;
+                sqlConnection.Open();
+                int i = 0;
+                i = sqlCommand.ExecuteNonQuery();
+                if (i == 1) { errormsg = ""; }
+                else { errormsg = "Insert failed"; }
+                return i;
             }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+
+
+
+
+        // Update an existing player
+        public int UpdatePlayer(PlayerDetails player, out string errormsg)
+        {
+
+            string sqlString = @"UPDATE tbl_player SET pl_username = @Username, 
+                pl_password = @Password WHERE pl_id = @PlayerId;";
+
+            SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@PlayerId", player.PlayerId);
+            sqlCommand.Parameters.AddWithValue("@Username", player.PlayerUserName);
+            sqlCommand.Parameters.AddWithValue("@Password", player.PlayerPassword);
+
+            try
+            {
+                sqlConnection.Open();
+                int i = 0;
+                i = sqlCommand.ExecuteNonQuery();
+                if (i == 1) { errormsg = ""; }
+                else { errormsg = "Update failed"; }
+                return i;
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+
+
+        // Delete a player by ID
+        public int DeletePlayer(int playerId, out string errormsg)
+        {
+            string sqlString = "DELETE FROM tbl_player WHERE pl_id = @PlayerId;";
+
+            SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@PlayerId", playerId);
+
+            try
+            {
+                sqlConnection.Open();
+                int i = 0;
+                i = sqlCommand.ExecuteNonQuery();
+                if (i == 1) { errormsg = ""; }
+                else { errormsg = "Delete failed"; }
+                return i;
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+
         }
 
     }
