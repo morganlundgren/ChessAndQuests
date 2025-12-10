@@ -83,7 +83,7 @@ namespace ChessAndQuests.DAL
             catch (Exception e)
             {
                 errormsg = e.Message;
-                return -1;
+                return 0;
             }
             finally
             {
@@ -106,19 +106,22 @@ namespace ChessAndQuests.DAL
             try
             {
                 sqlConnection.Open();
-                sqlCommand.ExecuteNonQuery();
-                errormsg = "";
+                int i = 0;
+                i = sqlCommand.ExecuteNonQuery();
+                if (i == 1) { errormsg = ""; }
+                else { errormsg = "Update failed"; }
+                return i;
             }
             catch (Exception e)
             {
                 errormsg = e.Message;
+                return 0;
             }
             finally
             {
-                if (sqlConnection.State == ConnectionState.Open)
-                    sqlConnection.Close();
+                sqlConnection.Close();
             }
-            return moveDetails.MoveId;
+
         }
 
     }
