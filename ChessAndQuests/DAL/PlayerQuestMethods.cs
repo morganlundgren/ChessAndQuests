@@ -13,7 +13,7 @@ namespace ChessAndQuests.DAL
             conString = "Data Source = chesserver.database.windows.net; User ID = adminlogin; Password = ********; Connect Timeout = 30; Encrypt = True; Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False";
             sqlConnection.ConnectionString = conString;
 
-        }
+        } 
 
         // Create playerQuest
         public int CreatePlayerQuest(PlayerQuestDetails playerQuest, out string errormsg)
