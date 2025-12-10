@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using ChessAndQuests.Models;
+using Microsoft.Data.SqlClient;
 
 namespace ChessAndQuests.DAL
 {
@@ -14,14 +15,17 @@ namespace ChessAndQuests.DAL
 
         }
 
-        // Create and assign a quest to a player
-        public void AssignQuestToPlayer(int playerId, int questId, out string errormsg)
-        {
-            string sqlString = "INSERT INTO tbl_player_quests (pl_id, qu_id, pq_status) VALUES (@PlayerId, @QuestId, @Status)";
+        // Create playerQuest
+        public int CreatePlayerQuest(PlayerQuestDetails playerQuest, out string errormsg)
+            {
+            
+            string sqlString = "INSERT INTO tbl_player_quests (gm_id, pl_id, qu_id, pq_currentmoves, pq_status) VALUES (@GameId, @PlayerId, @QuestId, @CurrentMoves, @Status)";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
-            sqlCommand.Parameters.AddWithValue("@PlayerId", playerId);
-            sqlCommand.Parameters.AddWithValue("@QuestId", questId);
-            sqlCommand.Parameters.AddWithValue("@Status", 0); 
+            sqlCommand.Parameters.AddWithValue("@GameId", playerQuest.GameId);
+            sqlCommand.Parameters.AddWithValue("@PlayerId", playerQuest.PlayerId);
+            sqlCommand.Parameters.AddWithValue("@QuestId", playerQuest.QuestId);
+            sqlCommand.Parameters.AddWithValue("@CurrentMoves", playerQuest.PlayerQuestCurrentMove);
+            sqlCommand.Parameters.AddWithValue("@Status", playerQuest.PlayerQuestStatus);
             try
             {
                 sqlConnection.Open();
@@ -32,12 +36,14 @@ namespace ChessAndQuests.DAL
                 }
                 else
                 {
-                    errormsg = "No rows were inserted.";
+                    errormsg = "No rows were deleted.";
                 }
+                return rowsAffected;
             }
             catch (Exception e)
             {
                 errormsg = e.Message;
+                return 0;
             }
             finally
             {
@@ -48,8 +54,13 @@ namespace ChessAndQuests.DAL
             }
         }
 
+
+
+
+
+
         // Delete a quest after completion or max attempts
-        public void DeletePlayerQuest(int playerId, int questId, out string errormsg)
+        public int DeletePlayerQuest(int playerId, int questId, out string errormsg)
         {
             string sqlString = "DELETE FROM tbl_player_quests WHERE pl_id = @PlayerId AND qu_id = @QuestId";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
@@ -66,11 +77,14 @@ namespace ChessAndQuests.DAL
                 else
                 {
                     errormsg = "No rows were deleted.";
+                    
                 }
+                return rowsAffected;
             }
             catch (Exception e)
             {
                 errormsg = e.Message;
+                return 0;
             }
             finally
             {
