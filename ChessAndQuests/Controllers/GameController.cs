@@ -38,5 +38,24 @@ namespace ChessAndQuests.Controllers
            
             return RedirectToAction("Play", "GameBoard", new { gameId = newGame.GameId });
         }
+
+
+        [HttpGet]
+        // join a game get
+        public IActionResult JoinGame()
+        {
+            if (HttpContext.Session.GetString("PlayerUsername") == null)
+            {
+                return RedirectToAction("SignIn", "Player");
+            }
+
+
+            return View();
+
+        }
+        
+        
+            
     }
+}
 }
