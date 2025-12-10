@@ -20,7 +20,7 @@
             <div class="form-group">
                 <label asp-for="PlayerPassword" class="control-label">Password</label>
                 <input asp-for="PlayerPassword" class="form-control" />
-                <span asp-validation-for="PlayerPassword" class="text-danger"></span>
+                <span asp-validation-for="PlayerPassword" class="text-danger"> @ViewBag.errorSignin </span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Sign In" class="btn btn-primary" />

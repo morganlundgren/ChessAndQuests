@@ -64,6 +64,47 @@ namespace ChessAndQuests.DAL
             }
         }
 
+        public PlayerDetails GetUserByLogin (string username, string password, out string errormsg)
+        {
+            SqlDataReader reader = null;
+            string sqlString = "SELECT * FROM tbl_player WHERE pl_username = @Username AND pl_password = @Password";
+            SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
+
+            PlayerDetails player = new PlayerDetails();
+            sqlCommand.Parameters.AddWithValue("@Username", username);
+            sqlCommand.Parameters.AddWithValue("@Password", password);
+            try
+            {
+                sqlConnection.Open();
+                reader = sqlCommand.ExecuteReader();
+
+                if (!reader.HasRows)
+                {
+                    errormsg = "Invalid username or password";
+                    return null;
+                }
+                if (reader.Read())
+                {
+                    player.PlayerId = Convert.ToInt32(reader["pl_id"]);
+                    player.PlayerUserName = Convert.ToString(reader["pl_username"]);
+                    player.PlayerPassword = Convert.ToString(reader["pl_password"]);
+                }
+                errormsg = "";
+                return player;
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return null;
+            }
+            finally
+            {
+                if (reader != null && !reader.IsClosed)
+                    reader.Close();
+                sqlConnection.Close();
+            }
+        }
+
         // Select player by id
         public PlayerDetails GetById(int playerId, out string errormsg)
         {

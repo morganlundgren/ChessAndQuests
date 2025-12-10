@@ -39,7 +39,20 @@ namespace ChessAndQuests.Controllers
             PlayerMethods playerMethods = new PlayerMethods();
             string error = "";
 
-            return RedirectToAction("Index", "Home");
+            var player = playerMethods.GetUserByLogin(playerDetails.PlayerUserName, playerDetails.PlayerPassword, out error);
+
+            if (player != null)
+            {
+                // Store player info in session
+                HttpContext.Session.SetInt32("PlayerId", player.PlayerId);
+                HttpContext.Session.SetString("PlayerUsername", player.PlayerUserName);
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ViewBag.errorSignIn = error;
+                return View();
+            }
         }
 
 
