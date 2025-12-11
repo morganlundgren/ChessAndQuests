@@ -2,11 +2,25 @@
 @inject IHttpContextAccessor Accessor
 
 @{
-    ViewData["Title"] = "Home Page";
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "home-page";
+    ViewData["Title"] = "Chess and Quest";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome @Accessor.HttpContext.Session.GetString("PlayerUsername") to the best game ever</h1>
-    <img src="~/Images/ChessandQuest.png" alt="Chess and Quests Logo" />
 
+<h1 class="home-welcome-title text-center">
+    Welcome @Accessor.HttpContext.Session.GetString("PlayerUsername") to Chess and Quest
+</h1>
+
+
+<div class="home-buttons">
+    <a class="home-btn create" asp-controller="Game" asp-action="CreateGame">
+        Create Game
+    </a>
+
+    <a class="home-btn join" asp-controller="Game" asp-action="JoinGame">
+        Join Game
+    </a>
 </div>
+
+

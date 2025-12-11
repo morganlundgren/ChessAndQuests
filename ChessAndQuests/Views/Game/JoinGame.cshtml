@@ -1,51 +1,54 @@
 ﻿@{
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "join-game-page";
     ViewData["Title"] = "Join Game";
 }
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-4">
-                    <h1 class="h4 mb-3 text-center">Join Game</h1>
 
-                    <p class="text-muted small text-center mb-4">
-                        Skriv in game key du fått av den som skapade spelet för att gå med som svart spelare.
-                    </p>
+@{
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "join-game-page";   // för bakgrundsbilden
+    ViewData["Title"] = "Join Game";
+}
 
-                    <!-- Felmeddelanden från ModelState -->
-                    @if (!ViewData.ModelState.IsValid)
+<div class="create-game-wrapper">
+    <div class="create-game-card card">
+        <div class="card-body p-4">
+
+            <h1 class="create-game-title text-center mb-3">Join Game</h1>
+
+            <p class="create-game-text text-center mb-4">
+                Skriv in game key du fått av den som skapade spelet för att gå med som svart spelare.
+            </p>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger py-2 small">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
                     {
-                        <div class="alert alert-danger py-2 small">
-                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                            {
-                                <div>@error.ErrorMessage</div>
-                            }
-                        </div>
+                        <div>@error.ErrorMessage</div>
                     }
-
-                    <form asp-action="JoinGame" method="post">
-                        <div class="mb-3">
-                            <label for="gamekey" class="form-label">Game key</label>
-                            <input type="text"
-                                   name="gamekey"
-                                   id="gamekey"
-                                   class="form-control form-control-lg"
-                                   placeholder="t.ex. ABC123" />
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 btn-lg">
-                            Join
-                        </button>
-                    </form>
-
-                    <div class="text-center mt-3">
-                        <a asp-action="CreateGame" class="small">
-                            Skapa nytt spel i stället
-                        </a>
-                    </div>
                 </div>
-            </div>
+            }
+
+            <form asp-action="JoinGame" method="post">
+                <div class="mb-3">
+                    <label for="gamekey" class="form-label">Game key</label>
+                    <input type="text"
+                           name="gamekey"
+                           id="gamekey"
+                           class="form-control form-control-lg"
+                           placeholder="t.ex. ABC123" />
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="create-btn">
+                        Join Game
+                    </button>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>
+
