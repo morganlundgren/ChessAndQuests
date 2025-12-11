@@ -29,7 +29,6 @@ namespace ChessAndQuests.Controllers
             GameDetails newGame = new GameDetails();
             {
                 newGame.PLayerWhiteId = playerId;
-                newGame.PlayerBlackId = null;
                 newGame.GameKey = gamekey;
                 newGame.CurrentFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\r\n";
                 newGame.status = 0;
@@ -46,7 +45,7 @@ namespace ChessAndQuests.Controllers
                 return View();
             }
 
-            return RedirectToAction("PlayGame", newGame.GameKey);
+            return RedirectToAction("PlayGame","Game", new { gameKey = newGame.GameKey });
         }
 
 
