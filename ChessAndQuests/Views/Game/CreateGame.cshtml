@@ -26,13 +26,15 @@
             }
 
             <form asp-action="CreateGame" method="post">
+                <input type="hidden" name="playerId" value="@Accessor.HttpContext.Session.GetInt32("PlayerId")" />
                 <div class="mb-3">
-                    <label for="gamekey" class="form-label">Game key</label>
-                    <input type="text"
+                    <label asp-for="GameKey" class="form-label">Game key</label>
+                    <input asp-for ="GameKey" type="text"
                            id="gamekey"
                            name="gamekey"
                            class="form-control form-control-lg"
                            placeholder="t.ex. QUEST-1234" />
+                    <span asp-validation-for ="GameKey"> </span>
                 </div>
 
                 <div class="d-flex justify-content-center">
