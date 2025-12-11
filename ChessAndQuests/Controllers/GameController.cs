@@ -53,9 +53,34 @@ namespace ChessAndQuests.Controllers
             return View();
 
         }
-        
-        
-            
+
+
+        [HttpPost]
+        // join a game post
+        public IActionResult JoinGame(string gamekey, int playerId)
+        {
+
+            GameMethods gameMethods = new GameMethods();
+            string error = "";
+            GameDetails gameToJoin = gameMethods.GetGameByKey(gamekey);
+
+            if (gameToJoin == null)
+            {
+                ViewBag.Error = "Game not found.";
+                return View();
+            }
+            if (gameToJoin.PlayerBlackId != 0)
+            {
+                ViewBag.Error = "Game is already full.";
+                return View();
+            }
+            gameToJoin.PlayerBlackId = playerId;
+            gameMethods.UpdateGame(gameToJoin);
+            return RedirectToAction("Play", "GameBoard", new { gameId = gameToJoin.GameId });
+        }
+
+
+
     }
 }
-}
+
