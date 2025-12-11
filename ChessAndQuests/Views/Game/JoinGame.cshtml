@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Join Game";
+}
+
+<h2>Join Game</h2>
+
+<form asp-action="JoinGame" method="post">
+    <div class="form-group">
+        <label for="gamekey">Game key</label>
+        <input type="text" name="gamekey" id="gamekey" class="form-control" />
+    </div>
+
+    
+    <button type="submit" class="btn btn-primary">Join</button>
+</form>
+
+@foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+{
+    <p style="color:red" class=" btn btn-warning">@error.ErrorMessage</p>
+}

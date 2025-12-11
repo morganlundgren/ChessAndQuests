@@ -84,7 +84,6 @@ namespace ChessAndQuests.Controllers
                 ViewBag.Error = "Game is already full.";
                 return View();
             }
-            gameToJoin.PlayerBlackId = playerId;
 
             gameMethods.UpdateGame(gameToJoin, out error);
             return RedirectToAction("Play", "GameBoard", new { gameId = gameToJoin.GameId });
