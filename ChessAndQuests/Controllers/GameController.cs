@@ -44,7 +44,10 @@ namespace ChessAndQuests.Controllers
                 ViewBag.ErrorGame = "Error creating game: " + error;
                 return View();
             }
+            PlayerMethods playerMethods = new PlayerMethods();
+            var player = playerMethods.GetById(playerId, out error);
 
+            HttpContext.Session.SetString("JoinedPlayer", player.PlayerUserName);
             return RedirectToAction("PlayGame","Game", new { gameKey = newGame.GameKey });
         }
 
@@ -83,7 +86,10 @@ namespace ChessAndQuests.Controllers
                 ViewBag.Error = "Game is already full.";
                 return View();
             }
+            PlayerMethods playerMethods = new PlayerMethods();
+            var player = playerMethods.GetById(playerId, out error);
 
+            HttpContext.Session.SetString("JoinedPlayer", player.PlayerUserName);
             gameMethods.UpdateGame(gameToJoin, out error);
             return RedirectToAction(gamekey);
         }
