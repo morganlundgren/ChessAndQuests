@@ -78,14 +78,14 @@ namespace ChessAndQuests.Controllers
                 ViewBag.Error = "Game not found.";
                 return View();
             }
-            if (gameToJoin.PlayerBlackId != 0)
+            if (gameToJoin.PlayerBlackId != null)
             {
                 ViewBag.Error = "Game is already full.";
                 return View();
             }
 
             gameMethods.UpdateGame(gameToJoin, out error);
-            return RedirectToAction(gamekey);
+            return RedirectToAction("PlayGame", "Game", new { gameKey = gameToJoin.GameKey });
         }
         [HttpGet]
         public IActionResult PlayGame(string gameKey)
