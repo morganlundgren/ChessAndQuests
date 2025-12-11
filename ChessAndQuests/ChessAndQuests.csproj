@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <None Include="wwwroot\Images\ChessandQuest.png" />
+    <None Include="wwwroot\js\signalr\dist\browser\signalr.js" />
+    <None Include="wwwroot\js\signalr\dist\browser\signalr.min.js" />
   </ItemGroup>
 
   <ItemGroup>

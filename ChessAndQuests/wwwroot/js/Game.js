@@ -1,0 +1,11 @@
+﻿var connection = new signalR.HubConnectionBuilder().withUrl("/gamehub").build();
+const gameKey = document.getElementById("gamekey").dataset.gameKey;
+
+connection.start().then(() => {
+    console.log("Connected to SignalR");
+    connection.invoke("JoinGameGroup", gameKey);
+});
+connection.on("ReceivePlayerNames", (whiteName, blackName) => {
+    document.getElementById("playerWhite").textContent = whiteName;
+    document.getElementById("playerBlack").textContent = blackName;
+});

@@ -47,7 +47,6 @@ namespace ChessAndQuests.Controllers
             PlayerMethods playerMethods = new PlayerMethods();
             var player = playerMethods.GetById(playerId, out error);
 
-            HttpContext.Session.SetString("CreatedPlayer", player.PlayerUserName);
             return RedirectToAction("PlayGame","Game", new { gameKey = newGame.GameKey });
         }
 
@@ -97,8 +96,6 @@ namespace ChessAndQuests.Controllers
                 return View();
             }
 
-            HttpContext.Session.SetString("JoinedPlayer", player.PlayerUserName);
-       
             return RedirectToAction("PlayGame", "Game", new { gameKey = gameToJoin.GameKey });
         }
         [HttpGet]
@@ -110,9 +107,28 @@ namespace ChessAndQuests.Controllers
             }
             GameMethods gameMethods = new GameMethods();
             GameDetails gameDetails = new GameDetails();
+            PlayerDetails playerBlack = null;
             string error = "";
+
             gameDetails= gameMethods.GetGameByKey(gameKey, out  error);
-            return View(gameDetails);
+            PlayerMethods playerMethods = new PlayerMethods();
+            var playerWhite = playerMethods.GetById(gameDetails.PLayerWhiteId, out error);
+            if (gameDetails.PlayerBlackId != null)
+            {
+                int playerBlackId = gameDetails.PlayerBlackId.GetValueOrDefault();
+                playerBlack = playerMethods.GetById(playerBlackId, out error);
+            }
+
+            var model = new GameViewModel
+            {
+                GameKey = gameKey,
+                PlayerWhiteName = playerWhite?.PlayerUserName ?? "Waiting...",
+                PlayerBlackName = playerBlack?.PlayerUserName ?? "Waiting...",
+                CurrentFEN = gameDetails.CurrentFEN
+
+            };
+
+            return View(model);
         }
 
     }

@@ -1,6 +1,9 @@
-﻿@model ChessAndQuests.Models.GameDetails
+﻿@model ChessAndQuests.Models.GameViewModel
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor Accessor
+
+<div id="gamekey" data-game-key="@Model.GameKey"></div>
+
 
 
 @{
@@ -16,13 +19,18 @@
 
 
 <header>Lets play chess!</header>
-<p> Spelare Vit: @Accessor.HttpContext.Session.GetString("CreatedPlayer")</p>
-<p> Spelare Svart: @Accessor.HttpContext.Session.GetString("JoinedPlayer")</p>
+
+<div>
+    <strong>White:</strong><span id="playerWhite">@Model.PlayerWhiteName</span> <br />
+    <strong>Black:</strong> <span id="playerBlack">@Model.PlayerBlackName</span>
+</div>
 
 <div id="board" style="width: 600px; height: 600px"></div>
 
 @section Scripts {
     <script src="~/js/chessboard.js"></script>
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/Game.js"></script>
     <script>
         var board = Chessboard('board', {
             position: '@Model.CurrentFEN',
