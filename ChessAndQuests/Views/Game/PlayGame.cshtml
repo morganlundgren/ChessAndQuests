@@ -9,19 +9,20 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/PlayGame.css" />
+    <link rel="stylesheet" href="~/css/chessboard.css" />
 }
 
 
 
 <header>Lets play chess!</header>
 
-<div id="board" style="width = 600px;"></div>
+<div id="board" style="width: 600px;"></div>
 
 @section Scripts {
-    <script src="~/js/chessboarsjs"></script>
+    <script src="~/js/chessboard.js"></script>
     <script>
         var board = Chessboard('board', {
-            position: @Html.Raw($"'{Model.CurrentFEN}'"),
+            position: '@Model.CurrentFEN'
         });
     </script>
 }
