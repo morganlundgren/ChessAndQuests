@@ -1,9 +1,53 @@
-﻿body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    header {
-        text-align: center;
-        margin-top: 20px;
-        font-size: 36px;
-        color: #333;
-    }
+﻿
+
+body.play-game-page nav.navbar {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+body.play-game-page nav.navbar a,
+body.play-game-page nav.navbar .navbar-brand,
+body.play-game-page nav.navbar .nav-link {
+color: #ffffff !important;
+}
+
+body.play-game-page nav.navbar a:hover,
+body.play-game-page nav.navbar .nav-link:hover {
+color: #e0e0e0 !important;
+}
+
+
+body.play-game-page {
+    background-image: url('/images/JoinGameBackground.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+
+#letsplay {
+    font-family: 'Cinzel', serif;
+    font-size: 54px;
+    color: #f4d187;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.players {
+    font-family: 'Cinzel', serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: #f4d187;
+    display: grid;
+    grid-template-areas: "a b c d";
+    text-align: center;
+    margin-top: 20px;
+    grid-area: a;
+}
+
+#board {
+    width: 600px !important;
+    height: 600px !important;
+    margin: 20px auto !important;
 }

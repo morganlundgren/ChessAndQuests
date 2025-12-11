@@ -13,22 +13,25 @@
     <link rel="stylesheet" href="~/css/chessboard.css" />
 }
 
+<body class="play-game-page">
 
+<header id="letsplay">Lets play chess!</header>
 
-<header>Lets play chess!</header>
-<p> Spelare Vit: @Accessor.HttpContext.Session.GetString("CreatedPlayer")</p>
-<p> Spelare Svart: @Accessor.HttpContext.Session.GetString("JoinedPlayer")</p>
+<p class="players"> Spelare Vit: <strong>@Accessor.HttpContext.Session.GetString("CreatedPlayer")</strong></p>
+<p class="players"> Spelare Svart: <strong>@Accessor.HttpContext.Session.GetString("JoinedPlayer")</strong></p>
 
-<div id="board" style="width: 600px; height: 600px"></div>
+<div id="board"></div>
+
+</body>
 
 @section Scripts {
     <script src="~/js/chessboard.js"></script>
     <script>
-        var board = Chessboard('board', {
-            position: '@Model.CurrentFEN',
-            pieceTheme: '/images/chesspieces/{piece}.png',
-            draggable: true,
-            dropOffBoard: 'snapback',
+        var board = ChessBoard('board', {
+            position: 'start',
+            pieceTheme: '/images/chesspieces/alpha/{piece}.png',
+            draggable: true
+            
         });
     </script>
 }
