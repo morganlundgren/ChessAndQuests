@@ -3,33 +3,46 @@
 @inject IHttpContextAccessor Accessor
 
 @{
-    ViewData["Title"] = "Create";
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "create-game-page";
+    ViewData["Title"] = "Create Game";
 }
 
-<h1>Create a new game of chess!</h1>
-<h1>@ViewBag.ErrorGame</h1>
-<h4>Fill in gamekey, has to be of type characters only (max 10)</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CreateGame" method="post">
-            <input type="hidden" name="playerId" value="@Accessor.HttpContext.Session.GetInt32("PlayerId")"/>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="GameKey" class="control-label">Choose your gamekey</label>
-                <input asp-for="GameKey" class="form-control" />
-                <span asp-validation-for="GameKey" class="text-danger"></span>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="create-game-wrapper">
+    <div class="create-game-card card">
+        <div class="card-body p-4">
+
+            <h1 class="create-game-title text-center mb-3">Create Game</h1>
+
+            <p class="create-game-text text-center mb-4">
+                Skapa ett nytt äventyr. Dela game key med din vän så kan de joina som svart spelare.
+            </p>
+
+            @if (ViewBag.ErrorGame != null)
+            {
+                <div class="alert alert-danger py-2 small">
+                    @ViewBag.ErrorGame
+                </div>
+            }
+
+            <form asp-action="CreateGame" method="post">
+                <div class="mb-3">
+                    <label for="gamekey" class="form-label">Game key</label>
+                    <input type="text"
+                           id="gamekey"
+                           name="gamekey"
+                           class="form-control form-control-lg"
+                           placeholder="t.ex. QUEST-1234" />
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="create-btn">
+                        Create Game
+                    </button>
+                </div>
+            </form>
+
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to home</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
