@@ -39,7 +39,7 @@ namespace ChessAndQuests.Controllers
 
             gameMethods.CreateGame(newGame, out error);
            
-            return RedirectToAction("Play", "GameBoard", new { gameId = newGame.GameId });
+            return RedirectToAction("PlayGame", new { gameId = newGame.GameId });
         }
 
 

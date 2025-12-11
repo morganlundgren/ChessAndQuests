@@ -1,0 +1,9 @@
+﻿body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 36px;
+        color: #333;
+    }
+}
