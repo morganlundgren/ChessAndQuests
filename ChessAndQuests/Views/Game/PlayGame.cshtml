@@ -21,7 +21,7 @@
     <script src="~/js/chessboarsjs"></script>
     <script>
         var board = Chessboard('board', {
-            position: @Html.Raw($"'{Model.CurrentFEN}'"),
+            position: '@Model.CurrentFEN'
         });
     </script>
 }

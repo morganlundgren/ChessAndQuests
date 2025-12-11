@@ -29,7 +29,7 @@ namespace ChessAndQuests.Controllers
             GameDetails newGame = new GameDetails();
             {
                 newGame.PLayerWhiteId = playerId;
-                newGame.PlayerBlackId = 0;
+                newGame.PlayerBlackId = null;
                 newGame.GameKey = gamekey;
                 newGame.CurrentFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\r\n";
                 newGame.status = 0;
