@@ -76,7 +76,6 @@ namespace ChessAndQuests.Controllers
             string error = "";
             int i = 0;
             GameDetails gameToJoin = gameMethods.GetGameByKey(gamekey, out error);
-            gameToJoin.PlayerBlackId = playerId;
 
             if (gameToJoin == null)
             {
@@ -90,6 +89,7 @@ namespace ChessAndQuests.Controllers
             }
             PlayerMethods playerMethods = new PlayerMethods();
             var player = playerMethods.GetById(playerId, out error);
+            gameToJoin.PlayerBlackId = playerId;
             i = gameMethods.UpdateGame(gameToJoin, out error);
             if(i==0)
             {
