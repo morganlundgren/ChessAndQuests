@@ -1,38 +1,61 @@
 ﻿@model ChessAndQuests.Models.PlayerDetails
 
 @{
-    ViewData["Title"] = "SignIn";
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "signin-page";
+    ViewData["Title"] = "Sign In";
 }
 
-<h1>Signin</h1>
+<div class="signin-wrapper">
+    <div class="signin-card card">
+        <div class="card-body p-4">
 
-<h4>PlayerDetails</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Signin" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="PlayerUserName" class="control-label">Username</label>
-                <input asp-for="PlayerUserName" class="form-control" />
-                <span asp-validation-for="PlayerUserName" class="text-danger"></span>
+            <h1 class="signin-title text-center mb-3">Sign In</h1>
+
+            <p class="signin-text text-center mb-4">
+                Logga in för att fortsätta ditt äventyr i Chess & Quests.
+            </p>
+
+            <!-- Model validation summary -->
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+            <form asp-action="Signin" method="post">
+
+                <!-- Username -->
+                <div class="mb-3">
+                    <label asp-for="PlayerUserName" class="form-label">Username</label>
+                    <input asp-for="PlayerUserName" class="form-control" />
+                    <span asp-validation-for="PlayerUserName" class="text-danger"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-4">
+                    <label asp-for="PlayerPassword" class="form-label">Password</label>
+                    <input asp-for="PlayerPassword" type="password" class="form-control" />
+                    <span asp-validation-for="PlayerPassword" class="text-danger">
+                        @ViewBag.errorSignin
+                    </span>
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" class="signin-btn">
+                    Sign In
+                </button>
+
+            </form>
+
+            <div class="text-center mt-3">
+                <a asp-action="SignUp" class="small">
+                    Don't have an account? Sign up now!
+                </a>
             </div>
-            <div class="form-group">
-                <label asp-for="PlayerPassword" class="control-label">Password</label>
-                <input asp-for="PlayerPassword" type="password" class="form-control" />
-                <span asp-validation-for="PlayerPassword" class="text-danger"> @ViewBag.errorSignin </span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Sign In" class="btn btn-primary" />
-            </div>
-        </form>
+
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="SignUp">Don't have an acocunt? Sign up now!</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
