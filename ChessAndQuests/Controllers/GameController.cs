@@ -65,7 +65,7 @@ namespace ChessAndQuests.Controllers
 
             GameMethods gameMethods = new GameMethods();
             string error = "";
-            GameDetails gameToJoin = gameMethods.GetGameByKey(gamekey);
+            GameDetails gameToJoin = gameMethods.GetGameByKey(gamekey, out error);
 
             if (gameToJoin == null)
             {
@@ -78,7 +78,8 @@ namespace ChessAndQuests.Controllers
                 return View();
             }
             gameToJoin.PlayerBlackId = playerId;
-            gameMethods.UpdateGame(gameToJoin);
+
+            gameMethods.UpdateGame(gameToJoin, out error);
             return RedirectToAction("Play", "GameBoard", new { gameId = gameToJoin.GameId });
         }
 

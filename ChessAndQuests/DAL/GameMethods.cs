@@ -16,6 +16,8 @@ namespace ChessAndQuests.DAL
             conString = "Server=tcp:chesserver.database.windows.net,1433;Initial Catalog=chessquestserver;Persist Security Info=False;User ID=adminlogin;Password=ilovechess123.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
             sqlConnection.ConnectionString = conString;
         }
+
+        // Get all games
         public List<GameDetails> GetAllGames(out string errormsg)
         {
             String sqlString = "SELECT * FROM tbl_game";
@@ -68,6 +70,7 @@ namespace ChessAndQuests.DAL
             }
         }
 
+        // Create a new game
         public int CreateGame(GameDetails gameDetails, out string errormsg)
         {
             string sqlString = "INSERT INTO tbl_game (pl_white_id, pl_black_id, gm_key, gm_current_fen, gm_status, gm_turn) " +
@@ -102,6 +105,7 @@ namespace ChessAndQuests.DAL
 
         }
 
+        // Update an existing game
         public int UpdateGame(GameDetails gameDetails, out string errormsg)
         {
             string sqlString = "UPDATE tbl_game SET pl_white_id = @pl_white_id, pl_black_id = @pl_black_id, gm_key = @gm_key, " +
@@ -135,6 +139,7 @@ namespace ChessAndQuests.DAL
 
         }
 
+        // Delete a game by its ID
         public int DeleteGame(int gameId, out string errormsg)
         {
             string sqlString = "DELETE FROM tbl_game WHERE gm_id = @gm_id;";
@@ -157,6 +162,56 @@ namespace ChessAndQuests.DAL
             finally
             {
                 sqlConnection.Close();
+            }
+        }
+
+        // Get a game by its game key
+        public GameDetails GetGameByKey(string gameKey, out string errormsg)
+        {
+            String sqlString = "SELECT * FROM tbl_game WHERE gm_key = @gm_key";
+            SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@gm_key", gameKey);
+            SqlDataReader reader = null;
+            GameDetails gameDetails = new GameDetails();
+            try
+            {
+                // Fyll dataset och mappa rader till modeller
+                sqlConnection.Open();
+                reader = sqlCommand.ExecuteReader();
+
+                if (!reader.HasRows)
+                {
+                    errormsg = "No data found";
+                    return null;
+                }
+                while (reader.Read())
+                {
+                    gameDetails.GameId = Convert.ToUInt16(reader["gm_Id"]);
+                    gameDetails.PLayerWhiteId = Convert.ToUInt16(reader["pl_white_id"]);
+                    gameDetails.PlayerBlackId = Convert.ToUInt16(reader["pl_black_id"]);
+                    gameDetails.GameKey = Convert.ToString(reader["gm_key"]);
+                    gameDetails.CurrentFEN = Convert.ToString(reader["gm_current_fen"]);
+                    gameDetails.status = Convert.ToUInt16(reader["gm_status"]);
+                    gameDetails.turnId = Convert.ToUInt16(reader["gm_turn"]);
+
+                }
+                errormsg = "";
+                return gameDetails;
+
+            }
+            catch (Exception e)
+            {
+                // Returnera felmeddelande för att visa vad som gick fel
+                errormsg = e.Message;
+                return null;
+            }
+            finally
+            {
+                if (reader != null && !reader.IsClosed)
+                    reader.Close();
+
+                if (sqlConnection.State == ConnectionState.Open)
+                    sqlConnection.Close();
             }
         }
     }
