@@ -88,7 +88,6 @@ namespace ChessAndQuests.Controllers
             }
             PlayerMethods playerMethods = new PlayerMethods();
             var player = playerMethods.GetById(playerId, out error);
-
             HttpContext.Session.SetString("JoinedPlayer", player.PlayerUserName);
             gameMethods.UpdateGame(gameToJoin, out error);
             return RedirectToAction("PlayGame", "Game", new { gameKey = gameToJoin.GameKey });
