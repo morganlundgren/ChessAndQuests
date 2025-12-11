@@ -1,4 +1,22 @@
-﻿/* Bakgrundsbild för homepage */
+﻿@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap');
+
+
+body.home-page {
+    font-family: 'Cinzel', serif;
+}
+
+
+.home-title {
+    font-family: 'Cinzel', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0,0,0,0.7);
+    color: #f4d187; /* guldton */
+}
+
+
+/* Bakgrundsbild för homepage */
 body.home-page {
     background-image: url('/images/home.png');
     background-size: cover;
@@ -6,8 +24,6 @@ body.home-page {
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
-
-
 
 
 .home-buttons {

@@ -8,11 +8,10 @@
 }
 
 
+<h1 class="home-welcome-title text-center">
+    Welcome @Accessor.HttpContext.Session.GetString("PlayerUsername") to Chess and Quest
+</h1>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome @Accessor.HttpContext.Session.GetString("PlayerUsername") to Chess and Quest</h1>
-  
-</div>
 
 <div class="home-buttons">
     <a class="home-btn create" asp-controller="Game" asp-action="CreateGame">
