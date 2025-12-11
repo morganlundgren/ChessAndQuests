@@ -20,6 +20,7 @@
             <p class="create-game-text text-center mb-4">
                 Skriv in game key du fått av den som skapade spelet för att gå med som svart spelare.
             </p>
+            <p> @ViewBag.ErrorJoin</p>
 
             @if (!ViewData.ModelState.IsValid)
             {

@@ -74,24 +74,31 @@ namespace ChessAndQuests.Controllers
 
             GameMethods gameMethods = new GameMethods();
             string error = "";
+            int i = 0;
             GameDetails gameToJoin = gameMethods.GetGameByKey(gamekey, out error);
             gameToJoin.PlayerBlackId = playerId;
 
             if (gameToJoin == null)
             {
-                ViewBag.Error = "Game not found.";
+                ViewBag.ErrorJoin = "Game not found.";
                 return View();
             }
             if (gameToJoin.PlayerBlackId != null)
             {
-                ViewBag.Error = "Game is already full.";
+                ViewBag.ErrorJoin = "Game is already full.";
                 return View();
             }
             PlayerMethods playerMethods = new PlayerMethods();
             var player = playerMethods.GetById(playerId, out error);
+            i = gameMethods.UpdateGame(gameToJoin, out error);
+            if(i==0)
+            {
+                ViewBag.ErrorJoin = "Error joining game: " + error;
+                return View();
+            }
 
             HttpContext.Session.SetString("JoinedPlayer", player.PlayerUserName);
-            gameMethods.UpdateGame(gameToJoin, out error);
+       
             return RedirectToAction("PlayGame", "Game", new { gameKey = gameToJoin.GameKey });
         }
         [HttpGet]
