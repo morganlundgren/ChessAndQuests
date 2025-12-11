@@ -16,5 +16,5 @@
 
 @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
 {
-    <p style="color:red">@error.ErrorMessage</p>
+    <p style="color:red" class=" btn btn-warning">@error.ErrorMessage</p>
 }
