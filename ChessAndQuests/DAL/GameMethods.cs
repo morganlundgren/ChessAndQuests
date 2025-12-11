@@ -74,10 +74,9 @@ namespace ChessAndQuests.DAL
         public int CreateGame(GameDetails gameDetails, out string errormsg)
         {
             string sqlString = "INSERT INTO tbl_game (pl_white_id, pl_black_id, gm_key, gm_current_fen, gm_status, gm_turn) " +
-                "VALUES (@pl_white_id, @pl_black_id, @gm_key, @gm_current_fen, @gm_status, @gm_turn); ";
+                "VALUES (@pl_white_id, @gm_key, @gm_current_fen, @gm_status, @gm_turn); ";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
             sqlCommand.Parameters.AddWithValue("@pl_white_id", gameDetails.PLayerWhiteId);
-            sqlCommand.Parameters.AddWithValue("@pl_black_id", gameDetails.PlayerBlackId);
             sqlCommand.Parameters.AddWithValue("@gm_key", gameDetails.GameKey);
             sqlCommand.Parameters.AddWithValue("@gm_current_fen", gameDetails.CurrentFEN);
             sqlCommand.Parameters.AddWithValue("@gm_status", gameDetails.status);
@@ -188,7 +187,7 @@ namespace ChessAndQuests.DAL
                 {
                     gameDetails.GameId = Convert.ToUInt16(reader["gm_Id"]);
                     gameDetails.PLayerWhiteId = Convert.ToUInt16(reader["pl_white_id"]);
-                    gameDetails.PlayerBlackId = Convert.ToUInt16(reader["pl_black_id"]);
+                    gameDetails.PlayerBlackId = (reader["pl_black_id"])!= DBNull.Value ? Convert.ToUInt16(reader["pl_black_id"]): null;
                     gameDetails.GameKey = Convert.ToString(reader["gm_key"]);
                     gameDetails.CurrentFEN = Convert.ToString(reader["gm_current_fen"]);
                     gameDetails.status = Convert.ToUInt16(reader["gm_status"]);

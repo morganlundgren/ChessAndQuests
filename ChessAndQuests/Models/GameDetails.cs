@@ -7,7 +7,8 @@ namespace ChessAndQuests.Models
     {
         public int GameId { get; set; }
         public int PLayerWhiteId { get; set; }
-        public int PlayerBlackId { get; set; }
+        public int? PlayerBlackId { get; set; }
+
         [Required(ErrorMessage = "You will have to submit game key.")]
         [StringLength(10, ErrorMessage = "Game Key can be max 10 char.")]
         public string GameKey { get; set; }
