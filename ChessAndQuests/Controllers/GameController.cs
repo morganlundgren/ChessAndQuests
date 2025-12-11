@@ -47,7 +47,7 @@ namespace ChessAndQuests.Controllers
             PlayerMethods playerMethods = new PlayerMethods();
             var player = playerMethods.GetById(playerId, out error);
 
-            HttpContext.Session.SetString("JoinedPlayer", player.PlayerUserName);
+            HttpContext.Session.SetString("CreatedPlayer", player.PlayerUserName);
             return RedirectToAction("PlayGame","Game", new { gameKey = newGame.GameKey });
         }
 
