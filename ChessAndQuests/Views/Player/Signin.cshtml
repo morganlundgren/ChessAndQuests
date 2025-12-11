@@ -1,0 +1,38 @@
+﻿@model ChessAndQuests.Models.PlayerDetails
+
+@{
+    ViewData["Title"] = "SignIn";
+}
+
+<h1>Signin</h1>
+
+<h4>PlayerDetails</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Signin">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PlayerUserName" class="control-label">Username</label>
+                <input asp-for="PlayerUserName" class="form-control" />
+                <span asp-validation-for="PlayerUserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlayerPassword" class="control-label">Password</label>
+                <input asp-for="PlayerPassword" type="password" class="form-control" />
+                <span asp-validation-for="PlayerPassword" class="text-danger"> @ViewBag.errorSignin </span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Sign In" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="SignUp">Don't have an acocunt? Sign up now!</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
