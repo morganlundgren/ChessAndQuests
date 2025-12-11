@@ -86,7 +86,7 @@ namespace ChessAndQuests.Controllers
             }
 
             gameMethods.UpdateGame(gameToJoin, out error);
-            return RedirectToAction("Play", "GameBoard", new { gameId = gameToJoin.GameId });
+            return RedirectToAction(gamekey);
         }
 
 
