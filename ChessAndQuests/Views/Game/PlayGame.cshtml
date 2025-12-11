@@ -1,5 +1,6 @@
 ﻿@model ChessAndQuests.Models.GameDetails
-
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
 
 
 @{
@@ -15,6 +16,8 @@
 
 
 <header>Lets play chess!</header>
+<p> Spelare Vit: @Accessor.HttpContext.Session.GetString("CreatedPlayer")</p>
+<p> Spelare Svart: @Accessor.HttpContext.Session.GetString("JoinedPlayer")</p>
 
 <div id="board" style="width: 600px; height: 600px"></div>
 
@@ -22,7 +25,10 @@
     <script src="~/js/chessboard.js"></script>
     <script>
         var board = Chessboard('board', {
-            position: '@Model.CurrentFEN'
+            position: '@Model.CurrentFEN',
+            pieceTheme: '/images/chesspieces/{piece}.png'
+            draggable: true,
+            dropOffBoard: 'snapback',
         });
     </script>
 }
