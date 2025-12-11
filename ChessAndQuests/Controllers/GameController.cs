@@ -46,7 +46,7 @@ namespace ChessAndQuests.Controllers
                 return View();
             }
 
-            return RedirectToAction("PlayGame", new { gameId = newGame.GameId });
+            return RedirectToAction("PlayGame", newGame.GameKey);
         }
 
 
@@ -88,8 +88,19 @@ namespace ChessAndQuests.Controllers
             gameMethods.UpdateGame(gameToJoin, out error);
             return RedirectToAction("Play", "GameBoard", new { gameId = gameToJoin.GameId });
         }
-
-
+        [HttpGet]
+        public IActionResult PlayGame(string gameKey)
+        {
+            if (HttpContext.Session.GetString("PlayerUsername") == null)
+            {
+                return RedirectToAction("SignIn", "Player");
+            }
+            GameMethods gameMethods = new GameMethods();
+            GameDetails gameDetails = new GameDetails();
+            string error = "";
+            gameDetails= gameMethods.GetGameByKey(gameKey, out  error);
+            return View(gameDetails);
+        }
 
     }
 }
