@@ -1,0 +1,25 @@
+﻿/* Bakgrundsbild */
+body.join-game-page {
+    background-image: url('/images/JoinGameBackground.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+    /* Navbar-styling bara för denna sida */
+    body.join-game-page nav.navbar {
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+        body.join-game-page nav.navbar a,
+        body.join-game-page nav.navbar .navbar-brand,
+        body.join-game-page nav.navbar .nav-link {
+            color: #ffffff !important;
+        }
+
+            body.join-game-page nav.navbar a:hover,
+            body.join-game-page nav.navbar .nav-link:hover {
+                color: #e0e0e0 !important;
+            }
