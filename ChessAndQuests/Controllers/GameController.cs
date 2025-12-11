@@ -35,10 +35,17 @@ namespace ChessAndQuests.Controllers
                 newGame.status = 0;
                 newGame.turnId = playerId;
             }
+            int i = 0;
             string error = "";
 
-            gameMethods.CreateGame(newGame, out error);
-           
+            i = gameMethods.CreateGame(newGame, out error);
+
+            if (i == 0)
+            {
+                ViewBag.ErrorGame = "Error creating game: " + error;
+                return View();
+            }
+
             return RedirectToAction("PlayGame", new { gameId = newGame.GameId });
         }
 

@@ -6,9 +6,23 @@
     ViewData["Title"] = "Lets play!";
 }
 
+
 @section Styles {
     <link rel="stylesheet" href="~/css/PlayGame.css" />
 }
 
-<h1>Lets play chess!</h1>
+
+
+<header>Lets play chess!</header>
+
+<div id="board" style="width = 600px;"></div>
+
+@section Scripts {
+    <script src="~/js/chessboarsjs"></script>
+    <script>
+        var board = Chessboard('board', {
+            position: @Html.Raw($"'{Model.CurrentFEN}'"),
+        });
+    </script>
+}
 
