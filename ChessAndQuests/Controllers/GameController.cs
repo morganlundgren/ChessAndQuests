@@ -9,8 +9,11 @@ namespace ChessAndQuests.Controllers
         [HttpGet]
         // create a new game get
         public IActionResult CreateGame()
-        { 
-
+        {
+            if (HttpContext.Session.GetString("PlayerUsername") == null)
+            {
+                return RedirectToAction("SignIn", "Player");
+            }
             return View();
         }
 

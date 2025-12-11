@@ -4,7 +4,7 @@ using System.Data;
 
 namespace ChessAndQuests.DAL
 {
-
+    // Data Access Layer för Game
     public class GameMethods
     {
         private SqlConnection sqlConnection;
