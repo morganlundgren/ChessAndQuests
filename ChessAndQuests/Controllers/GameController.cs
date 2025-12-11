@@ -45,7 +45,7 @@ namespace ChessAndQuests.Controllers
                 return View();
             }
 
-            return RedirectToAction("PlayGame", newGame.GameKey);
+            return RedirectToAction("PlayGame","Game", new { gameKey = newGame.GameKey });
         }
 
 
