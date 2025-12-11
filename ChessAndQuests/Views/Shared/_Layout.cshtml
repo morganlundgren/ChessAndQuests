@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @RenderSection("Styles", required: false)
     <link rel="stylesheet" href="~/ChessAndQuests.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/join-game.css" />
+
 </head>
-<body>
+<body class="@ViewData["BodyClass"]">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
