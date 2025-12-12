@@ -111,19 +111,10 @@ namespace ChessAndQuests.Controllers
             string error = "";
 
             gameDetails= gameMethods.GetGameByKey(gameKey, out  error);
-            PlayerMethods playerMethods = new PlayerMethods();
-            var playerWhite = playerMethods.GetById(gameDetails.PLayerWhiteId, out error);
-            if (gameDetails.PlayerBlackId != null)
-            {
-                int playerBlackId = gameDetails.PlayerBlackId.GetValueOrDefault();
-                playerBlack = playerMethods.GetById(playerBlackId, out error);
-            }
 
             var model = new GameViewModel
             {
                 GameKey = gameKey,
-                PlayerWhiteName = playerWhite?.PlayerUserName ?? "Waiting...",
-                PlayerBlackName = playerBlack?.PlayerUserName ?? "Waiting...",
                 CurrentFEN = gameDetails.CurrentFEN
 
             };
