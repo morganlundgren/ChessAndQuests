@@ -12,8 +12,9 @@
 
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/PlayGame.css" />
+    
     <link rel="stylesheet" href="~/css/chessboard.css" />
+    <link rel="stylesheet" href="~/css/PlayGame.css" />
 }
 
 <body class="play-game-page">
@@ -22,7 +23,7 @@
 
 <header>Lets play chess!</header>
 
-<div>
+<div id="players">
     <strong>White:</strong><span id="playerWhite">@Model.PlayerWhiteName</span> <br />
     <strong>Black:</strong> <span id="playerBlack">@Model.PlayerBlackName</span>
 </div>

@@ -34,7 +34,7 @@ body.play-game-page {
     margin-top: 10px;
 }
 
-.players {
+#players {
     font-family: 'Cinzel', serif;
     font-size: 24px;
     font-weight: bold;
@@ -51,3 +51,92 @@ body.play-game-page {
     height: 600px !important;
     margin: 20px auto !important;
 }
+
+
+/* ------------------------------------------------------     Pieces styles     -----------------------------------------------------------*/
+
+
+/*  --------- BASE FANTASY LOOK --------- */
+
+    #board img[data-piece] {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%);
+        width: 85% !important;
+        height: 85% !important;
+        object-fit: contain !important;
+        transition: filter 0.3s ease;
+    }
+
+
+/*  -------------- GOLD (white pieces) ------------------ */
+
+
+    /* Drop-shadow for all */
+    #board img[data-piece^="w"] {
+        filter: drop-shadow(0 0 6px rgba(255, 215, 120, 0.6)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+    }
+
+    /* white pawn smaller */
+    #board img[data-piece="wP"] {
+        width: 75% !important;
+        height: 75% !important;
+        filter: drop-shadow(0 0 6px rgba(255, 215, 120, 0.55)) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    /* White queen */
+    #board img[data-piece="wQ"] {
+        filter: drop-shadow(0 0 12px rgba(255, 235, 150, 0.7)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7));
+    }
+
+    /* white king */
+    #board img[data-piece="wK"] {
+        filter: drop-shadow(0 0 15px rgba(255, 245, 180, 0.75)) drop-shadow(0 3px 10px rgba(0, 0, 0, 0.7));
+    }
+
+
+/*  ---------- DARK BLUE (black pieces) -------------   */
+
+
+    /* All black */
+    #board img[data-piece^="b"] {
+        filter: drop-shadow(0 0 7px rgba(100, 150, 255, 0.45)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+    }
+
+    /* Black pawn */
+    #board img[data-piece="bP"] {
+        width: 75% !important;
+        height: 75% !important;
+        filter: drop-shadow(0 0 5px rgba(120, 160, 255, 0.35)) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    /* black queen */
+    #board img[data-piece="bQ"] {
+        filter: drop-shadow(0 0 12px rgba(150, 180, 255, 0.55)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7));
+    }
+
+    /* Black king */
+    #board img[data-piece="bK"] {
+        filter: drop-shadow(0 0 15px rgba(170, 200, 255, 0.7)) drop-shadow(0 3px 10px rgba(0, 0, 0, 0.7));
+    }
+
+
+/*   INTERACTION (hover)*/
+
+    #board img[data-piece]:hover {
+        filter: drop-shadow(0 0 18px rgba(255, 230, 150, 0.75)) 
+        drop-shadow(0 3px 8px rgba(0, 0, 0, 0.6));
+        cursor: grab;
+    }
+
+
+/*   DRAGGED PIECE STYLING  (might have to look in other css) */
+
+    #board .dragged {
+        width: 85% !important;
+        height: 85% !important;
+        object-fit: contain !important;
+        filter: drop-shadow(0 0 10px rgba(255, 215, 120, 0.6)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+        z-index: 1000; 
+    }

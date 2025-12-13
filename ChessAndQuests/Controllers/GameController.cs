@@ -6,6 +6,12 @@ namespace ChessAndQuests.Controllers
 {
     public class GameController : Controller
     {
+
+        public IActionResult TestBoard()
+        {
+            return View();
+        }
+
         [HttpGet]
         // create a new game get
         public IActionResult CreateGame()

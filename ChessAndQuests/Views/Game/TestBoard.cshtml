@@ -1,0 +1,20 @@
+﻿
+
+<div id="board"></div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/chessboard.css" />
+    <link rel="stylesheet" href="~/css/PlayGame.css" />
+}
+
+@section Scripts {
+    <script src="~/js/chessboard.js"></script>
+    <script>
+        var board = ChessBoard('board', {
+            position: 'start',
+            pieceTheme: '/images/chesspieces/alpha/{piece}.png',
+            draggable: true
+        });
+    </script>
+}
+
