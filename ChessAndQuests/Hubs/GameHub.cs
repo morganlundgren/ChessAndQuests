@@ -23,7 +23,9 @@ namespace ChessAndQuests.Hubs
             var black = game.PlayerBlackId.HasValue
                 ? _playerMethods.GetById(game.PlayerBlackId.Value, out _)?.PlayerUserName ?? "PlayerBlack"
                 : "Waiting...";
-            await Clients.Group(gameKey).SendAsync("ReceivePlayerNames", white, black);
+            bool isWaiting = !game.PlayerBlackId.HasValue;
+
+            await Clients.Group(gameKey).SendAsync("ReceivePlayerNames", white, black, isWaiting);
         }
     }
 }
