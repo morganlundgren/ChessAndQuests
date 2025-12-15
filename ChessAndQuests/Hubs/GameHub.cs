@@ -30,9 +30,13 @@ namespace ChessAndQuests.Hubs
             await Clients.Group(gameKey).SendAsync("ReceivePlayerNames", white, black, isWaiting);
         }
 
-        public async Task BroadCastFen( string gameKey, string fen)
+        public async Task BroadCastLatestFen( string gameKey)
         {
-            await Clients.Group(gameKey).SendAsync("ReceiveFEN", fen);
+            var game = _gameMethods.GetGameByKey(gameKey, out _);
+            if (gameKey == null) return;
+            await Clients.Group(gameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN);
+
+
         }
     }
 }
