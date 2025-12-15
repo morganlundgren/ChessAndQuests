@@ -9,8 +9,8 @@ connection.start().then(() => {
 });
 
 connection.on("GameUpdated", (gameKey) => {
-    // Ask the hub to re-send the authoritative state
-    connection.invoke("JoinGameGroup", gameKey);
+
+    connection.invoke("SendPlayerNames", gameKey); 
 });
 
 connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting) => {
