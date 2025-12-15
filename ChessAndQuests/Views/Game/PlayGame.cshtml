@@ -45,14 +45,11 @@
 @section Scripts {
     <script src="~/js/chessboard.js"></script>
     <script src="~/js/signalr/dist/browser/signalr.js"></script>
+
+    <script> 
+        const start_fen = "@Model.CurrentFEN"; 
+    </script>"
     <script src="~/js/Game.js"></script>
-    <script>
-        var board = ChessBoard('board', {
-            position: 'start',
-            pieceTheme: '/images/chesspieces/alpha/{piece}.png',
-            draggable: true
-            
-        });
-    </script>
+    
 }
 

@@ -55,7 +55,12 @@ function senMoveToServer(from, to, fen) {
             toSquare: to,
             fen: fen
         })
-
-
-
+    });
 }
+
+board = chessboard('board', {
+        draggable: true,
+        position: start_fen,
+        onDragStart: onDragStart
+        onDrop: onDrop
+    });
