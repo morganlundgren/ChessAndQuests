@@ -43,16 +43,15 @@
 </body>
 
 @section Scripts {
+    <script src="~/js/chess.js"></script>
     <script src="~/js/chessboard.js"></script>
     <script src="~/js/signalr/dist/browser/signalr.js"></script>
-    <script src="~/js/Game.js"></script>
+
     <script>
-        var board = ChessBoard('board', {
-            position: 'start',
-            pieceTheme: '/images/chesspieces/alpha/{piece}.png',
-            draggable: true
-            
-        });
+        const start_fen = "@Model.CurrentFEN.Trim()";
     </script>
+
+    <script src="~/js/Game.js"></script>
 }
+
 
