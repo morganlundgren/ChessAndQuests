@@ -3,7 +3,7 @@ using ChessAndQuests.Hubs;
 using ChessAndQuests.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Build.Tasks;
 
 namespace ChessAndQuests.Controllers
 {
@@ -15,6 +15,8 @@ namespace ChessAndQuests.Controllers
         {
             _hubContext = hubContext;
         }
+
+
         public IActionResult TestBoard()
         {
             return View();
@@ -109,7 +111,10 @@ namespace ChessAndQuests.Controllers
                 ViewBag.ErrorJoin = "Error joining game: " + error;
                 return View();
             }
-            await _hubContext.Clients.Group(gameToJoin.GameKey).SendAsync("GameUpdated", gameToJoin.GameKey);
+            var whiteName = playerMethods.GetById(gameToJoin.PLayerWhiteId, out error)?.PlayerUserName ?? "PlayerWhite"; 
+            var blackName = player?.PlayerUserName ?? "PlayerBlack";
+            await _hubContext.Clients.Group(gameToJoin.GameKey).SendAsync("ReceivePlayerNames", whiteName, blackName, false);
+
 
             return RedirectToAction("PlayGame", "Game", new { gameKey = gameToJoin.GameKey });
         }
