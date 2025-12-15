@@ -25,9 +25,9 @@ var board = null;
 
 function onDragStart(source, piece) {
         // do not pick up pieces if the game is over
-    if (game.game_over()) return false;
+    if (game.isGameOver()) return false;
 
-    if ((game.turn() === 'w' && piece.startsWith('b')))) ||
+    if ((game.turn() === 'w' && piece.startsWith('b')) ||
         (game.turn() === 'b' && piece.startsWith('w'))) {
         return false;
 
@@ -44,10 +44,10 @@ function onDrop(source, target) {
     // illegal move
     if (move === null) return 'snapback';
 
-    senMoveToServer(source, target, game.fen());
+    sendMoveToServer(source, target, game.fen());
 }
 
-function senMoveToServer(from, to, fen) {
+function sendMoveToServer(from, to, fen) {
     fetch('/Game/MakeMove', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -60,9 +60,11 @@ function senMoveToServer(from, to, fen) {
     });
 }
 
-board = chessboard('board', {
-        draggable: true,
-        position: start_fen,
-        onDragStart: onDragStart
-        onDrop: onDrop
-    });
+board = ChessBoard('board', {
+    draggable: true,
+    position: start_fen,
+    pieceTheme: '/images/chesspieces/alpha/{piece}.png',
+    onDragStart: onDragStart,
+    onDrop: onDrop
+});
+

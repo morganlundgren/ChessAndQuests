@@ -43,13 +43,15 @@
 </body>
 
 @section Scripts {
+    <script src="~/js/chess.js"></script>
     <script src="~/js/chessboard.js"></script>
     <script src="~/js/signalr/dist/browser/signalr.js"></script>
 
-    <script> 
-        const start_fen = "@Model.CurrentFEN"; 
-    </script>"
+    <script>
+        const start_fen = "@Model.CurrentFEN.Trim()";
+    </script>
+
     <script src="~/js/Game.js"></script>
-    
 }
+
 
