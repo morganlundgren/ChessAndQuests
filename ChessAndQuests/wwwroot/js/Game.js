@@ -8,10 +8,6 @@ connection.start().then(() => {
 
 });
 
-connection.on("GameUpdated", (gameKey) => {
-
-    connection.invoke("SendPlayerNames", gameKey); 
-});
 
 connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting) => {
 
