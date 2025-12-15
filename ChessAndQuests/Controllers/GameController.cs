@@ -1,12 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ChessAndQuests.DAL;
+using ChessAndQuests.Hubs;
 using ChessAndQuests.Models;
-using ChessAndQuests.DAL;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ChessAndQuests.Controllers
 {
     public class GameController : Controller
     {
+        private readonly IHubContext<GameHub> _hubContext;
 
+        public GameController(IHubContext<GameHub> hubContext)
+        {
+            _hubContext = hubContext;
+        }
         public IActionResult TestBoard()
         {
             return View();
@@ -74,7 +81,7 @@ namespace ChessAndQuests.Controllers
 
         [HttpPost]
         // join a game post
-        public IActionResult JoinGame(string gamekey, int playerId)
+        public async Task<IActionResult> JoinGame(string gamekey, int playerId)
         {
 
             GameMethods gameMethods = new GameMethods();
@@ -101,6 +108,7 @@ namespace ChessAndQuests.Controllers
                 ViewBag.ErrorJoin = "Error joining game: " + error;
                 return View();
             }
+            await _hubContext.Clients.Group(gameToJoin.GameKey).SendAsync("GameUpdated", gameToJoin.GameKey);
 
             return RedirectToAction("PlayGame", "Game", new { gameKey = gameToJoin.GameKey });
         }

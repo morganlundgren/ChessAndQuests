@@ -16,10 +16,7 @@ namespace ChessAndQuests.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, gameKey);
             await SendPlayerNames(gameKey);
         }
-        public async Task PollGameState(string gameKey)
-        {
-            await SendPlayerNames(gameKey);
-        }
+
 
         public async Task SendPlayerNames(string gameKey)
         {
