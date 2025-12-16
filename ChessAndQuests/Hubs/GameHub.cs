@@ -15,7 +15,7 @@ namespace ChessAndQuests.Hubs
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, gameKey);
             await SendPlayerNames(gameKey);
-            await BroadCastLatestFen(gameKey);
+            await BroadcastLatestFen(gameKey);
         }
 
 
@@ -32,7 +32,7 @@ namespace ChessAndQuests.Hubs
         }
 
         // Broadcast the latest FEN to all clients in the game group
-        public async Task BroadCastLatestFen( string gameKey)
+        public async Task BroadcastLatestFen( string gameKey)
         {
             var game = _gameMethods.GetGameByKey(gameKey, out _);
             if (gameKey == null) return;

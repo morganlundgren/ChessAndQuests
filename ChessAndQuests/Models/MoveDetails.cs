@@ -6,8 +6,8 @@
         public int GameId { get; set; }
         public int PlayerMoveId { get; set; }
         public int MoveNumber { get; set; }
-        public string MoveFromSquare { get; set; }
-        public string MoveToSquare { get; set; }
+        public string FromSquare { get; set; }
+        public string ToSquare { get; set; }
 
     }
 }
