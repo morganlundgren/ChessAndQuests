@@ -18,6 +18,18 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting) => {
    
 });
 
+connection.on("FenUpdated", () => {
+    console.log("FenUpdated received - fetching latest FEN");
+
+    connection.invoke("BrodcastLatestFen", gameKey);
+});
+connection.on("ReceviveFen", (fen) => {
+    console.log("ReceviveFen:", fen);
+    game.load(fen);
+    board.position(fen);
+});
+
+
 var game = new Chess(start_fen);
 var board = null;
 

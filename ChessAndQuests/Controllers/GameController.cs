@@ -132,6 +132,35 @@ namespace ChessAndQuests.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> MakeMove([FromBody] MakeMoveDto dto)
+        {
+            //get game by key
+            var gameMethods = new GameMethods();
+            var game = gameMethods.GetGameByKey(dto.GameKey, out var error);
+            if (game == null) {return BadRequest("Game not found: " + error);}
+
+            //update game's current fen
+            game.CurrentFEN = dto.Fen?.Trim() ?? game.CurrentFEN;
+            gameMethods.UpdateGame(game, out error);
+            if (!string.IsNullOrEmpty(error))
+            {
+                return BadRequest("Error updating game: " + error);
+            }
+            //notify clients in the game group about the move
+            await _hubContext.Clients.Group(dto.GameKey).SendAsync("FenUpdated");
+
+            return Ok();
+        }
+
     }
+}
+
+public class MakeMoveDto
+{
+    public string GameKey { get; set; }
+    public string FromSquare { get; set; }
+    public string ToSquare { get; set; }
+    public string Fen { get; set; }
 }
 
