@@ -140,12 +140,13 @@ namespace ChessAndQuests.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> MakeMove(GameViewModel gamevm)
+        public async Task<IActionResult> MakeMove([FromBody]GameViewModel gamevm)
         {
             //get game by key
             var moveMethods = new MoveMethods();
             var gameMethods = new GameMethods();
             var game = gameMethods.GetGameByKey(gamevm.GameKey, out var error);
+            int moveNumber =1;
             if (game == null) {return BadRequest("Game not found: " + error);}
 
             //update game's current fen
@@ -158,14 +159,15 @@ namespace ChessAndQuests.Controllers
             }
 
             var previousMoves = moveMethods.GetMoves(game.GameId, out error); // get previous moves by player HERE!!!
-            int moveNumber = previousMoves.Count + 1;
+
+            moveNumber = previousMoves != null ? previousMoves.Count + 1 : moveNumber;
 
             var moveDetails = new MoveDetails
             {
                 GameId = game.GameId,
                 FromSquare = gamevm.FromSquare,
                 ToSquare = gamevm.ToSquare,
-                PlayerMoveId = (gamevm.TurnPlayerId == game.PLayerWhiteId) ? game.PlayerBlackId.Value : game.PLayerWhiteId,
+                PlayerMoveId = gamevm.TurnPlayerId,
                 MoveNumber = moveNumber
             };
 
