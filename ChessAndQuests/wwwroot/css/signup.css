@@ -1,0 +1,26 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap');
+
+
+/* Navbar-styling bara för denna sida */
+body.signin-page nav.navbar {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+    body.signin-page nav.navbar a,
+    body.signin-page nav.navbar .navbar-brand,
+    body.signin-page nav.navbar .nav-link {
+        color: #ffffff !important;
+    }
+
+        body.signin-page nav.navbar a:hover,
+        body.signin-page nav.navbar .nav-link:hover {
+            color: #e0e0e0 !important;
+        }
+/* Bakgrund + font för Sign In-sidan */
+body.signin-page {
+    background-image: url('/images/home.png'); /* eller egen SignIn-bild */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
