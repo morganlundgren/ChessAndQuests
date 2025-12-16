@@ -34,22 +34,43 @@ body.play-game-page {
     margin-top: 10px;
 }
 
-#players {
+#displaynames {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 20.8vw;
+    margin: 0 auto;
+    margin-top: 1vw;
+}
+
+#playerwhite {
+
     font-family: 'Cinzel', serif;
-    font-size: 24px;
+    font-size: 0.7vw;
     font-weight: bold;
     color: #f4d187;
-    display: grid;
-    grid-template-areas: "a b c d";
+    display: flex;
+    flex-direction: row;
     text-align: center;
-    margin-top: 20px;
-    grid-area: a;
+    margin-top: 0.1vw;
+
+}
+
+#playerblack {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7vw;
+    font-weight: bold;
+    color: #f4d187;
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    margin-top: 0.1vw;
 }
 
 #board {
-    width: 600px !important;
-    height: 600px !important;
-    margin: 20px auto !important;
+    width: 30vw !important;
+    height: 30vw !important;
+    margin: 6vw auto !important;
 }
 
 
@@ -85,16 +106,6 @@ body.play-game-page {
         filter: drop-shadow(0 0 6px rgba(255, 215, 120, 0.55)) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
     }
 
-    /* White queen */
-    #board img[data-piece="wQ"] {
-        filter: drop-shadow(0 0 12px rgba(255, 235, 150, 0.7)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7));
-    }
-
-    /* white king */
-    #board img[data-piece="wK"] {
-        filter: drop-shadow(0 0 15px rgba(255, 245, 180, 0.75)) drop-shadow(0 3px 10px rgba(0, 0, 0, 0.7));
-    }
-
 
 /*  ---------- DARK BLUE (black pieces) -------------   */
 
@@ -109,16 +120,6 @@ body.play-game-page {
         width: 75% !important;
         height: 75% !important;
         filter: drop-shadow(0 0 5px rgba(120, 160, 255, 0.35)) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
-    }
-
-    /* black queen */
-    #board img[data-piece="bQ"] {
-        filter: drop-shadow(0 0 12px rgba(150, 180, 255, 0.55)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7));
-    }
-
-    /* Black king */
-    #board img[data-piece="bK"] {
-        filter: drop-shadow(0 0 15px rgba(170, 200, 255, 0.7)) drop-shadow(0 3px 10px rgba(0, 0, 0, 0.7));
     }
 
 

@@ -22,13 +22,15 @@ namespace ChessAndQuests.Hubs
         public async Task SendPlayerNames(string gameKey)
         {
             var game = _gameMethods.GetGameByKey(gameKey, out _);
-            var white = _playerMethods.GetById(game.PLayerWhiteId, out _)?.PlayerUserName ?? "PlayerWhite";
+            var whiteId = game.PLayerWhiteId;
+            var blackId = game.PlayerBlackId;
+            var white = _playerMethods.GetById(whiteId, out _)?.PlayerUserName ?? "PlayerWhite";
             var black = game.PlayerBlackId.HasValue
-                ? _playerMethods.GetById(game.PlayerBlackId.Value, out _)?.PlayerUserName ?? "PlayerBlack"
+                ? _playerMethods.GetById(blackId.Value, out _)?.PlayerUserName ?? "PlayerBlack"
                 : "Waiting...";
             bool isWaiting = !game.PlayerBlackId.HasValue;
 
-            await Clients.Group(gameKey).SendAsync("ReceivePlayerNames", white, black, isWaiting);
+            await Clients.Group(gameKey).SendAsync("ReceivePlayerNames", white, black, isWaiting, whiteId, blackId);
         }
 
         // Broadcast the latest FEN to all clients in the game group
