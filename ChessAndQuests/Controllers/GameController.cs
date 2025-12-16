@@ -147,8 +147,6 @@ namespace ChessAndQuests.Controllers
             {
                 return BadRequest("Error updating game: " + error);
             }
-            //notify clients in the game group about the move
-            await _hubContext.Clients.Group(dto.GameKey).SendAsync("FenUpdated");
 
             return Ok();
         }
