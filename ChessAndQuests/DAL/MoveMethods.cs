@@ -42,8 +42,8 @@ namespace ChessAndQuests.DAL
                     moveDetails.GameId = Convert.ToUInt16(reader["gm_id"]);
                     moveDetails.PlayerMoveId = Convert.ToUInt16(reader["pl_id"]);
                     moveDetails.MoveNumber = Convert.ToUInt16(reader["mv_number"]);
-                    moveDetails.MoveFromSquare = reader["mv_from_square"].ToString() ?? "";
-                    moveDetails.MoveToSquare = reader["mv_to_square"].ToString() ?? "";
+                    moveDetails.FromSquare = reader["mv_from_square"].ToString() ?? "";
+                    moveDetails.ToSquare = reader["mv_to_square"].ToString() ?? "";
                     moveDetailsList.Add(moveDetails);
                 }
                 errormsg = "";
@@ -73,8 +73,8 @@ namespace ChessAndQuests.DAL
             sqlCommand.Parameters.AddWithValue("@GameId", moveDetails.GameId);
             sqlCommand.Parameters.AddWithValue("@PlayerMoveId", moveDetails.PlayerMoveId);
             sqlCommand.Parameters.AddWithValue("@MoveNumber", moveDetails.MoveNumber);
-            sqlCommand.Parameters.AddWithValue("@MoveFromSquare", moveDetails.MoveFromSquare);
-            sqlCommand.Parameters.AddWithValue("@MoveToSquare", moveDetails.MoveToSquare);
+            sqlCommand.Parameters.AddWithValue("@MoveFromSquare", moveDetails.FromSquare);
+            sqlCommand.Parameters.AddWithValue("@MoveToSquare", moveDetails.ToSquare);
             try
             {
                 sqlConnection.Open();
@@ -103,8 +103,8 @@ namespace ChessAndQuests.DAL
             sqlCommand.Parameters.AddWithValue("@GameId", moveDetails.GameId);
             sqlCommand.Parameters.AddWithValue("@PlayerMoveId", moveDetails.PlayerMoveId);
             sqlCommand.Parameters.AddWithValue("@MoveNumber", moveDetails.MoveNumber);
-            sqlCommand.Parameters.AddWithValue("@MoveFromSquare", moveDetails.MoveFromSquare);
-            sqlCommand.Parameters.AddWithValue("@MoveToSquare", moveDetails.MoveToSquare);
+            sqlCommand.Parameters.AddWithValue("@MoveFromSquare", moveDetails.FromSquare);
+            sqlCommand.Parameters.AddWithValue("@MoveToSquare", moveDetails.ToSquare);
             sqlCommand.Parameters.AddWithValue("@MoveId", moveDetails.MoveId);
             try
             {

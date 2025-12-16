@@ -4,11 +4,17 @@ using ChessAndQuests.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Build.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChessAndQuests.Controllers
 {
     public class GameController : Controller
     {
+        private readonly IHubContext<GameHub> _gameHubContext;
+        public GameController(IHubContext<GameHub> gameHubContext)
+        {
+            _gameHubContext = gameHubContext;
+        }
 
         public IActionResult TestBoard()
         {
@@ -77,7 +83,7 @@ namespace ChessAndQuests.Controllers
 
         [HttpPost]
         // join a game post
-        public async Task<IActionResult> JoinGame(string gamekey, int playerId)
+        public IActionResult JoinGame(string gamekey, int playerId)
         {
 
             GameMethods gameMethods = new GameMethods();
@@ -108,6 +114,7 @@ namespace ChessAndQuests.Controllers
 
             return RedirectToAction("PlayGame", "Game", new { gameKey = gameToJoin.GameKey });
         }
+
         [HttpGet]
         public IActionResult PlayGame(string gameKey)
         {
@@ -133,32 +140,47 @@ namespace ChessAndQuests.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> MakeMove([FromBody] MakeMoveDto dto)
+        public async Task<IActionResult> MakeMove(GameViewModel gamevm)
         {
             //get game by key
+            var moveMethods = new MoveMethods();
             var gameMethods = new GameMethods();
-            var game = gameMethods.GetGameByKey(dto.GameKey, out var error);
+            var game = gameMethods.GetGameByKey(gamevm.GameKey, out var error);
             if (game == null) {return BadRequest("Game not found: " + error);}
 
             //update game's current fen
-            game.CurrentFEN = dto.Fen?.Trim() ?? game.CurrentFEN;
+            game.CurrentFEN = gamevm.CurrentFEN?.Trim() ?? game.CurrentFEN;
+            
             gameMethods.UpdateGame(game, out error);
             if (!string.IsNullOrEmpty(error))
             {
                 return BadRequest("Error updating game: " + error);
             }
 
+            var previousMoves = moveMethods.GetMoves(game.GameId, out error); // get previous moves by player HERE!!!
+            int moveNumber = previousMoves.Count + 1;
+
+            var moveDetails = new MoveDetails
+            {
+                GameId = game.GameId,
+                FromSquare = gamevm.FromSquare,
+                ToSquare = gamevm.ToSquare,
+                PlayerMoveId = (gamevm.TurnPlayerId == game.PLayerWhiteId) ? game.PlayerBlackId.Value : game.PLayerWhiteId,
+                MoveNumber = moveNumber
+            };
+
+            moveMethods.create(moveDetails, out error);
+
+
+
+            // update moves
+
+            //notify clients in the game group about the move
+            await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN);
+
             return Ok();
         }
 
     }
-}
-
-public class MakeMoveDto
-{
-    public string GameKey { get; set; }
-    public string FromSquare { get; set; }
-    public string ToSquare { get; set; }
-    public string Fen { get; set; }
 }
 
