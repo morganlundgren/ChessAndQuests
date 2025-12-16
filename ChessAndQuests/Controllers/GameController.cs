@@ -9,13 +9,6 @@ namespace ChessAndQuests.Controllers
 {
     public class GameController : Controller
     {
-        private readonly IHubContext<GameHub> _hubContext;
-
-        public GameController(IHubContext<GameHub> hubContext)
-        {
-            _hubContext = hubContext;
-        }
-
 
         public IActionResult TestBoard()
         {
@@ -111,9 +104,6 @@ namespace ChessAndQuests.Controllers
                 ViewBag.ErrorJoin = "Error joining game: " + error;
                 return View();
             }
-            var whiteName = playerMethods.GetById(gameToJoin.PLayerWhiteId, out error)?.PlayerUserName ?? "PlayerWhite"; 
-            var blackName = player?.PlayerUserName ?? "PlayerBlack";
-            await _hubContext.Clients.Group(gameToJoin.GameKey).SendAsync("ReceivePlayerNames", whiteName, blackName, false);
 
 
             return RedirectToAction("PlayGame", "Game", new { gameKey = gameToJoin.GameKey });
