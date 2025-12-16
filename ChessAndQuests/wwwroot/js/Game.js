@@ -90,11 +90,6 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
    
 });
 
-connection.on("FenUpdated", () => {
-    console.log("FenUpdated received - fetching latest FEN");
-
-   
-});
 connection.on("ReceiveLatestFen", (fen) => {
     console.log("ReceviveFen:", fen);
 
