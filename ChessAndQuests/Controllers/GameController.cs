@@ -145,9 +145,10 @@ namespace ChessAndQuests.Controllers
             //get game by key
             var moveMethods = new MoveMethods();
             var gameMethods = new GameMethods();
-            var game = gameMethods.GetGameByKey(gamevm.GameKey, out var error);
+            string error = "";
+            var game = gameMethods.GetGameByKey(gamevm.GameKey, out error);
             int moveNumber =1;
-            if (game == null) {return BadRequest("Game not found: " + error);}
+            if (game == null) {ViewBag.Game("Game not found: " + error);}
 
             //update game's current fen
             game.CurrentFEN = gamevm.CurrentFEN?.Trim() ?? game.CurrentFEN;
@@ -155,7 +156,7 @@ namespace ChessAndQuests.Controllers
             gameMethods.UpdateGame(game, out error);
             if (!string.IsNullOrEmpty(error))
             {
-                return BadRequest("Error updating game: " + error);
+               ViewBag.updateGame("Error updating game: " + error);
             }
 
             var previousMoves = moveMethods.GetMoves(game.GameId, out error); // get previous moves by player HERE!!!
@@ -171,11 +172,11 @@ namespace ChessAndQuests.Controllers
                 MoveNumber = moveNumber
             };
 
-            moveMethods.create(moveDetails, out error);
-
-
-
-            // update moves
+             int i = moveMethods.create(moveDetails, out error);
+            if (i == 0)
+            {
+                ViewBag.errorMove = error;
+            }
 
             //notify clients in the game group about the move
             await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN);
