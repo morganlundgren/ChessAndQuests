@@ -2,7 +2,10 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor Accessor
 
-<div id="gamekey" data-game-key="@Model.GameKey"></div>
+<div id="gamekey" 
+     data-game-key="@Model.GameKey"
+     data-player-id="@Accessor.HttpContext.Session.GetInt32("PlayerId")"
+ </div>
 
 
 
@@ -31,13 +34,20 @@
 
 <header>Lets play chess!</header>
 
-<div id="players">
-    <strong>White:</strong><span id="playerWhite">@Model.PlayerWhiteName</span> <br />
-    <strong>Black:</strong> <span id="playerBlack">@Model.PlayerBlackName</span>
+@* Player names *@
+<div id="displaynames">
+    <div id="playerwhite">
+            <strong>White:</strong><span id="playerWhite" data-white-id="@Model.PlayerWhiteId">@Model.PlayerWhiteName</span>
+        </div>
+
+    <div id="playerblack">
+            <strong>Black:</strong> <span id="playerBlack" data-black-id="@Model.PlayerBlackId">>@Model.PlayerBlackName</span>
+    </div>
 </div>
 
-
 <div id="board"></div>
+
+<div id="quests"></div>
 
 
 </body>
