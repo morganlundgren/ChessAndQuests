@@ -4,7 +4,6 @@
 
 <div id="gamekey" 
      data-game-key="@Model.GameKey"
-     data-player-id="@Accessor.HttpContext.Session.GetInt32("PlayerId")"
  </div>
 
 
@@ -20,6 +19,7 @@
     <link rel="stylesheet" href="~/css/PlayGame.css" />
 }
 
+@* overlay wait *@
 <body class="play-game-page">
 
     <div id="waitingOverlay">
@@ -30,6 +30,14 @@
         </div>
     </div>
 
+    @* overlay checkmate *@
+    <div id="gameOverOverlay">
+        <div class="gameOverBox">
+            <h2></h2>
+            <p> Share your game key with a friend!</p>
+            <strong>@Model.GameKey</strong>
+        </div>
+    </div>
 
 <header id="letsplay">Lets play chess!</header>
 
