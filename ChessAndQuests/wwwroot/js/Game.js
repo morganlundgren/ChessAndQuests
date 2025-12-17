@@ -1,4 +1,7 @@
-﻿var connection = new signalR.HubConnectionBuilder().withUrl("/gamehub").build();
+﻿
+// ------------------- Game.js -----------------------
+
+var connection = new signalR.HubConnectionBuilder().withUrl("/gamehub").build();
 const gameKey = document.getElementById("gamekey").dataset.gameKey;
 var game = new Chess(start_fen);
 
