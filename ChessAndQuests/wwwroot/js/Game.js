@@ -5,6 +5,9 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/gamehub").build();
 const gameKey = document.getElementById("gamekey").dataset.gameKey;
 var game = new Chess(start_fen);
 let board = null;
+let whitePlayerId = null;
+let blackPlayerId = null;
+
 
 
 
@@ -55,8 +58,10 @@ function sendMoveToServer(from, to, fen) {
 }
 
 function updateActivePlayer() {
-    const whiteCard = document.querySelector('.player-card.white'); 
+    const whiteCard = document.querySelector('.player-card.white');
     const blackCard = document.querySelector('.player-card.black');
+
+    if (!whiteCard || !blackCard) return;
 
     whiteCard.classList.remove('active');
     blackCard.classList.remove('active');
@@ -87,6 +92,8 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
     document.getElementById("playerBlack").textContent = blackName;
     document.getElementById("playerWhite").dataset.whiteId = whiteId;
     document.getElementById("playerBlack").dataset.blackId = blackId;
+    whitePlayerId = whiteId;
+    blackPlayerId = blackId;
 
     if (!board) {
 
@@ -100,7 +107,14 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
             onDrop: onDrop,
             orientation: orientation
             
-        });
+            });
+            setTimeout(() => {
+                board.resize();
+            }, 0);
+            window.addEventListener('resize', () => {
+                if (board) board.resize();
+            });
+
 
         updateActivePlayer();
     }
