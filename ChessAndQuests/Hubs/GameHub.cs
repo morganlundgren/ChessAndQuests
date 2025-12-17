@@ -47,13 +47,7 @@ namespace ChessAndQuests.Hubs
 
         public async Task NotifyCheckmate(string gameKey, int winnerPlayerId)
         {
-            var game = _gameMethods.GetGameByKey(gameKey, out _);
-            var whiteId = game.PLayerWhiteId;
-            var blackId = game.PlayerBlackId;
-            string winnerName = winnerPlayerId == whiteId
-                ? _playerMethods.GetById(whiteId, out _)?.PlayerUserName ?? "PlayerWhite"
-                : _playerMethods.GetById(blackId.Value, out _)?.PlayerUserName ?? "PlayerBlack";
-            await Clients.Group(gameKey).SendAsync("GameIsFinished", winnerName);
+            await Clients.Group(gameKey).SendAsync("GameIsFinished", winnerPlayerId);
         }
     }
 }

@@ -158,9 +158,8 @@ connection.on("ReceiveLatestFen", (fen) => {
     updateActivePlayer();
 });
 
-connection.on("GameIsFinished", (winnerName) => {
+connection.on("GameIsFinished", (winner) => {
     document.getElementById("gameOverOverlay").style.display = "flex";
-    const winner = game.turn();
     if (winner === currentPlayerId) {
         document.getElementById("gameOverMessage").style.backgroundImage = winnerImage;
     } else {
