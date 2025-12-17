@@ -7,8 +7,8 @@ var game = new Chess(start_fen);
 let board = null;
 let whitePlayerId = null;
 let blackPlayerId = null;
-let winnerImage = "url('/images/winner.png')";
-let loserImage = "url('/images/loser.png')";
+let winnerImage = "url('../Images/winner.png')";
+let loserImage = "url('../Images/loser.png')";
 
 
 

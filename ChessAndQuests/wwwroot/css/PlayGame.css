@@ -253,7 +253,10 @@ body.play-game-page {
     flex-direction: column;
 
 }
-..gameOverBox {
+.gameOverBox {
+
     width: 32.8vw;
     height: 32.8vw;
+    object-fit:
+
 }
