@@ -9,6 +9,8 @@ let whitePlayerId = null;
 let blackPlayerId = null;
 let winnerImage = "url('../Images/winner.png')";
 let loserImage = "url('../Images/loser.png')";
+let stalemateImage = "url('../Images/stalemate.png')";
+
 
 
 
@@ -35,17 +37,22 @@ function onDragStart(source, piece) {
 }
 
 function onDrop(source, target) {
-    var move = game.move({
-        from: source,
-        to: target,
-        promotion: 'q' // always promote to queen 
-    });
 
-    // illegal move
-    if (move === null) {
+    if (source === target) {
+
         return 'snapback';
     }
-
+    var move;
+    try {
+        move = game.move({
+            from: source,
+            to: target,
+            promotion: 'q'
+        });
+    } catch (e) {
+        // ogiltigt drag → snapback
+        return 'snapback';
+    }
 
     updateActivePlayer();
     sendMoveToServer(source, target, game.fen());
@@ -53,7 +60,11 @@ function onDrop(source, target) {
     if (game.isCheckmate()) {
         connection.invoke("NotifyCheckmate", gameKey, currentPlayerId);
         deleteGameOnMate();
+    } else if (game.isStalemate()) {
+        connection.invoke("NotifyStalemate", gameKey);
+        deleteGameOnMate();
     }
+
 }
 
 
@@ -140,21 +151,21 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
             bottom.appendChild(blackCard);
         }
 
-            board = ChessBoard('board', {
-            draggable: true,
-            position: start_fen,
-            pieceTheme: '/images/chesspieces/alpha/{piece}.png',
-            onDragStart: onDragStart,
-            onDrop: onDrop,
-            orientation: orientation
+        board = ChessBoard('board', {
+        draggable: true,
+        position: start_fen,
+        pieceTheme: '/images/chesspieces/alpha/{piece}.png',
+        onDragStart: onDragStart,
+        onDrop: onDrop,
+        orientation: orientation
             
-            });
-            setTimeout(() => {
-                board.resize();
-            }, 0);
-            window.addEventListener('resize', () => {
-                if (board) board.resize();
-            });
+        });
+        setTimeout(() => {
+            board.resize();
+        }, 0);
+        window.addEventListener('resize', () => {
+            if (board) board.resize();
+        });
 
 
         updateActivePlayer();
@@ -172,15 +183,18 @@ connection.on("ReceiveLatestFen", (fen) => {
     updateActivePlayer();
 });
 
-connection.on("GameIsFinished", (winner) => {
+connection.on("GameIsFinished", (result) => {
     document.getElementById("gameOverOverlay").style.display = "flex";
-    if (winner === currentPlayerId) {
+
+    if (result === "stalemate") {
+        document.getElementById("gameOverMessage").style.backgroundImage = stalemateImage;
+    } else if (result === currentPlayerId) {
         document.getElementById("gameOverMessage").style.backgroundImage = winnerImage;
     } else {
         document.getElementById("gameOverMessage").style.backgroundImage = loserImage;
     }
 
-});
+}); 
 
 // ---------------- FORFEIT ----------------
 document.getElementById("forfeitButton").addEventListener("click", () => {
