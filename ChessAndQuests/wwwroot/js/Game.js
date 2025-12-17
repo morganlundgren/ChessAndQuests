@@ -17,6 +17,13 @@ function onDragStart(source, piece) {
     // do not pick up pieces if the game is over
     if (game.isGameOver()) return false;
 
+    
+
+    if ((game.turn() === 'w' && currentPlayerId !== whitePlayerId) ||
+        (game.turn() === 'b' && currentPlayerId !== blackPlayerId)) {
+        return false; 
+    }
+
     if ((game.turn() === 'w' && piece.startsWith('b')) ||
         (game.turn() === 'b' && piece.startsWith('w'))) {
         return false;
@@ -37,8 +44,14 @@ function onDrop(source, target) {
         return 'snapback';
     }
 
+
     updateActivePlayer();
     sendMoveToServer(source, target, game.fen());
+
+    if (game.isCheckmate()) {
+        connection.invoke("NotifyCheckmate", gameKey, currentPlayerId);
+        deleteGameOnMate();
+    }
 }
 
 
@@ -70,6 +83,18 @@ function updateActivePlayer() {
         whiteCard.classList.add('active');
     } else {
         blackCard.classList.add('active');
+    }
+}
+
+function deleteGameOnMate() {
+    if (game.isCheckmate()) {
+        fetch('/Game/DeleteGame', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                GameKey: gameKey
+            })
+        });
     }
 }
 
@@ -129,6 +154,10 @@ connection.on("ReceiveLatestFen", (fen) => {
     game.load(fen);
     board.position(fen);
     updateActivePlayer();
+});
+
+connection.on("GameIsFinished", (winnerName) => {
+    document.getElementById("gameOverOverlay").style.display = "flex";
 });
 
 
