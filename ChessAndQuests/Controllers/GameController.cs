@@ -187,12 +187,12 @@ namespace ChessAndQuests.Controllers
         // delete a game
 
         [HttpPost]
-        public IActionResult DeleteGame(string gameKey)
+        public IActionResult DeleteGame([FromBody] GameViewModel gamevm)
         {
             GameMethods gameMethods = new GameMethods();
             string error = "";
             int i = 0;
-            GameDetails gameToDelete = gameMethods.GetGameByKey(gameKey, out error);
+            GameDetails gameToDelete = gameMethods.GetGameByKey(gamevm.GameKey, out error);
             if (gameToDelete == null)
             {
                 ViewBag.ErrorDelete = "Game not found.";
