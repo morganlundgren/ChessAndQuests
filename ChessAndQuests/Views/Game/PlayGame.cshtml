@@ -34,18 +34,29 @@
 
 <header>Lets play chess!</header>
 
-@* Player names *@
-<div id="displaynames">
-    <div id="playerwhite">
-            <strong>White:</strong><span id="playerWhite" data-white-id="@Model.PlayerWhiteId">@Model.PlayerWhiteName</span>
+    <div class="board-container">
+        @* Black player box *@
+        <div class="player-card black">
+            <div class="player-color">BLACK</div>
+            <div class="player-name" id="playerBlack">
+                @Model.PlayerBlackName
+            </div>
         </div>
 
-    <div id="playerblack">
-            <strong>Black:</strong> <span id="playerBlack" data-black-id="@Model.PlayerBlackId">>@Model.PlayerBlackName</span>
-    </div>
-</div>
+        <div id="board"></div>
 
-<div id="board"></div>
+        @* White player box *@
+        <div class="player-card white">
+            <div class="player-color">WHITE</div>
+            <div class="player-name" id="playerWhite">
+                @Model.PlayerWhiteName
+            </div>
+        </div>
+
+    </div>
+
+
+
 
 <div id="quests"></div>
 
