@@ -34,13 +34,20 @@ namespace ChessAndQuests.Hubs
         }
 
         // Broadcast the latest FEN to all clients in the game group
-        public async Task BroadcastLatestFen( string gameKey)
+        public async Task BroadcastLatestFen(string gameKey)
         {
             var game = _gameMethods.GetGameByKey(gameKey, out _);
             if (gameKey == null) return;
             await Clients.Group(gameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN);
 
 
+        }
+
+        //notify clients about checkmate
+
+        public async Task NotifyCheckmate(string gameKey, int winnerPlayerId)
+        {
+            await Clients.Group(gameKey).SendAsync("GameIsFinished", winnerPlayerId);
         }
     }
 }

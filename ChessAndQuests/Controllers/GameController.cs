@@ -62,7 +62,7 @@ namespace ChessAndQuests.Controllers
             PlayerMethods playerMethods = new PlayerMethods();
             var player = playerMethods.GetById(playerId, out error);
 
-            return RedirectToAction("PlayGame","Game", new { gameKey = newGame.GameKey });
+            return RedirectToAction("PlayGame", "Game", new { gameKey = newGame.GameKey });
         }
 
 
@@ -105,7 +105,7 @@ namespace ChessAndQuests.Controllers
             var player = playerMethods.GetById(playerId, out error);
             gameToJoin.PlayerBlackId = playerId;
             i = gameMethods.UpdateGame(gameToJoin, out error);
-            if(i==0)
+            if (i == 0)
             {
                 ViewBag.ErrorJoin = "Error joining game: " + error;
                 return View();
@@ -127,7 +127,7 @@ namespace ChessAndQuests.Controllers
             PlayerDetails playerBlack = null;
             string error = "";
 
-            gameDetails= gameMethods.GetGameByKey(gameKey, out  error);
+            gameDetails = gameMethods.GetGameByKey(gameKey, out error);
 
             var model = new GameViewModel
             {
@@ -140,22 +140,23 @@ namespace ChessAndQuests.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> MakeMove([FromBody]GameViewModel gamevm)
+        public async Task<IActionResult> MakeMove([FromBody] GameViewModel gamevm)
         {
             //get game by key
             var moveMethods = new MoveMethods();
             var gameMethods = new GameMethods();
-            var game = gameMethods.GetGameByKey(gamevm.GameKey, out var error);
+            string error = "";
+            var game = gameMethods.GetGameByKey(gamevm.GameKey, out error);
             int moveNumber =1;
-            if (game == null) {return BadRequest("Game not found: " + error);}
+            if (game == null) {ViewBag.Game("Game not found: " + error);}
 
             //update game's current fen
             game.CurrentFEN = gamevm.CurrentFEN?.Trim() ?? game.CurrentFEN;
-            
+
             gameMethods.UpdateGame(game, out error);
             if (!string.IsNullOrEmpty(error))
             {
-                return BadRequest("Error updating game: " + error);
+               ViewBag.updateGame("Error updating game: " + error);
             }
 
             var previousMoves = moveMethods.GetMoves(game.GameId, out error); // get previous moves by player HERE!!!
@@ -171,11 +172,11 @@ namespace ChessAndQuests.Controllers
                 MoveNumber = moveNumber
             };
 
-            moveMethods.create(moveDetails, out error);
-
-
-
-            // update moves
+             int i = moveMethods.create(moveDetails, out error);
+            if (i == 0)
+            {
+                ViewBag.errorMove = error;
+            }
 
             //notify clients in the game group about the move
             await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN);
@@ -183,6 +184,27 @@ namespace ChessAndQuests.Controllers
             return Ok();
         }
 
+        // delete a game
+
+        [HttpPost]
+        public IActionResult DeleteGame(string gameKey)
+        {
+            GameMethods gameMethods = new GameMethods();
+            string error = "";
+            int i = 0;
+            GameDetails gameToDelete = gameMethods.GetGameByKey(gameKey, out error);
+            if (gameToDelete == null)
+            {
+                return BadRequest("Game not found: " + error);
+            }
+            i = gameMethods.DeleteGame(gameToDelete.GameId, out error);
+            if (i == 0)
+            {
+                return BadRequest("Error deleting game: " + error);
+            }
+            return Ok();
+
+        }
     }
 }
 

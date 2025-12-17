@@ -7,6 +7,8 @@ var game = new Chess(start_fen);
 let board = null;
 let whitePlayerId = null;
 let blackPlayerId = null;
+let winnerImage = "url('/images/winner.png')";
+let loserImage = "url('/images/loser.png')";
 
 
 
@@ -16,6 +18,13 @@ let blackPlayerId = null;
 function onDragStart(source, piece) {
     // do not pick up pieces if the game is over
     if (game.isGameOver()) return false;
+
+    
+
+    if ((game.turn() === 'w' && currentPlayerId !== whitePlayerId) ||
+        (game.turn() === 'b' && currentPlayerId !== blackPlayerId)) {
+        return false; 
+    }
 
     if ((game.turn() === 'w' && piece.startsWith('b')) ||
         (game.turn() === 'b' && piece.startsWith('w'))) {
@@ -37,8 +46,14 @@ function onDrop(source, target) {
         return 'snapback';
     }
 
+
     updateActivePlayer();
     sendMoveToServer(source, target, game.fen());
+
+    if (game.isCheckmate()) {
+        connection.invoke("NotifyCheckmate", gameKey, currentPlayerId);
+        deleteGameOnMate();
+    }
 }
 
 
@@ -71,6 +86,17 @@ function updateActivePlayer() {
     } else {
         blackCard.classList.add('active');
     }
+}
+
+function deleteGameOnMate() {
+
+        fetch('/Game/DeleteGame', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                GameKey: gameKey
+            })
+        });
 }
 
 
@@ -129,6 +155,26 @@ connection.on("ReceiveLatestFen", (fen) => {
     game.load(fen);
     board.position(fen);
     updateActivePlayer();
+});
+
+connection.on("GameIsFinished", (winner) => {
+    document.getElementById("gameOverOverlay").style.display = "flex";
+    if (winner === currentPlayerId) {
+        document.getElementById("gameOverMessage").style.backgroundImage = winnerImage;
+    } else {
+        document.getElementById("gameOverMessage").style.backgroundImage = loserImage;
+    }
+
+});
+
+// ---------------- FORFEIT ----------------
+document.getElementById("forfeitButton").addEventListener("click", () => {
+    if (confirm("Are you sure you want to forfeit the game?")) {
+        const winnerId = (currentPlayerId === whitePlayerId) ? blackPlayerId : whitePlayerId;
+        connection.invoke("NotifyCheckmate", gameKey, winnerId)
+            .catch(err => console.error(err.toString()));
+        deleteGameOnMate();
+    }
 });
 
 

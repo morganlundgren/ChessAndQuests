@@ -4,7 +4,6 @@
 
 <div id="gamekey" 
      data-game-key="@Model.GameKey"
-     data-player-id="@Accessor.HttpContext.Session.GetInt32("PlayerId")"
  </div>
 
 
@@ -20,6 +19,7 @@
     <link rel="stylesheet" href="~/css/PlayGame.css" />
 }
 
+@* overlay wait *@
 <body class="play-game-page">
 
     <div id="waitingOverlay">
@@ -28,6 +28,12 @@
             <p> Share your game key with a friend!</p>
             <strong>@Model.GameKey</strong>
         </div>
+    </div>
+
+    @* overlay checkmate *@
+    <div id="gameOverOverlay">
+        <div class="gameOverBox" id="gameOverMessage"></div>
+        <a asp-controller="Home" asp-action ="Index" class="backButton">Back to home</a>
     </div>
 
 <header id="letsplay">Lets play chess!</header>
@@ -53,6 +59,10 @@
             </div>
         </div>
 
+    </div>
+
+    <div style="text-align:center; margin-top:1rem;">
+        <button id="forfeitButton" class="forfeitButton">Forfeit Game</button>
     </div>
 
 
