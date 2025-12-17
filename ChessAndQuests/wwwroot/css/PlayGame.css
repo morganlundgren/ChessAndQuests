@@ -26,31 +26,112 @@ body.play-game-page {
 }
 
 
-#letsplay {
-    font-family: 'Cinzel', serif;
-    font-size: 54px;
-    color: #f4d187;
-    text-align: center;
-    margin-top: 10px;
-}
-
-#players {
-    font-family: 'Cinzel', serif;
-    font-size: 24px;
-    font-weight: bold;
-    color: #f4d187;
-    display: grid;
-    grid-template-areas: "a b c d";
-    text-align: center;
-    margin-top: 20px;
-    grid-area: a;
+.board-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 #board {
-    width: 600px !important;
-    height: 600px !important;
-    margin: 20px auto !important;
+    width: min(90vw, 600px);
+    height: min(90vw, 600px);
+    margin: 0.5rem 0;
 }
+
+.player-card {
+    position: relative;
+    width: min(90vw, 600px);
+    background-color: rgba(0, 0, 0, 0.6);
+    border: 1px solid #f4d187;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    color: #f4d187;
+    font-family: 'Cinzel', serif;
+}
+
+    .player-card.white {
+        border-color: #f4d187;
+        background: linear-gradient( 135deg, rgba(244, 209, 135, 0.15), rgba(0, 0, 0, 0.6) );
+    }
+
+    .player-card.black {
+        border-color: #5a6f9e;
+        background: linear-gradient( 135deg, rgba(90, 111, 158, 0.18), rgba(0, 0, 0, 0.6) );
+    }
+
+
+.player-color {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    opacity: 0.8;
+    margin-bottom: 0.25rem;
+}
+
+.player-name {
+    font-family: 'Cinzel', serif;
+    font-weight: bold;
+    color: #f4d187;
+    font-size: clamp(14px, 1.2vw, 20px);
+}
+
+
+.player-card.white.active {
+    animation: pulseWhite 1.5s infinite;
+}
+
+@keyframes pulseWhite {
+    0% {
+        box-shadow: 0 0 8px rgba(244,209,135,0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 18px rgba(244,209,135,0.8);
+    }
+
+    100% {
+        box-shadow: 0 0 8px rgba(244,209,135,0.4);
+    }
+}
+
+.player-card.black.active {
+    animation: pulseBlack 1.5s infinite;
+}
+
+@keyframes pulseBlack {
+    0% {
+        box-shadow: 0 0 8px rgba(90,111,158,0.35);
+    }
+
+    50% {
+        box-shadow: 0 0 18px rgba(90,111,158,0.75);
+    }
+
+    100% {
+        box-shadow: 0 0 8px rgba(90,111,158,0.35);
+    }
+}
+
+
+
+.player-card.active::after {
+    content: "YOUR TURN";
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    opacity: 0.9;
+}
+
+.player-card.active.white::after {
+    color: #f4d187;
+}
+
+.player-card.active.black::after {
+    color: #9fb0d8;
+}
+
 
 
 /* ------------------------------------------------------     Pieces styles     -----------------------------------------------------------*/
@@ -85,16 +166,6 @@ body.play-game-page {
         filter: drop-shadow(0 0 6px rgba(255, 215, 120, 0.55)) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
     }
 
-    /* White queen */
-    #board img[data-piece="wQ"] {
-        filter: drop-shadow(0 0 12px rgba(255, 235, 150, 0.7)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7));
-    }
-
-    /* white king */
-    #board img[data-piece="wK"] {
-        filter: drop-shadow(0 0 15px rgba(255, 245, 180, 0.75)) drop-shadow(0 3px 10px rgba(0, 0, 0, 0.7));
-    }
-
 
 /*  ---------- DARK BLUE (black pieces) -------------   */
 
@@ -109,16 +180,6 @@ body.play-game-page {
         width: 75% !important;
         height: 75% !important;
         filter: drop-shadow(0 0 5px rgba(120, 160, 255, 0.35)) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
-    }
-
-    /* black queen */
-    #board img[data-piece="bQ"] {
-        filter: drop-shadow(0 0 12px rgba(150, 180, 255, 0.55)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7));
-    }
-
-    /* Black king */
-    #board img[data-piece="bK"] {
-        filter: drop-shadow(0 0 15px rgba(170, 200, 255, 0.7)) drop-shadow(0 3px 10px rgba(0, 0, 0, 0.7));
     }
 
 
