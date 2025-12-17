@@ -15,7 +15,9 @@ body.play-game-page nav.navbar a:hover,
 body.play-game-page nav.navbar .nav-link:hover {
 color: #e0e0e0 !important;
 }
-
+header {
+    display:none;
+}
 
 body.play-game-page {
     background-image: url('/images/JoinGameBackground.png');
@@ -34,14 +36,14 @@ body.play-game-page {
 }
 
 #board {
-    width: min(90vw, 600px);
-    height: min(90vw, 600px);
+    width: 32vw;
+    height: 32vw;
     margin: 0.5rem 0;
 }
 
 .player-card {
     position: relative;
-    width: min(90vw, 600px);
+    width: 32vw;
     background-color: rgba(0, 0, 0, 0.6);
     border: 1px solid #f4d187;
     border-radius: 8px;
