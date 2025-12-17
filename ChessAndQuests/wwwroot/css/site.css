@@ -9,7 +9,7 @@ html {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem, 0 0 0 0.25rem #258cfb;
 }
 
 html {
@@ -29,14 +29,59 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
-.navbar-logo {
-    height: 32px;
-    width: auto;
+
+/* ===== Fantasy Navbar ===== */
+.fantasy-navbar {
+    background: rgba(10, 10, 20, 0.55) !important;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
-.navbar-logo {
-    height: 32px;
-    width: auto;
-}
+    /* Brand (logo + text) */
+    .fantasy-navbar .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 900;
+        letter-spacing: 2px;
+        color: #f4d087 !important; /* guld */
+        
+    }
+
+    .fantasy-navbar .navbar-logo {
+        height: 26px; /* justera storlek här */
+        width: auto;
+        filter: drop-shadow(0 0 6px rgba(0,0,0,0.55));
+    }
+
+    /* Nav links */
+    .fantasy-navbar .nav-link {
+        color: rgba(255,255,255,0.9) !important;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 10px 14px !important;
+        border-radius: 10px;
+        transition: 0.2s ease;
+    }
+
+        /* Hover glow */
+    .fantasy-navbar .nav-link:hover {
+        color: #f4d087 !important;
+        background: rgba(244, 208, 135, 0.10);
+        box-shadow: 0 0 15px rgba(244, 208, 135, 0.25);
+    }
+
+    /* Active link (om du vill sätta "active" på aktuell sida) */
+    .fantasy-navbar .nav-link.active {
+        color: #f4d087 !important;
+        background: rgba(244, 208, 135, 0.16);
+        border: 1px solid rgba(244, 208, 135, 0.25);
+    }
+
 
 
