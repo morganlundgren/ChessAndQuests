@@ -89,7 +89,7 @@ function updateActivePlayer() {
 }
 
 function deleteGameOnMate() {
-    if (game.isCheckmate()) {
+
         fetch('/Game/DeleteGame', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -97,7 +97,6 @@ function deleteGameOnMate() {
                 GameKey: gameKey
             })
         });
-    }
 }
 
 
@@ -166,6 +165,16 @@ connection.on("GameIsFinished", (winner) => {
         document.getElementById("gameOverMessage").style.backgroundImage = loserImage;
     }
 
+});
+
+// ---------------- FORFEIT ----------------
+document.getElementById("forfeitButton").addEventListener("click", () => {
+    if (confirm("Are you sure you want to forfeit the game?")) {
+        const winnerId = (currentPlayerId === whitePlayerId) ? blackPlayerId : whitePlayerId;
+        connection.invoke("NotifyCheckmate", gameKey, winnerId)
+            .catch(err => console.error(err.toString()));
+        deleteGameOnMate();
+    }
 });
 
 
