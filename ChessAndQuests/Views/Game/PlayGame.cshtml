@@ -33,6 +33,7 @@
     @* overlay checkmate *@
     <div id="gameOverOverlay">
         <div class="gameOverBox" id="GameOverMessage"></div>
+        <button asp-controller="Home" asp-action ="Index" class="backButton">Back to home</button>
         @ViewBag.ErrorDelete
         <button class="backButton">Back to home</button>
     </div>
