@@ -38,7 +38,7 @@ function onDrop(source, target) {
     var move = game.move({
         from: source,
         to: target,
-        promotion: 'q'// NOTE: always promote to a queen for example simplicity
+        promotion: 'q' // always promote to queen 
     });
 
     // illegal move
