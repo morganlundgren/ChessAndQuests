@@ -7,6 +7,8 @@ var game = new Chess(start_fen);
 let board = null;
 let whitePlayerId = null;
 let blackPlayerId = null;
+let winnerImage = "url('/images/winner.png')";
+let loserImage = "url('/images/loser.png')";
 
 
 
@@ -158,6 +160,13 @@ connection.on("ReceiveLatestFen", (fen) => {
 
 connection.on("GameIsFinished", (winnerName) => {
     document.getElementById("gameOverOverlay").style.display = "flex";
+    const winner = game.turn();
+    if (winner === currentPlayerId) {
+        document.getElementById("gameOverMessage").style.backgroundImage = winnerImage;
+    } else {
+        document.getElementById("gameOverMessage").style.backgroundImage = loserImage;
+    }
+
 });
 
 
