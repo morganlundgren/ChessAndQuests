@@ -2,10 +2,28 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor Accessor
 
-<div id="gamekey" 
-     data-game-key="@Model.GameKey"
+<div id="gamekey"
+     data-game-key="@Model.GameKey">
  </div>
 
+ <div style="display: none">
+    @* Black player box *@
+    <div class="player-card black" id="blackCard">
+        <div class="player-color">BLACK</div>
+        <div class="player-name" id="playerBlack">
+            @Model.PlayerBlackName
+        </div>
+    </div>
+
+    @* White player box *@
+
+    <div class="player-card white" id="whiteCard">
+        <div class="player-color">WHITE</div>
+        <div class="player-name" id="playerWhite">
+            @Model.PlayerWhiteName
+        </div>
+    </div>
+ </div>
 
 
 @{
@@ -42,25 +60,15 @@
 <header>Lets play chess!</header>
 
     <div class="board-container">
-        @* Black player box *@
-        <div class="player-card black">
-            <div class="player-color">BLACK</div>
-            <div class="player-name" id="playerBlack">
-                @Model.PlayerBlackName
-            </div>
-        </div>
+        
+        <div id="playerTop"></div>
 
         <div id="board"></div>
 
-        @* White player box *@
-        <div class="player-card white">
-            <div class="player-color">WHITE</div>
-            <div class="player-name" id="playerWhite">
-                @Model.PlayerWhiteName
-            </div>
-        </div>
+        <div id="playerBottom"></div>
 
     </div>
+
 
     <div style="text-align:center; margin-top:1rem;">
         <button id="forfeitButton" class="forfeitButton">Forfeit Game</button>
