@@ -38,7 +38,7 @@ function onDrop(source, target) {
     var move = game.move({
         from: source,
         to: target,
-        promotion: 'q'// NOTE: always promote to a queen for example simplicity
+        promotion: 'q' // always promote to queen 
     });
 
     // illegal move
@@ -73,8 +73,8 @@ function sendMoveToServer(from, to, fen) {
 }
 
 function updateActivePlayer() {
-    const whiteCard = document.querySelector('.player-card.white');
-    const blackCard = document.querySelector('.player-card.black');
+    const whiteCard = document.getElementById('whiteCard');
+    const blackCard = document.getElementById('blackCard');
 
     if (!whiteCard || !blackCard) return;
 
@@ -124,6 +124,21 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
     if (!board) {
 
         const orientation = (currentPlayerId === whiteId) ? 'white' : 'black';
+        const whiteCard = document.getElementById('whiteCard');
+        const blackCard = document.getElementById('blackCard');
+
+        const top = document.getElementById('playerTop');
+        const bottom = document.getElementById('playerBottom');
+        top.innerHTML = '';
+        bottom.innerHTML = '';
+
+        if (orientation === 'white') {
+            top.appendChild(blackCard);    
+            bottom.appendChild(whiteCard);  
+        } else {
+            top.appendChild(whiteCard);
+            bottom.appendChild(blackCard);
+        }
 
             board = ChessBoard('board', {
             draggable: true,

@@ -259,3 +259,25 @@ body.play-game-page {
     height: 32.8vw;
 }
 
+
+.backButton {
+    background-color: #f4d187;
+    color: #000;
+}
+
+    .backButton:hover {
+        background-color: #e6c565;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+    }
+
+.forfeitButton {
+    background-color: #e74c3c; 
+    color: #fff;
+}
+
+    .forfeitButton:hover {
+        background-color: #c0392b;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+    }
