@@ -4,7 +4,7 @@
 var connection = new signalR.HubConnectionBuilder().withUrl("/gamehub").build();
 const gameKey = document.getElementById("gamekey").dataset.gameKey;
 var game = new Chess(start_fen);
-
+let board = null;
 
 
 
@@ -34,7 +34,7 @@ function onDrop(source, target) {
         return 'snapback';
     }
 
-
+    updateActivePlayer();
     sendMoveToServer(source, target, game.fen());
 }
 
@@ -52,6 +52,20 @@ function sendMoveToServer(from, to, fen) {
             TurnPlayerId: currentPlayerId
         })
     });
+}
+
+function updateActivePlayer() {
+    const whiteCard = document.querySelector('.player-card.white'); 
+    const blackCard = document.querySelector('.player-card.black');
+
+    whiteCard.classList.remove('active');
+    blackCard.classList.remove('active');
+
+    if (game.turn() === 'w') {
+        whiteCard.classList.add('active');
+    } else {
+        blackCard.classList.add('active');
+    }
 }
 
 
@@ -78,7 +92,7 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
 
         const orientation = (currentPlayerId === whiteId) ? 'white' : 'black';
 
-        var board = ChessBoard('board', {
+            board = ChessBoard('board', {
             draggable: true,
             position: start_fen,
             pieceTheme: '/images/chesspieces/alpha/{piece}.png',
@@ -87,10 +101,9 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
             orientation: orientation
             
         });
-    }
 
-    
-   
+        updateActivePlayer();
+    }
 });
 
 connection.on("ReceiveLatestFen", (fen) => {
@@ -101,6 +114,7 @@ connection.on("ReceiveLatestFen", (fen) => {
     }
     game.load(fen);
     board.position(fen);
+    updateActivePlayer();
 });
 
 
