@@ -43,7 +43,7 @@ namespace ChessAndQuests.Controllers
             //hämta fensträng för startposition
             GameDetails newGame = new GameDetails();
             {
-                newGame.PLayerWhiteId = playerId;
+                newGame.PlayerWhiteId = playerId;
                 newGame.GameKey = gamekey;
                 newGame.CurrentFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\r\n";
                 newGame.status = 0;
@@ -124,7 +124,6 @@ namespace ChessAndQuests.Controllers
             }
             GameMethods gameMethods = new GameMethods();
             GameDetails gameDetails = new GameDetails();
-            PlayerDetails playerBlack = null;
             string error = "";
 
             gameDetails = gameMethods.GetGameByKey(gameKey, out error);
@@ -146,15 +145,18 @@ namespace ChessAndQuests.Controllers
             var moveMethods = new MoveMethods();
             var gameMethods = new GameMethods();
             string error = "";
+            int iGame = 0;
+            int iMove = 0;
             var game = gameMethods.GetGameByKey(gamevm.GameKey, out error);
             int moveNumber =1;
             if (game == null) {ViewBag.Game("Game not found: " + error);}
 
             //update game's current fen
             game.CurrentFEN = gamevm.CurrentFEN?.Trim() ?? game.CurrentFEN;
+            game.turnId = (gamevm.TurnPlayerId == game.PlayerWhiteId) ? game.PlayerBlackId.Value : game.PlayerWhiteId; // 6 uppdatera vems tur det är
 
-            gameMethods.UpdateGame(game, out error);
-            if (!string.IsNullOrEmpty(error))
+            iGame = gameMethods.UpdateGame(game, out error);
+            if (iGame == 0)
             {
                ViewBag.updateGame("Error updating game: " + error);
             }
@@ -172,14 +174,14 @@ namespace ChessAndQuests.Controllers
                 MoveNumber = moveNumber
             };
 
-             int i = moveMethods.create(moveDetails, out error);
-            if (i == 0)
+            iMove = moveMethods.create(moveDetails, out error);
+            if (iMove == 0)
             {
                 ViewBag.errorMove = error;
             }
 
             //notify clients in the game group about the move
-            await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN);
+            await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN, game.turnId);
 
             return Ok();
         }

@@ -22,7 +22,7 @@ namespace ChessAndQuests.Hubs
         public async Task SendPlayerNames(string gameKey)
         {
             var game = _gameMethods.GetGameByKey(gameKey, out _);
-            var whiteId = game.PLayerWhiteId;
+            var whiteId = game.PlayerWhiteId;
             var blackId = game.PlayerBlackId;
             var white = _playerMethods.GetById(whiteId, out _)?.PlayerUserName ?? "PlayerWhite";
             var black = game.PlayerBlackId.HasValue
@@ -38,16 +38,21 @@ namespace ChessAndQuests.Hubs
         {
             var game = _gameMethods.GetGameByKey(gameKey, out _);
             if (gameKey == null) return;
-            await Clients.Group(gameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN);
+            await Clients.Group(gameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN, game.turnId); //2
 
 
         }
 
-        //notify clients about checkmate
+        //Notify clients about checkmate
 
         public async Task NotifyCheckmate(string gameKey, int winnerPlayerId)
         {
             await Clients.Group(gameKey).SendAsync("GameIsFinished", winnerPlayerId);
+        }
+        //Notify clients about stalemate
+        public async Task NotifyStalemate(string gameKey)
+        {
+            await Clients.Group(gameKey).SendAsync("GameIsFinished", "stalemate");
         }
     }
 }
