@@ -1,22 +1,5 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap');
 
-/* Navbar-styling bara för denna sida */
-body.home-page nav.navbar {
-    background: transparent !important;
-    box-shadow: none !important;
-}
-
-    body.home-page nav.navbar a,
-    body.home-page nav.navbar .navbar-brand,
-    body.homegame-page nav.navbar .nav-link {
-        color: #ffffff !important;
-    }
-
-        body.home-page nav.navbar a:hover,
-        body.homepage nav.navbar .nav-link:hover {
-            color: #e0e0e0 !important;
-        }
-
 body.home-page {
     font-family: 'Cinzel', serif;
 }
@@ -87,7 +70,7 @@ border: 2px solid rgba(240, 220, 150, 0.4);
 }
 
 
-/
+
 .home-btn {
     padding: 1rem 3rem;
     font-size: 1.4rem;
@@ -100,23 +83,7 @@ border: 2px solid rgba(240, 220, 150, 0.4);
 }
 
 
-/* Navbar-styling bara för denna sida */
-body.home-page nav.navbar {
-    background: transparent !important;
-    box-shadow: none !important;
+
+h1{
+color:#ffff
 }
-
-    body.home-page nav.navbar a,
-    body.home-page nav.navbar .navbar-brand,
-    body.homegame-page nav.navbar .nav-link {
-        color: #ffffff !important;
-    }
-
-    body.home-page nav.navbar a:hover,
-    body.homepage nav.navbar .nav-link:hover {
-        color: #e0e0e0 !important;
-    }
-
-    h1{
-        color:#ffff
-    }

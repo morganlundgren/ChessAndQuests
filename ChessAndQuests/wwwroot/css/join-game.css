@@ -1,21 +1,5 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap');
 
-body.join-game-page nav.navbar {
-    background: transparent !important;
-    box-shadow: none !important;
-}
-
-body.join-game-page nav.navbar a,
-body.join-game-page nav.navbar .navbar-brand,
-body.join-game-page nav.navbar .nav-link {
-color: #ffffff !important;
-}
-
-body.join-game-page nav.navbar a:hover,
-body.join-game-page nav.navbar .nav-link:hover {
-color: #e0e0e0 !important;
-}
-
 body.join-game-page {
     background-image: url('/images/JoinGameBackground.png'); /* din chess-statyer-bild */
     background-size: cover;
@@ -23,4 +7,5 @@ body.join-game-page {
     background-repeat: no-repeat;
     background-attachment: fixed;
     font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
 }
