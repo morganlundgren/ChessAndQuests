@@ -195,12 +195,12 @@ namespace ChessAndQuests.Controllers
             GameDetails gameToDelete = gameMethods.GetGameByKey(gameKey, out error);
             if (gameToDelete == null)
             {
-                return BadRequest("Game not found: " + error);
+                ViewBag.ErrorDelete = "Game not found.";
             }
             i = gameMethods.DeleteGame(gameToDelete.GameId, out error);
             if (i == 0)
             {
-                return BadRequest("Error deleting game: " + error);
+                ViewBag.ErrorDelete = "Error deleting game: " + error;
             }
             return Ok();
 
