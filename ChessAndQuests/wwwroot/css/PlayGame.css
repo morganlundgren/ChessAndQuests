@@ -141,68 +141,71 @@ body.play-game-page {
 
 /*  --------- BASE FANTASY LOOK --------- */
 
-    #board img[data-piece] {
-        position: absolute !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%);
-        width: 85% !important;
-        height: 85% !important;
-        object-fit: contain !important;
-        transition: filter 0.3s ease;
-    }
+#board img[data-piece] {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%);
+    width: 85% !important;
+    height: 85% !important;
+    object-fit: contain !important;
+    transition: filter 0.3s ease;
+}
+.square-highlight {
+    background: radial-gradient(circle, rgba(0, 255, 0, 0.45) 40%, transparent 50%) !important;
+}
 
 
 /*  -------------- GOLD (white pieces) ------------------ */
 
 
-    /* Drop-shadow for all */
-    #board img[data-piece^="w"] {
-        filter: drop-shadow(0 0 6px rgba(255, 215, 120, 0.6)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
-    }
+/* Drop-shadow for all */
+#board img[data-piece^="w"] {
+    filter: drop-shadow(0 0 6px rgba(255, 215, 120, 0.6)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+}
 
-    /* white pawn smaller */
-    #board img[data-piece="wP"] {
-        width: 75% !important;
-        height: 75% !important;
-        filter: drop-shadow(0 0 6px rgba(255, 215, 120, 0.55)) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
-    }
+/* white pawn smaller */
+#board img[data-piece="wP"] {
+    width: 75% !important;
+    height: 75% !important;
+    filter: drop-shadow(0 0 6px rgba(255, 215, 120, 0.55)) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
+}
 
 
 /*  ---------- DARK BLUE (black pieces) -------------   */
 
 
-    /* All black */
-    #board img[data-piece^="b"] {
-        filter: drop-shadow(0 0 7px rgba(100, 150, 255, 0.45)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
-    }
+/* All black */
+#board img[data-piece^="b"] {
+    filter: drop-shadow(0 0 7px rgba(100, 150, 255, 0.45)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+}
 
-    /* Black pawn */
-    #board img[data-piece="bP"] {
-        width: 75% !important;
-        height: 75% !important;
-        filter: drop-shadow(0 0 5px rgba(120, 160, 255, 0.35)) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
-    }
+/* Black pawn */
+#board img[data-piece="bP"] {
+    width: 75% !important;
+    height: 75% !important;
+    filter: drop-shadow(0 0 5px rgba(120, 160, 255, 0.35)) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
+}
 
 
 /*   INTERACTION (hover)*/
 
-    #board img[data-piece]:hover {
-        filter: drop-shadow(0 0 18px rgba(255, 230, 150, 0.75)) 
-        drop-shadow(0 3px 8px rgba(0, 0, 0, 0.6));
-        cursor: grab;
-    }
+#board img[data-piece]:hover {
+    filter: drop-shadow(0 0 18px rgba(255, 230, 150, 0.75)) 
+    drop-shadow(0 3px 8px rgba(0, 0, 0, 0.6));
+    cursor: grab;
+}
 
 
 /*   DRAGGED PIECE STYLING  (might have to look in other css) */
 
-    #board .dragged {
-        width: 85% !important;
-        height: 85% !important;
-        object-fit: contain !important;
-        filter: drop-shadow(0 0 10px rgba(255, 215, 120, 0.6)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
-        z-index: 1000; 
-    }
+#board .dragged {
+    width: 85% !important;
+    height: 85% !important;
+    object-fit: contain !important;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 120, 0.6)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+    z-index: 1000; 
+}
 
     /* ------------------------------------------------------    Overlay styles     -----------------------------------------------------------*/
 #waitingOverlay {
@@ -305,12 +308,12 @@ body.play-game-page {
     transform: scale(0.9); /* scales everything like 90% zoom */
 }
 
-    .promotionBox h2 {
-        font-family: 'Cinzel', serif;
-        color: #f4d187;
-        font-size: 1.45rem; /* slightly smaller than before */
-        margin-bottom: 1rem;
-        text-shadow: 0 0 0.5vw rgba(0,0,0,0.7);
+.promotionBox h2 {
+    font-family: 'Cinzel', serif;
+    color: #f4d187;
+    font-size: 1.45rem; /* slightly smaller than before */
+    margin-bottom: 1rem;
+    text-shadow: 0 0 0.5vw rgba(0,0,0,0.7);
     }
 
 .promotionButtons {
@@ -319,27 +322,27 @@ body.play-game-page {
     gap: 0.6rem; /* slightly tighter gap */
 }
 
-    /* -------- PROMOTION BUTTONS -------- */
 
-    .promotionButtons button {
-        background: linear-gradient( 135deg, rgba(244, 209, 135, 0.25), rgba(0, 0, 0, 0.6) );
-        border: 1px solid #f4d187;
-        border-radius: 6px; /* slightly smaller radius */
-        color: #f4d187;
-        font-family: 'Cinzel', serif;
-        font-size: 0.85rem; /* smaller font like 90% zoom */
-        padding: 0.5rem 0; /* smaller padding */
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
+.promotionButtons button {
+    background: linear-gradient( 135deg, rgba(244, 209, 135, 0.25), rgba(0, 0, 0, 0.6) );
+    border: 1px solid #f4d187;
+    border-radius: 6px; /* slightly smaller radius */
+    color: #f4d187;
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem; /* smaller font like 90% zoom */
+    padding: 0.5rem 0; /* smaller padding */
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
 
-        .promotionButtons button:hover {
-            background: linear-gradient( 135deg, rgba(244, 209, 135, 0.45), rgba(0, 0, 0, 0.7) );
-            box-shadow: 0 0 12px rgba(244, 209, 135, 0.6);
-            transform: translateY(-1px);
-        }
+.promotionButtons button:hover {
+    background: linear-gradient( 135deg, rgba(244, 209, 135, 0.45), rgba(0, 0, 0, 0.7) );
+    box-shadow: 0 0 12px rgba(244, 209, 135, 0.6);
+    transform: translateY(-1px);
+}
 
-        .promotionButtons button:active {
-            transform: translateY(0);
-            box-shadow: 0 0 6px rgba(244, 209, 135, 0.4);
-        }
+.promotionButtons button:active {
+    transform: translateY(0);
+    box-shadow: 0 0 6px rgba(244, 209, 135, 0.4);
+}
+

@@ -20,7 +20,7 @@ let stalemateImage = "url('../Images/stalemate.png')";
 
 
 
-//-------------------------------- PROMOTION HANDLING (not working) ------------------------------   
+//-------------------------------- PROMOTION HANDLING  ------------------------------   
 function isPromotionMove(source, target) {
     const piece = game.get(source)
     if (!piece) return false;
@@ -75,6 +75,27 @@ function completePromotion(promotion) {
     sendMoveToServer(from, to, game.fen());
     checkGameEnd();
 }
+//-------------------------------- Highlight squares------------------------------
+function clearHighlights() {
+    document.querySelectorAll('.square-highlight')
+        .forEach(el => el.classList.remove('square-highlight')); //clear all highlights
+}
+
+function highlightMovesFromSquare(source) {
+
+    clearHighlights(); // clear highlight of previously selected piece
+
+    const moves = game.moves({ // chess.js function for getting legal moves. 
+        square: source,
+        verbose: true    //verbose:true returns objects with from/to (move obejcts)
+    });
+    moves.forEach(m => {
+        const square = document.querySelector(`.square-${m.to}`);
+        if (square) {
+            square.classList.add('square-highlight');// use he move objects "to" to highlight squares (legal moves))
+        }
+    });
+}
 
 // ---------------- FUNCTIONS FOR CHESSBOARD.JS ----------------
 function onDragStart(source, piece) {
@@ -93,11 +114,13 @@ function onDragStart(source, piece) {
         (game.turn() === 'b' && piece.startsWith('w'))) {
         return false;
     }
+    highlightMovesFromSquare(source); // highlight legal moves from the selected square
 
 
 }
 function onDrop(source, target) { //4
 
+    clearHighlights(); // clear highlights when a piece is dropped
     if (source === target) {
 
         return 'snapback';
@@ -245,6 +268,8 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
 
 connection.on("ReceiveLatestFen", (fen, turnPlayerId) => { //3
     console.log("ReceviveFen:", fen);
+
+    clearHighlights(); // only used for safety reasons
 
     if (game === null) {
         game = new Chess(start_fen);
