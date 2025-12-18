@@ -34,7 +34,17 @@ function isPromotionMove(source, target) {
 
 function showPromotionDialog(from, to) {
     pendingPromotion = { from, to };
-    document.getElementById('promotionOverlay').style.display = 'flex';
+    const overlay = document.getElementById('promotionOverlay')
+
+    const square = document.querySelector(`.square-${to}`);
+    if (square) {
+
+        const rect = square.getBoundingClientRect();
+        overlay.style.position = 'absolute';
+        overlay.style.top = `${rect.top + window.scrollY}px`;   
+        overlay.style.left = `${rect.left + window.scrollX}px`;
+    }
+    overlay.style.display = 'flex';
 }
 
 document.querySelectorAll('#promotionOverlay button')

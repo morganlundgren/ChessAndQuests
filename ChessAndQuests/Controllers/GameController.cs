@@ -53,7 +53,7 @@ namespace ChessAndQuests.Controllers
             string error = "";
 
 
-            if (newGame == gameMethods.GetGameByKey(gamekey, out error))
+            if (gameMethods.GetGameByKey(gamekey, out error) != null)
             {
                 ViewBag.ErrorGame = "Game key already exists. Please choose another one.";
                 return View();
