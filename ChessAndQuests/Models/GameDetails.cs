@@ -6,7 +6,7 @@ namespace ChessAndQuests.Models
     public class GameDetails
     {
         public int GameId { get; set; }
-        public int PLayerWhiteId { get; set; }
+        public int PlayerWhiteId { get; set; }
         public int? PlayerBlackId { get; set; }
 
         [Required(ErrorMessage = "You will have to submit game key.")]

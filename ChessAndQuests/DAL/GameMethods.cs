@@ -41,7 +41,7 @@ namespace ChessAndQuests.DAL
                 {
                     GameDetails gameDetails = new GameDetails();
                     gameDetails.GameId = Convert.ToUInt16(reader["gm_Id"]);
-                    gameDetails.PLayerWhiteId = Convert.ToUInt16(reader["pl_white_id"]);
+                    gameDetails.PlayerWhiteId = Convert.ToUInt16(reader["pl_white_id"]);
                     gameDetails.PlayerBlackId = Convert.ToUInt16(reader["pl_black_id"]);
                     gameDetails.GameKey = Convert.ToString(reader["gm_key"]);
                     gameDetails.CurrentFEN = Convert.ToString(reader["gm_current_fen"]);
@@ -76,7 +76,7 @@ namespace ChessAndQuests.DAL
             string sqlString = "INSERT INTO tbl_game (pl_white_id, pl_black_id, gm_key, gm_current_fen, gm_status, gm_turn) " +
                 "VALUES (@pl_white_id, @pl_black_id, @gm_key, @gm_current_fen, @gm_status, @gm_turn); ";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
-            sqlCommand.Parameters.AddWithValue("@pl_white_id", gameDetails.PLayerWhiteId);
+            sqlCommand.Parameters.AddWithValue("@pl_white_id", gameDetails.PlayerWhiteId);
             sqlCommand.Parameters.AddWithValue("@pl_black_id",(object)gameDetails.PlayerBlackId ?? DBNull.Value);
             sqlCommand.Parameters.AddWithValue("@gm_key", gameDetails.GameKey);
             sqlCommand.Parameters.AddWithValue("@gm_current_fen", gameDetails.CurrentFEN);
@@ -111,7 +111,7 @@ namespace ChessAndQuests.DAL
             string sqlString = "UPDATE tbl_game SET pl_white_id = @pl_white_id, pl_black_id = @pl_black_id, gm_key = @gm_key, " +
                 "gm_current_fen = @gm_current_fen, gm_status = @gm_status, gm_turn = @gm_turn WHERE gm_id = @gm_id;";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
-            sqlCommand.Parameters.AddWithValue("@pl_white_id", gameDetails.PLayerWhiteId);
+            sqlCommand.Parameters.AddWithValue("@pl_white_id", gameDetails.PlayerWhiteId);
             sqlCommand.Parameters.AddWithValue("@pl_black_id", gameDetails.PlayerBlackId);
             sqlCommand.Parameters.AddWithValue("@gm_key", gameDetails.GameKey);
             sqlCommand.Parameters.AddWithValue("@gm_current_fen", gameDetails.CurrentFEN);
@@ -187,7 +187,7 @@ namespace ChessAndQuests.DAL
                 while (reader.Read())
                 {
                     gameDetails.GameId = Convert.ToUInt16(reader["gm_Id"]);
-                    gameDetails.PLayerWhiteId = Convert.ToUInt16(reader["pl_white_id"]);
+                    gameDetails.PlayerWhiteId = Convert.ToUInt16(reader["pl_white_id"]);
                     gameDetails.PlayerBlackId = (reader["pl_black_id"])!= DBNull.Value ? Convert.ToUInt16(reader["pl_black_id"]): null;
                     gameDetails.GameKey = Convert.ToString(reader["gm_key"]);
                     gameDetails.CurrentFEN = Convert.ToString(reader["gm_current_fen"]);
