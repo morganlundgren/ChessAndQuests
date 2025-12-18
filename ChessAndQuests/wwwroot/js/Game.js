@@ -8,6 +8,7 @@ let board = null;
 let whitePlayerId = null;
 let blackPlayerId = null;
 let currentTurnPlayerId = null;
+let pendingPromotion = null;
 
 let winnerImage = "url('../Images/winner.png')";
 let loserImage = "url('../Images/loser.png')";
@@ -17,6 +18,53 @@ let stalemateImage = "url('../Images/stalemate.png')";
 
 
 
+
+
+//-------------------------------- PROMOTION HANDLING (not working) ------------------------------   
+function isPromotionMove(source, target) {
+    const piece = game.get(source)
+    if (!piece) return false;
+    if (piece.type !== 'p') return false;
+
+    return (
+        (piece.color === 'w' && target[1] === '8') ||
+        (piece.color === 'b' && target[1] === '1')
+    );
+}
+
+function showPromotionDialog(from, to) {
+    pendingPromotion = { from, to };
+    document.getElementById('promotionOverlay').style.display = 'flex';
+}
+
+document.querySelectorAll('#promotionOverlay button')
+    .forEach(btn => {
+        btn.addEventListener('click', () => {
+            const promotion = btn.dataset.piece;
+            completePromotion(promotion);
+        });
+    });
+function completePromotion(promotion) {
+
+    const { from, to } = pendingPromotion;
+    document.getElementById('promotionOverlay').style.display = 'none';
+    pendingPromotion = null;
+
+    var move;
+    try {
+        move = game.move({
+            from,
+            to,
+            promotion
+        });
+    } catch (e) {
+        // ogiltigt drag → snapback
+        return 'snapback';
+    }
+
+    sendMoveToServer(from, to, game.fen());
+    checkGameEnd();
+}
 
 // ---------------- FUNCTIONS FOR CHESSBOARD.JS ----------------
 function onDragStart(source, piece) {
@@ -38,27 +86,35 @@ function onDragStart(source, piece) {
 
 
 }
-
 function onDrop(source, target) { //4
 
     if (source === target) {
 
         return 'snapback';
     }
+
+    // Promotion handling (not working)
+
+    if (isPromotionMove(source, target)) {
+        showPromotionDialog(source, target);
+        return;
+    }
+
     var move;
     try {
         move = game.move({
             from: source,
-            to: target,
-            promotion: 'q'
+            to: target
         });
     } catch (e) {
         // ogiltigt drag → snapback
         return 'snapback';
     }
+    sendMoveToServer(source, target, game.fen());
+    checkGameEnd();
+}
 
-    sendMoveToServer(source, target, game.fen()); //first update game and whose turn it is
-
+function checkGameEnd() {
 
     if (game.isCheckmate()) {
         connection.invoke("NotifyCheckmate", gameKey, currentPlayerId);
@@ -67,8 +123,8 @@ function onDrop(source, target) { //4
         connection.invoke("NotifyStalemate", gameKey);
         deleteGameOnMate();
     }
-
 }
+
 function updateActivePlayer() {
     const whiteCard = document.getElementById('whiteCard');
     const blackCard = document.getElementById('blackCard');

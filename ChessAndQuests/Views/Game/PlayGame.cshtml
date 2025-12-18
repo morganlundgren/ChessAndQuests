@@ -53,7 +53,18 @@
         <div class="gameOverBox" id="gameOverMessage"></div>
         <a asp-controller="Home" asp-action ="Index" class="backButton">Back to home</a>
         @ViewBag.ErrorDelete
+
     </div>
+    @* overlay promotion *@
+    <div id="promotionOverlay" style="display:none">
+        <div class="promotionBox">
+            <button data-piece="q">Queen</button>
+            <button data-piece="r">Rook</button>
+            <button data-piece="b">Bishop</button>
+            <button data-piece="n">Knight</button>
+        </div>
+    </div>
+
 
 <header id="letsplay">Lets play chess!</header>
 
