@@ -58,7 +58,6 @@ function onDrop(source, target) { //4
     }
 
     sendMoveToServer(source, target, game.fen()); //first update game and whose turn it is
-    updateActivePlayer(); // then update the view for the clients
 
 
     if (game.isCheckmate()) {

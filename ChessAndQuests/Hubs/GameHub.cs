@@ -15,7 +15,6 @@ namespace ChessAndQuests.Hubs
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, gameKey);
             await SendPlayerNames(gameKey);
-            await BroadcastLatestFen(gameKey);
         }
 
 
