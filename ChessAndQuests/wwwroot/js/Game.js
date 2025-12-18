@@ -76,14 +76,14 @@ function completePromotion(promotion) {
     checkGameEnd();
 }
 //-------------------------------- Highlight squares------------------------------
-function clearHighlights() {
-    document.querySelectorAll('.square-highlight')
-        .forEach(el => el.classList.remove('square-highlight')); //clear all highlights
+function clearLegalMovesHighlights() {
+    document.querySelectorAll('.square-legal-move')
+        .forEach(el => el.classList.remove('square-legal-move')); //clear all highlights
 }
 
-function highlightMovesFromSquare(source) {
+function highlightLegalMoves(source) {
 
-    clearHighlights(); // clear highlight of previously selected piece
+    clearLegalMovesHighlights(); // clear highlight of previously selected piece
 
     const moves = game.moves({ // chess.js function for getting legal moves. 
         square: source,
@@ -92,9 +92,24 @@ function highlightMovesFromSquare(source) {
     moves.forEach(m => {
         const square = document.querySelector(`.square-${m.to}`);
         if (square) {
-            square.classList.add('square-highlight');// use he move objects "to" to highlight squares (legal moves))
+            square.classList.add('square-legal-move');// use he move objects "to" to highlight squares (legal moves))
         }
     });
+}
+
+function clearLastMoveHighlight() {
+    document.querySelectorAll('.square-last-move')
+        .forEach(el => el.classList.remove('square-last-move')); //clear all highlights
+}
+
+function highlightLastMove(from, to) {
+    clearLastMoveHighlight();
+
+    const fromSquare = document.querySelector(`.square-${from}`);
+    const toSquare = document.querySelector(`.square-${to}`);
+
+    if (fromSquare) fromSquare.classList.add('square-last-move');
+    if (toSquare) toSquare.classList.add('square-last-move');
 }
 
 // ---------------- FUNCTIONS FOR CHESSBOARD.JS ----------------
@@ -114,13 +129,13 @@ function onDragStart(source, piece) {
         (game.turn() === 'b' && piece.startsWith('w'))) {
         return false;
     }
-    highlightMovesFromSquare(source); // highlight legal moves from the selected square
+    highlightLegalMoves(source); // highlight legal moves from the selected square
 
 
 }
 function onDrop(source, target) { //4
 
-    clearHighlights(); // clear highlights when a piece is dropped
+    clearLegalMovesHighlights(); // clear highlights when a piece is dropped
     if (source === target) {
 
         return 'snapback';
@@ -266,10 +281,10 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
     }
 });
 
-connection.on("ReceiveLatestFen", (fen, turnPlayerId) => { //3
+connection.on("ReceiveLatestFen", (fen, turnPlayerId, from = undefined, to = undefined) => { //3
     console.log("ReceviveFen:", fen);
 
-    clearHighlights(); // only used for safety reasons
+    clearLegalMovesHighlights(); // only used for safety reasons
 
     if (game === null) {
         game = new Chess(start_fen);
@@ -277,6 +292,13 @@ connection.on("ReceiveLatestFen", (fen, turnPlayerId) => { //3
     game.load(fen);
     board.position(fen);
     currentTurnPlayerId = turnPlayerId;
+
+    if (from && to) {
+        highlightLastMove(from, to);
+        document.getElementById("lastMoveText").textContent =
+            `${from} → ${to}`;
+    }
+
     updateActivePlayer();
 });
 

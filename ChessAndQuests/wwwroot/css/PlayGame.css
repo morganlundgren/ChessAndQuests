@@ -151,9 +151,22 @@ body.play-game-page {
     object-fit: contain !important;
     transition: filter 0.3s ease;
 }
-.square-highlight {
-    background: radial-gradient(circle, rgba(0, 255, 0, 0.45) 40%, transparent 50%) !important;
+
+.square-legal-move {
+    background: radial-gradient(circle, rgba(244, 209, 135, 0.4) 3vw, transparent 5vw) !important;
+    box-shadow: 0 0 0.6vw rgba(244, 209, 135, 0.5) inset;
+    border-radius: 0.3vw;
 }
+
+
+.square-last-move {
+    background: radial-gradient(circle, rgba(90, 160, 255, 0.35) 4vw, transparent 6vw) !important;
+    box-shadow: 0 0 0.9vw rgba(90, 160, 255, 0.5) inset;
+    border-radius: 0.4vw;
+}
+
+
+
 
 
 /*  -------------- GOLD (white pieces) ------------------ */

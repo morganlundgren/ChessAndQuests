@@ -172,7 +172,7 @@ namespace ChessAndQuests.Controllers
 
             moveNumber = previousMoves != null ? previousMoves.Count + 1 : moveNumber;
 
-            var moveDetails = new MoveDetails
+            var move = new MoveDetails
             {
                 GameId = game.GameId,
                 FromSquare = gamevm.FromSquare,
@@ -181,14 +181,14 @@ namespace ChessAndQuests.Controllers
                 MoveNumber = moveNumber
             };
 
-            iMove = moveMethods.create(moveDetails, out error);
+            iMove = moveMethods.create(move, out error);
             if (iMove == 0)
             {
                 ViewBag.errorMove = error;
             }
 
             //notify clients in the game group about the move
-            await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN, game.turnId);
+            await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN, game.turnId, move.FromSquare, move.ToSquare);
 
             return Ok();
         }
