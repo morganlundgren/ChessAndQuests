@@ -1,6 +1,9 @@
 ﻿
-using ChessAndQuests.Models;
 using ChessAndQuests.DAL;
+using ChessAndQuests.Hubs;
+using ChessAndQuests.Models;
+using ChessDotNet;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ChessAndQuests.Models
 {
@@ -8,11 +11,17 @@ namespace ChessAndQuests.Models
     {
         private readonly PlayerQuestMethods playerQuestMethods;
         private readonly QuestMethods questMethods;
+        private readonly GameMethods gameMethods;
+        private readonly IHubContext<GameHub> _hubContext;
 
-        public QuestLogic()
+        public QuestLogic (IHubContext<GameHub> GameHubContext)
         {
+
+            _hubContext = GameHubContext;
             playerQuestMethods = new PlayerQuestMethods();
             questMethods = new QuestMethods();
+            gameMethods = new GameMethods();
+
         }
 
         public void HandleMove(PlayerQuestDetails playerQuest, GameViewModel gameViewModel)
@@ -33,36 +42,42 @@ namespace ChessAndQuests.Models
                         questCompleted = true;
                         
                     }
+                    playerQuest.PlayerQuestCurrentMove++;
                     break;
 
                 case 2: // Knight March
                     if (gameViewModel.MovedPiece == "n")
-                        playerQuest.PlayerQuestCurrentMove++;
+                        playerQuest.ProgressMoves++;
                     else
-                        playerQuest.PlayerQuestCurrentMove = 0;
+                        playerQuest.ProgressMoves = 0;
 
-                    if (playerQuest.PlayerQuestCurrentMove >= 3)
+                    if (playerQuest.ProgressMoves >= 3)
                         questCompleted = true;
+                    playerQuest.PlayerQuestCurrentMove++;
                     break;
 
                 case 3: // First Capture
                     if (!string.IsNullOrEmpty(gameViewModel.CapturedPiece))
                         questCompleted = true;
+                    playerQuest.PlayerQuestCurrentMove++;
                     break;
 
                 case 4: // Center Control
                     if (IsCenterSquare(gameViewModel.ToSquare))
                         questCompleted = true;
+                    playerQuest.PlayerQuestCurrentMove++;
                     break;
 
                 case 5: // Queen's Move
                     if (gameViewModel.MovedPiece == "q" && Distance(gameViewModel.FromSquare, gameViewModel.ToSquare) >= 2)
                         questCompleted = true;
+                    playerQuest.PlayerQuestCurrentMove++;
                     break;
 
                 case 6: // Rook Rampage
                     if (gameViewModel.MovedPiece == "r" && HorizontalDistance(gameViewModel.FromSquare, gameViewModel.ToSquare) >= 2)
                         questCompleted = true;
+                    playerQuest.PlayerQuestCurrentMove++;
                     break;
 
                 case 7: // Knight Pressure
@@ -80,37 +95,41 @@ namespace ChessAndQuests.Models
 
                 case 9: // Table Has Turned
                     if (gameViewModel.MovedPiece == "k")
-                        playerQuest.PlayerQuestCurrentMove++;
+                        playerQuest.ProgressMoves++;
                     else
-                        playerQuest.PlayerQuestCurrentMove = 0;
+                        playerQuest.ProgressMoves = 0;
 
-                    if (playerQuest.PlayerQuestCurrentMove >= 5)
+                    if (playerQuest.ProgressMoves >= 5)
                         questCompleted = true;
+                    playerQuest.PlayerQuestCurrentMove++;
                     break;
                  }
 
             if (questCompleted)
             {
-                CompleteQuest(playerQuest);
+                CompleteQuest(playerQuest, gameViewModel.GameKey);
             }
 
         }
 
-        private void CompleteQuest(PlayerQuestDetails pq)
+        private void CompleteQuest(PlayerQuestDetails pq, string gameKey)
             {
             pq.PlayerQuestStatus = 1; // markera quest som klar
 
             // Hämta questen från DB
             var quest = questMethods.GetQuestDetails(pq.QuestId, out string err);
             if (quest == null)
-                return; // felhantering
+                return; 
 
             var reward = quest.QuestRewards;
 
-            // Belöning kan skickas till klienten via SignalR
+            _hubContext.Clients.Client(pq.PlayerId.ToString()).SendAsync("ReceiveQuestReward", pq.QuestId, quest.QuestRewards);
+
+            _hubContext.Clients.Group(gameKey).SendAsync("QuestStatusUpdated", pq.QuestId, pq.PlayerId);
 
             // Uppdatera quest-status i DB
-            playerQuestMethods.NextQuest(pq, out _);
+            int nextQuestId = pq.QuestId + 1;
+            playerQuestMethods.NextQuest(pq.GameId, nextQuestId, out _);
 
             }
 
