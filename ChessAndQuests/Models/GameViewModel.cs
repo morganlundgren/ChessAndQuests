@@ -12,8 +12,8 @@
         public string ToSquare { get; set; }
         public string MoveNumber { get; set; }
         public int TurnPlayerId { get; set; }
-        public int MovedPiece { get; set; }
-        public int CapturedPiece { get; set; }
+        public string MovedPiece { get; set; }
+        public string CapturedPiece { get; set; }
 
         public GameViewModel() { }
     }
