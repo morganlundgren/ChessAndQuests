@@ -16,8 +16,9 @@ namespace ChessAndQuests.DAL
 
         public List<QuestDetails> GetAllQuests(out string errormsg)
         {
-            string sqlString = "SELECT * FROM tbl_quests";
+            string sqlString = "SELECT * FROM tbl_quest";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
+
             SqlDataReader reader = null;
             List<QuestDetails> questDetailsList = new List<QuestDetails>();
             try
@@ -29,10 +30,12 @@ namespace ChessAndQuests.DAL
                 while (reader.Read())
                 {
                     QuestDetails questDetails = new QuestDetails();
+
                     questDetails.QuestID = Convert.ToUInt16(reader["qu_Id"]);
                     questDetails.QuestName = Convert.ToString(reader["qu_name"]);
                     questDetails.QuestDescription = Convert.ToString(reader["qu_description"]);
-                    questDetailsList.Add(questDetails);
+                    questDetails.QuestMaxMoves = Convert.ToUInt16(reader["qu_max_moves"]);
+                    questDetails.QuestRewards = Convert.ToString(reader["qu_reward"]);
                 }
                 errormsg = "";
                 return questDetailsList;
@@ -40,6 +43,42 @@ namespace ChessAndQuests.DAL
             catch (Exception e)
             {
                 // Returnera felmeddelande för att visa vad som gick fel
+                errormsg = e.Message;
+                return null;
+            }
+            finally
+            {
+                if (reader != null && !reader.IsClosed)
+                {
+                    reader.Close();
+                }
+                    sqlConnection.Close();
+            }
+        }
+        public QuestDetails GetQuestDetails(int id, out string errormsg) {
+            string sqlString = "SELECT * FROM tbl_quest WHERE qu_id = @Id";
+            SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@Id", id);
+            SqlDataReader reader = null;
+            QuestDetails questDetails = new QuestDetails();
+            try
+            {
+                // Fyll dataset och mappa rader till modeller
+                sqlConnection.Open();
+                reader = sqlCommand.ExecuteReader();
+                if (reader.Read())
+                {
+                    questDetails.QuestID = Convert.ToUInt16(reader["qu_Id"]);
+                    questDetails.QuestName = Convert.ToString(reader["qu_name"]);
+                    questDetails.QuestDescription = Convert.ToString(reader["qu_description"]);
+                    questDetails.QuestMaxMoves = Convert.ToUInt16(reader["qu_max_moves"]);
+                    questDetails.QuestRewards = Convert.ToString(reader["qu_reward"]);
+                }
+                errormsg = "";
+                return questDetails;
+            }
+            catch (Exception e)
+            {
                 errormsg = e.Message;
                 return null;
             }
