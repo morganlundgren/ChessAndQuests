@@ -10,7 +10,7 @@ namespace ChessAndQuests.DAL
         public PlayerQuestMethods()
         {
             sqlConnection = new SqlConnection();
-            conString = "Server=tcp:chesserver.database.windows.net,1433;Initial Catalog=chessquestserver;Persist Security Info=False;User ID=adminlogin;Password=ilovechess123.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            conString = "Server=tcp:chessandquest-server.database.windows.net,1433;Initial Catalog=chessandquest-database;Persist Security Info=False;User ID=chessandquest-server-admin;Password=ilovechess123.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30";
             sqlConnection.ConnectionString = conString;
 
         } 

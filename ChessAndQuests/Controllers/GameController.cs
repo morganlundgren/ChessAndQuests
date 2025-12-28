@@ -151,6 +151,8 @@ namespace ChessAndQuests.Controllers
             //get game by key
             var moveMethods = new MoveMethods();
             var gameMethods = new GameMethods();
+            var questMethods = new QuestMethods();
+            var playerquestsMethods = new PlayerQuestsMethods();
             string error = "";
             int iGame = 0;
             int iMove = 0;
@@ -186,6 +188,8 @@ namespace ChessAndQuests.Controllers
             {
                 ViewBag.errorMove = error;
             }
+            
+            
 
             //notify clients in the game group about the move
             await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN, game.turnId, move.FromSquare, move.ToSquare);

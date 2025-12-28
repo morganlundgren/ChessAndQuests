@@ -1,11 +1,12 @@
 ﻿
 
-<div id="board"></div>
+
 
 @section Styles {
     <link rel="stylesheet" href="~/css/chessboard.css" />
     <link rel="stylesheet" href="~/css/PlayGame.css" />
 }
+<body class="play-game-page">
 @* overlay promotion *@
 <div id="promotionOverlay" style="display:flex">
     <div class="promotionBox">
@@ -17,6 +18,25 @@
         </div>
     </div>
 </div>
+    <section id="gameInfo">
+        <div class="move-container">
+            <div id="lastMoveText">
+            </div>
+        </div>
+
+        <div class="board-container">
+
+            <div id="playerTop"></div>
+
+            <div id="board"></div>
+
+            <div id="playerBottom"></div>
+
+        </div>
+        <div class="quest-containter"></div>
+    </section>
+
+</body>
 @section Scripts {
     <script src="~/js/chessboard.js"></script>
     <script>
@@ -27,4 +47,3 @@
         });
     </script>
 }
-
