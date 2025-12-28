@@ -47,6 +47,13 @@ body.play-game-page {
     align-items: center;
     gap: 0.5rem;
 }
+.quest-container {
+    width:20vw;
+}
+.quest-scroll {
+    background-image: url('/images/questRoll.png');
+    background-size: contain;
+}
 
 #board {
     width:32vw;
