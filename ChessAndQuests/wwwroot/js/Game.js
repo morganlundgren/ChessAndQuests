@@ -158,7 +158,7 @@ function onDrop(source, target) { //4
         // ogiltigt drag → snapback
         return 'snapback';
     }
-    sendMoveToServer(source, target, game.fen());
+    sendMoveToServer(source, target, game.fen()), move.piece(), move.captured();
     checkGameEnd();
 }
 
@@ -191,7 +191,7 @@ function updateActivePlayer() {
 
 
 
-function sendMoveToServer(from, to, fen) {//5
+function sendMoveToServer(from, to, fen, piece, captured) {//5
     fetch('/Game/MakeMove', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -201,6 +201,8 @@ function sendMoveToServer(from, to, fen) {//5
             ToSquare: to,
             CurrentFEN: fen,
             TurnPlayerId: currentPlayerId
+            MovedPiece: piece,
+            CapturedPiece: captured
         })
     });
 }
