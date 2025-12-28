@@ -15,6 +15,11 @@
         public string MovedPiece { get; set; }
         public string CapturedPiece { get; set; }
 
+        public QuestDetails Quest { get; set; }
+        public int PlayerQuestStatus { get; set; }
+        public int PlayerQuestCurrentMove { get; set; }
+        public int ProgressMoves { get; set; }
+
         public GameViewModel() { }
     }
 }
