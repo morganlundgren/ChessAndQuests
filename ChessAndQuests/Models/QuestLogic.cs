@@ -31,6 +31,7 @@ namespace ChessAndQuests.Models
                     if (gameViewModel.CapturedPiece == "p")
                     {
                         questCompleted = true;
+                        
                     }
                     break;
 
@@ -87,10 +88,16 @@ namespace ChessAndQuests.Models
                         questCompleted = true;
                     break;
                  }
+
+            if (questCompleted)
+            {
+                CompleteQuest(playerQuest);
             }
 
-            private void CompleteQuest(PlayerQuestDetails pq)
-        {
+        }
+
+        private void CompleteQuest(PlayerQuestDetails pq)
+            {
             pq.PlayerQuestStatus = 1; // markera quest som klar
 
             // Hämta questen från DB
@@ -98,18 +105,40 @@ namespace ChessAndQuests.Models
             if (quest == null)
                 return; // felhantering
 
-            var reward = quest.QuestReward;
+            var reward = quest.QuestRewards;
 
             // Belöning kan skickas till klienten via SignalR
-            // t.ex. Clients.Caller.SendAsync("QuestReward", pq.PlayerId, pq.QuestId, reward);
 
             // Uppdatera quest-status i DB
-            playerQuestMethods.UpdatePlayerQuest(pq, out _);
+            playerQuestMethods.NextQuest(pq, out _);
+
+            }
+
+            // Hjälpmetoder
+
+            private bool IsCenterSquare(string square)
+            {
+                return square == "d4" || square == "d5" || square == "e4" || square == "e5";
+            }
+
+            private int Distance(string from, string to)
+            {
+                int colDiff = Math.Abs(from[0] - to[0]);
+                int rowDiff = Math.Abs(from[1] - to[1]);
+                return colDiff + rowDiff;
+            }
+
+            private int HorizontalDistance(string from, string to)
+            {
+                return Math.Abs(from[0] - to[0]);
+            }
+
+            private bool ThreatensOpponentPiece(GameViewModel gamevm)
+            {
+                return true;
+            }
         }
-
-
     }
 
-}
 
 
