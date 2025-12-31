@@ -24,15 +24,18 @@ namespace ChessAndQuests.Models
 
         }
 
-        public void HandleMove(PlayerQuestDetails playerQuest, GameViewModel gameViewModel)
+        //borde vi uppdatera playerquest i databasen också? hur ska det annars visas i vyn? 
+        //(t.ex currentmoves, progressmoves osv)
+
+        public PlayerQuestDetails HandleMove(PlayerQuestDetails playerQuest, GameViewModel gameViewModel)
         {
             if (playerQuest.PlayerQuestStatus == 1)
             {
-                return;
+                return playerQuest;
             }
 
             bool questCompleted = false;
-
+            playerQuest.PlayerQuestCurrentMove++;
             switch (playerQuest.QuestId)
 
             {
@@ -42,7 +45,6 @@ namespace ChessAndQuests.Models
                         questCompleted = true;
                         
                     }
-                    playerQuest.PlayerQuestCurrentMove++;
                     break;
 
                 case 2: // Knight March
@@ -53,31 +55,26 @@ namespace ChessAndQuests.Models
 
                     if (playerQuest.ProgressMoves >= 3)
                         questCompleted = true;
-                    playerQuest.PlayerQuestCurrentMove++;
                     break;
 
                 case 3: // First Capture
                     if (!string.IsNullOrEmpty(gameViewModel.CapturedPiece))
                         questCompleted = true;
-                    playerQuest.PlayerQuestCurrentMove++;
                     break;
 
                 case 4: // Center Control
                     if (IsCenterSquare(gameViewModel.ToSquare))
                         questCompleted = true;
-                    playerQuest.PlayerQuestCurrentMove++;
                     break;
 
                 case 5: // Queen's Move
                     if (gameViewModel.MovedPiece == "q" && Distance(gameViewModel.FromSquare, gameViewModel.ToSquare) >= 2)
                         questCompleted = true;
-                    playerQuest.PlayerQuestCurrentMove++;
                     break;
 
                 case 6: // Rook Rampage
                     if (gameViewModel.MovedPiece == "r" && HorizontalDistance(gameViewModel.FromSquare, gameViewModel.ToSquare) >= 2)
                         questCompleted = true;
-                    playerQuest.PlayerQuestCurrentMove++;
                     break;
 
                 case 7: // Knight Pressure
@@ -85,10 +82,8 @@ namespace ChessAndQuests.Models
                         questCompleted = true;
                     break;
 
-                case 8: // Capture Pawn (ta 3 bönder)
+                case 8: // Capture Pawn (ta 3 bönder) //??
                     if (gameViewModel.CapturedPiece == "p")
-                        playerQuest.PlayerQuestCurrentMove++;
-
                     if (playerQuest.PlayerQuestCurrentMove >= 3)
                         questCompleted = true;
                     break;
@@ -101,20 +96,24 @@ namespace ChessAndQuests.Models
 
                     if (playerQuest.ProgressMoves >= 5)
                         questCompleted = true;
-                    playerQuest.PlayerQuestCurrentMove++;
                     break;
                  }
+            playerQuestMethods.UpdatePlayerQuest(playerQuest, out _);
+
 
             if (questCompleted)
             {
                 CompleteQuest(playerQuest, gameViewModel.GameKey);
             }
+            return playerQuest;
 
         }
-
+        //ska inte anropa singalR. Ska skicka tillbaka den uppdaterade playerquesten, och questets reward och sen anropa från controllern
         private void CompleteQuest(PlayerQuestDetails pq, string gameKey)
         {
             pq.PlayerQuestStatus = 1; // markera quest som klar
+            playerQuestMethods.UpdatePlayerQuest(pq, out _);
+
 
             // Hämta questen från DB
             var quest = questMethods.GetQuestDetails(pq.QuestId, out string err);
@@ -123,41 +122,43 @@ namespace ChessAndQuests.Models
 
             var reward = quest.QuestRewards;
 
+            //------------------------clientID är inte playerID som string***------------------------
             _hubContext.Clients.Client(pq.PlayerId.ToString()).SendAsync("ReceiveQuestReward", new { pq.QuestId, quest.QuestRewards });
+            //varför inte skicka till gruppen? Båda måste ju uppdateras. kan man kanske skicka med ett winnerPlayerId?
 
-            _hubContext.Clients.Group(gameKey).SendAsync("QuestStatusUpdated", new {pq.QuestId, pq.PlayerId });
+            _hubContext.Clients.Group(gameKey).SendAsync("QuestStatusUpdated", new {pq.QuestId, pq.PlayerId }); //vad ska denna göra?
 
             // Uppdatera quest-status i DB
             int nextQuestId = pq.QuestId + 1;
             playerQuestMethods.NextQuest(pq.GameId, nextQuestId, out _);
 
-            }
+        }
 
-            // Hjälpmetoder
+        // Hjälpmetoder
 
-            private bool IsCenterSquare(string square)
-            {
-                return square == "d4" || square == "d5" || square == "e4" || square == "e5";
-            }
+        private bool IsCenterSquare(string square)
+        {
+            return square == "d4" || square == "d5" || square == "e4" || square == "e5";
+        }
 
-            private int Distance(string from, string to)
-            {
-                int colDiff = Math.Abs(from[0] - to[0]);
-                int rowDiff = Math.Abs(from[1] - to[1]);
-                return colDiff + rowDiff;
-            }
+        private int Distance(string from, string to)
+        {
+            int colDiff = Math.Abs(from[0] - to[0]);
+            int rowDiff = Math.Abs(from[1] - to[1]);
+            return colDiff + rowDiff;
+        }
 
-            private int HorizontalDistance(string from, string to)
-            {
-                return Math.Abs(from[0] - to[0]);
-            }
+        private int HorizontalDistance(string from, string to)
+        {
+            return Math.Abs(from[0] - to[0]);
+        }
 
-            private bool ThreatensOpponentPiece(GameViewModel gamevm)
-            {
-                return true;
-            }
+        private bool ThreatensOpponentPiece(GameViewModel gamevm)
+        {
+            return true;
         }
     }
+}
 
 
 

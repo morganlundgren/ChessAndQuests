@@ -189,6 +189,8 @@ namespace ChessAndQuests.Controllers
             var gameMethods = new GameMethods();
             var questMethods = new QuestMethods();
             var playerquestsMethods = new PlayerQuestMethods();
+            var questLogic = new QuestLogic(_gameHubContext);
+
             string error = "";
             int iGame = 0;
             int iMove = 0;
@@ -224,8 +226,12 @@ namespace ChessAndQuests.Controllers
             {
                 ViewBag.errorMove = error;
             }
-            
-            
+
+
+            //quest logic handling
+            var playerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, gamevm.TurnPlayerId, out error);
+            playerQuest = questLogic.HandleMove(playerQuest, gamevm);
+
 
             //notify clients in the game group about the move
             await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN, game.turnId, move.FromSquare, move.ToSquare);

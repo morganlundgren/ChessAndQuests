@@ -134,14 +134,15 @@ namespace ChessAndQuests.DAL
            
         }
 
-        public List<PlayerQuestDetails> GetPlayerQuestByGameId ( int gameId, out string errormsg)
+        public PlayerQuestDetails GetPlayerQuestByGameandPlayer ( int gameId, int playerId, out string errormsg)
         {
-            string sqlString = "SELECT * FROM tbl_player_quest WHERE gm_id = @GameId";
+            string sqlString = "SELECT * FROM tbl_player_quest WHERE gm_id = @GameId AND pl_id = @PlayerId" ;
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
-            sqlCommand.Parameters.AddWithValue("@GametId", gameId);
+            sqlCommand.Parameters.AddWithValue("@GameId", gameId);
+            sqlCommand.Parameters.AddWithValue("@PlayerId", playerId);
 
             SqlDataReader reader = null;
-            List<PlayerQuestDetails> playerQuestList = new List<PlayerQuestDetails>();
+            PlayerQuestDetails playerQuest = new PlayerQuestDetails();
             try
             {
                 sqlConnection.Open();
@@ -153,17 +154,17 @@ namespace ChessAndQuests.DAL
                 }
                 while (reader.Read())
                 {
-                    PlayerQuestDetails playerQuest = new PlayerQuestDetails();
+   
                     playerQuest.PlayerId = Convert.ToInt32(reader["pl_id"]);
                     playerQuest.QuestId = Convert.ToInt32(reader["qu_id"]);
                     playerQuest.GameId = Convert.ToInt32(reader["gm_id"]);
                     playerQuest.PlayerQuestCurrentMove = Convert.ToInt32(reader["pq_currentmoves"]);
                     playerQuest.PlayerQuestStatus = Convert.ToInt32(reader["pq_status"]);
                     playerQuest.ProgressMoves = Convert.ToInt32(reader["pq_progressmoves"]);
-                    playerQuestList.Add(playerQuest);
+
                 }
                 errormsg = "";
-                return playerQuestList;
+                return playerQuest;
             }
             catch (Exception e)
             {

@@ -549,19 +549,20 @@ function getThreatenedPieces(game) {
 
 
 // button enabling for undo move
-    function enableUndoMove() {
-        undoAvailable = true;
-        document.getElementById("undoButton").disabled = false;
-    }
+function enableUndoMove() {
+    undoAvailable = true;
+    document.getElementById("undoButton").disabled = false; // varför disabled och inte display = flex?
+}
 
-    // wait for click 
-    document.getElementById("undoButton").addEventListener("click", () => {
-        if (!undoAvailable) return;
+// wait for click 
+document.getElementById("undoButton").addEventListener("click", () => {
+    if (!undoAvailable) return;
 
-        connection.invoke("RequestUndo", gameKey);
-        undoAvailable = false;
-        document.getElementById("undoButton").disabled = true;
-    });
+    connection.invoke("RequestUndo", gameKey);// måste hämta fen-strängen innan ens drag gjordes. 
+    undoAvailable = false                     // dessutom kolla ifall det är ens tur eller inte
+    document.getElementById("undoButton").disabled = true; 
+});                                                        
+                                                         
 
 
 
@@ -793,8 +794,8 @@ connection.on("GameIsFinished", (result) => {
 // ---------------- QUEST LOGIC SIGNALR ----------------
 
 // check what rewards to give when a move is made
-    connection.on("RecieveQuestReward", (Questreward) => {
-        handleQuestReward(Questreward);
+    connection.on("RecieveQuestReward", (Questreward) => { // tar in en sträng med vilket reward. 
+        handleQuestReward(Questreward); // Men när funktionen anropas skickas questreawrd och questID
     });
 
 
