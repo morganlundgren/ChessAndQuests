@@ -113,19 +113,19 @@ namespace ChessAndQuests.Models
         }
 
         private void CompleteQuest(PlayerQuestDetails pq, string gameKey)
-            {
+        {
             pq.PlayerQuestStatus = 1; // markera quest som klar
 
             // Hämta questen från DB
             var quest = questMethods.GetQuestDetails(pq.QuestId, out string err);
             if (quest == null)
-                return; 
+                return;
 
             var reward = quest.QuestRewards;
 
-            _hubContext.Clients.Client(pq.PlayerId.ToString()).SendAsync("ReceiveQuestReward", pq.QuestId, quest.QuestRewards);
+            _hubContext.Clients.Client(pq.PlayerId.ToString()).SendAsync("ReceiveQuestReward", new { pq.QuestId, quest.QuestRewards });
 
-            _hubContext.Clients.Group(gameKey).SendAsync("QuestStatusUpdated", pq.QuestId, pq.PlayerId);
+            _hubContext.Clients.Group(gameKey).SendAsync("QuestStatusUpdated", new {pq.QuestId, pq.PlayerId });
 
             // Uppdatera quest-status i DB
             int nextQuestId = pq.QuestId + 1;
