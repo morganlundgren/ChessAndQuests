@@ -27,15 +27,22 @@ namespace ChessAndQuests.Models
         //borde vi uppdatera playerquest i databasen också? hur ska det annars visas i vyn? 
         //(t.ex currentmoves, progressmoves osv)
 
-        public PlayerQuestDetails HandleMove(PlayerQuestDetails playerQuest, GameViewModel gameViewModel)
+        public QuestResult HandleMove(PlayerQuestDetails playerQuest, GameViewModel gameViewModel)
         {
+
+            var quest = questMethods.GetQuestDetails(playerQuest.QuestId, out string err);
+            if (quest == null)
+                return null;
             if (playerQuest.PlayerQuestStatus == 1)
             {
-                return playerQuest;
+                return null;
             }
 
             bool questCompleted = false;
+            
             playerQuest.PlayerQuestCurrentMove++;
+
+            //specificera ifall en spelare får köra igen. Det måste skicka med i questResult.
             switch (playerQuest.QuestId)
 
             {
@@ -59,7 +66,7 @@ namespace ChessAndQuests.Models
 
                 case 3: // First Capture
                     if (!string.IsNullOrEmpty(gameViewModel.CapturedPiece))
-                        questCompleted = true;
+                        questCompleted = true; //borde vara quest nr1
                     break;
 
                 case 4: // Center Control
@@ -82,7 +89,7 @@ namespace ChessAndQuests.Models
                         questCompleted = true;
                     break;
 
-                case 8: // Capture Pawn (ta 3 bönder) //??
+                case 8: // Capture Pawn (ta 3 bönder) //här är logiken lite tokig.
                     if (gameViewModel.CapturedPiece == "p")
                     if (playerQuest.PlayerQuestCurrentMove >= 3)
                         questCompleted = true;
@@ -100,37 +107,29 @@ namespace ChessAndQuests.Models
                  }
             playerQuestMethods.UpdatePlayerQuest(playerQuest, out _);
 
-
             if (questCompleted)
             {
-                CompleteQuest(playerQuest, gameViewModel.GameKey);
+               playerQuest = CompleteQuest(playerQuest);
             }
-            return playerQuest;
+            return new QuestResult
+            {
+                PlayerQuest = playerQuest,
+                QuestCompleted = questCompleted,
+                QuestInfo = quest,
+                //ExtraTurnPlayerId = //det som ska specificeras i dem questen, annars null
+            };
 
         }
         //ska inte anropa singalR. Ska skicka tillbaka den uppdaterade playerquesten, och questets reward och sen anropa från controllern
-        private void CompleteQuest(PlayerQuestDetails pq, string gameKey)
+        private PlayerQuestDetails CompleteQuest(PlayerQuestDetails pq)
         {
             pq.PlayerQuestStatus = 1; // markera quest som klar
             playerQuestMethods.UpdatePlayerQuest(pq, out _);
-
-
-            // Hämta questen från DB
-            var quest = questMethods.GetQuestDetails(pq.QuestId, out string err);
-            if (quest == null)
-                return;
-
-            var reward = quest.QuestRewards;
-
-            //------------------------clientID är inte playerID som string***------------------------
-            _hubContext.Clients.Client(pq.PlayerId.ToString()).SendAsync("ReceiveQuestReward", new { pq.QuestId, quest.QuestRewards });
-            //varför inte skicka till gruppen? Båda måste ju uppdateras. kan man kanske skicka med ett winnerPlayerId?
-
-            _hubContext.Clients.Group(gameKey).SendAsync("QuestStatusUpdated", new {pq.QuestId, pq.PlayerId }); //vad ska denna göra?
-
+          
             // Uppdatera quest-status i DB
             int nextQuestId = pq.QuestId + 1;
             playerQuestMethods.NextQuest(pq.GameId, nextQuestId, out _);
+            return pq;
 
         }
 

@@ -19,7 +19,7 @@ namespace ChessAndQuests.DAL
         public int CreatePlayerQuest(PlayerQuestDetails playerQuest, out string errormsg)
             {
             
-            string sqlString = "INSERT INTO tbl_player_quests (gm_id, pl_id, qu_id, pq_currentmoves, pq_status, pq_progressmoves) VALUES (@GameId, @PlayerId, @QuestId, @CurrentMoves, @Status, @Progress)";
+            string sqlString = "INSERT INTO tbl_player_quest (gm_id, pl_id, qu_id, pq_currentmoves, pq_status, pq_progressmoves) VALUES (@GameId, @PlayerId, @QuestId, @CurrentMoves, @Status, @Progress)";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
             sqlCommand.Parameters.AddWithValue("@GameId", playerQuest.GameId);
             sqlCommand.Parameters.AddWithValue("@PlayerId", playerQuest.PlayerId);
@@ -59,7 +59,7 @@ namespace ChessAndQuests.DAL
         // Update playerQuest status or current move
         public int UpdatePlayerQuest(PlayerQuestDetails playerQuest, out string errormsg)
         {
-            string sqlString = "UPDATE tbl_player_quests SET pq_currentmoves = @CurrentMoves, pq_status = @Status, pq_progressmoves = @Progress WHERE pl_id = @PlayerId AND qu_id = @QuestId";
+            string sqlString = "UPDATE tbl_player_quest SET pq_currentmoves = @CurrentMoves, pq_status = @Status, pq_progressmoves = @Progress WHERE pl_id = @PlayerId AND qu_id = @QuestId";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
             sqlCommand.Parameters.AddWithValue("@CurrentMoves", playerQuest.PlayerQuestCurrentMove);
             sqlCommand.Parameters.AddWithValue("@Status", playerQuest.PlayerQuestStatus);
@@ -100,7 +100,7 @@ namespace ChessAndQuests.DAL
         // Delete a quest after completion or max attempts
         public int DeletePlayerQuest(int playerId, int questId, out string errormsg)
         {
-            string sqlString = "DELETE FROM tbl_player_quests WHERE pl_id = @PlayerId AND qu_id = @QuestId";
+            string sqlString = "DELETE FROM tbl_player_quest WHERE pl_id = @PlayerId AND qu_id = @QuestId";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
             sqlCommand.Parameters.AddWithValue("@PlayerId", playerId);
             sqlCommand.Parameters.AddWithValue("@QuestId", questId);

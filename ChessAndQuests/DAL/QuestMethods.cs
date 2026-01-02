@@ -36,6 +36,7 @@ namespace ChessAndQuests.DAL
                     questDetails.QuestDescription = Convert.ToString(reader["qu_description"]);
                     questDetails.QuestMaxMoves = Convert.ToUInt16(reader["qu_max_moves"]);
                     questDetails.QuestRewards = Convert.ToString(reader["qu_reward"]);
+                    questDetailsList.Add(questDetails);
                 }
                 errormsg = "";
                 return questDetailsList;
