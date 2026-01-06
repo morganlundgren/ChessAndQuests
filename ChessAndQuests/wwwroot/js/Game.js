@@ -228,6 +228,37 @@ function deleteGameOnMate() {
 }
 
 // ---------------- QUEST LOGIC FUNCTIONS ----------------
+function getQuestPerspective(state) {
+    let myQuest, opponentQuest;
+
+    if (currentPlayerId === whitePlayerId) {
+        myQuest = state.whitePlayerQuest;
+        opponentQuest = state.blackPlayerQuest;
+    } else {
+        myQuest = state.blackPlayerQuest;
+        opponentQuest = state.whitePlayerQuest;
+    }
+
+    return { myQuest, opponentQuest };
+}
+
+function updateQuestProgress(currentQuest, myQuest, opponentQuest)
+{
+    document.getElementById("questTitle").textContent = currentQuest.questName;
+    document.getElementById("questDescription").textContent = currentQuest.questDescription;
+
+    document.getElementById("myPlayerQuest").textContent = `${myQuest.playerQuestCurrentMove} / ${currentQuest.questMaxMoves}`;
+
+    if (1) { /*questet använder progressmoves MÅSTE FIXAS */
+        document.getElementById("myQuestProgress").style.display = "block";
+        document.getElementById("myQuestProgress").textContent = `${myQuest.progressMoves} / ${currentQuest.questMaxMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
+        document.getElementById("opponentQuestProgress").style.display = "block";
+        document.getElementById("opponentQuestProgress").textContent = `${opponentQuest.progressMoves} / ${currentQuest.questMaxMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
+    } else {
+        document.getElementById("myQuestProgress").style.display = "none";
+        document.getElementById("opponentQuestProgress").style.display = "none";
+    }
+}
 function handleQuestReward(questReward) {
     switch (questReward) {
         case "UNDO":
@@ -248,7 +279,7 @@ function handleQuestReward(questReward) {
 
 function getThreatenedSquares(game) {
     const threatenedSquares = new Set();
-    const opponentColor = (game.turn() === 'w') ? 'b' : 'w';
+    const opponentColor = (game.turn() === 'w') ? 'b' : 'w'; //nej mpste hanteras via currentTurnPlayerId
 
     game.SQUARES.forEach(square => {
         const piece = game.get(square);
@@ -299,8 +330,8 @@ function addExtraMoveToPlayer() {
     connection.invoke("RequestUndo", gameKey);// måste hämta fen-strängen innan ens drag gjordes. 
     undoAvailable = false                     // dessutom kolla ifall det är ens tur eller inte
     document.getElementById("undoButton").disabled = true; 
-});  */                                                      
-                                                         
+});                                                  
+  */                                                       
 
 
 
@@ -378,12 +409,14 @@ connection.on("ReceiveLatestFen", (state) => { //3
     board.position(state.currentFEN);
     currentTurnPlayerId = state.turnPlayerId;
 
+     const { myQuest, opponentQuest } = getQuestPerspective(state);
+
     if (state.questCompleted) {
-       // updateQuestUI(state);
-       // handleQuestReward(state.quest);
+        updateQuestProgress(state.currentQuest, myQuest, opponentQuest);
+        //handleQuestReward(state);
     }
     else if (state.currentQuest) {
-        //updateQuestUI(state);
+        updateQuestProgress(state.currentQuest, myQuest, opponentQuest);
     }
     
 

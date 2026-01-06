@@ -93,7 +93,10 @@ namespace ChessAndQuests.Models
 
                 case 8: // Capture Pawn (ta 3 bönder) //här är logiken lite tokig.
                     if (gameViewModel.CapturedPiece == "p")
-                    if (playerQuest.PlayerQuestCurrentMove >= 3)
+                    {
+                        playerQuest.ProgressMoves++;
+                    }
+                    if (playerQuest.ProgressMoves >= 3)
                         questCompleted = true;
                     break;
 

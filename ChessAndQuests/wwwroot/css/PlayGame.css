@@ -29,7 +29,10 @@ body.play-game-page {
 #gameInfo {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
-    grid-template-areas: "move board quest"
+    grid-template-areas: "move board quest";
+    width:100vw;
+    justify-self:center;
+    padding: 0 5vw 0 5vw;
 }
 .move-container {
     grid-area: move;
@@ -48,11 +51,12 @@ body.play-game-page {
     gap: 0.5rem;
 }
 .quest-container {
-    width:20vw;
+    width:100%;
 }
 .quest-scroll {
     background-image: url('/images/questRoll.png');
-    background-size: contain;
+    background-size: cover;
+    height:100%;
 }
 
 #board {

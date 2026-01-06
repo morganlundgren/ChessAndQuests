@@ -230,8 +230,8 @@ namespace ChessAndQuests.Controllers
             
 
             //quest logic handling
-            var playerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, game.turnId, out error);
-            var questResult = questLogic.HandleMove(playerQuest, gamevm); //skicka med moveDetails istället.
+            var activePlayerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, gamevm.TurnPlayerId, out error);
+            var questResult = questLogic.HandleMove(activePlayerQuest, gamevm); //skicka med moveDetails istället.
                                                                           // Gamevm används bara mellan vyn och kontroller
 
             //update game's current fen
@@ -241,7 +241,7 @@ namespace ChessAndQuests.Controllers
                 game.turnId = questResult.ExtraTurnPlayerId.Value; // behåll samma spelare
             }
             else
-            {
+            {                 //kanske ska använda game.turnId här också?
                 game.turnId = (gamevm.TurnPlayerId == game.PlayerWhiteId) ? game.PlayerBlackId.Value : game.PlayerWhiteId; // 6 uppdatera vems tur det är
             }
             game.CurrentFEN = questLogic.SetTurn(game.CurrentFEN, game.turnId, game);
@@ -251,14 +251,17 @@ namespace ChessAndQuests.Controllers
             {
                ViewBag.updateGame("Error updating game: " + error);
             }
+
+            var whitePlayerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, game.PlayerWhiteId, out error);
+            var blackPlayerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, game.PlayerBlackId.Value, out error);
+
             gamevm.TurnPlayerId = game.turnId; //uppdatera gamevm med ny turnplayerid
             gamevm.CurrentFEN = game.CurrentFEN;
-            gamevm.PlayerQuestCurrentMove = questResult.PlayerQuest.PlayerQuestCurrentMove;
-            gamevm.PlayerQuestProgressMoves = questResult.PlayerQuest.ProgressMoves;
-            gamevm.PlayerQuestPlayerId = questResult.PlayerQuest.PlayerId;
-            gamevm.CurrentQuest = questResult.QuestInfo; 
-            gamevm.CompletedQuest = questResult.CompletedQuest;
-            gamevm.QuestCompleted = questResult.QuestCompleted;
+            gamevm.WhitePlayerQuest = whitePlayerQuest;
+            gamevm.BlackPlayerQuest = blackPlayerQuest;
+            gamevm.CurrentQuest = questResult?.QuestInfo;
+            gamevm.CompletedQuest = questResult?.CompletedQuest;
+            gamevm.QuestCompleted = questResult?.QuestCompleted ?? false;
 
             //notify clients in the game group about the move
             await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", gamevm);

@@ -16,11 +16,12 @@
         public string CapturedPiece { get; set; }
 
         public QuestDetails CurrentQuest { get; set; }
-        public int PlayerQuestStatus { get; set; }
-        public int PlayerQuestCurrentMove { get; set; }
-        public int PlayerQuestProgressMoves { get; set; }
 
-        public int PlayerQuestPlayerId { get; set; }
+        public int PlayerQuestCurrentMove { get; set; }
+        public int PlayerQuestStatus { get; set; }
+        public int PlayerQuestProgressMoves { get; set; }
+        public PlayerQuestDetails WhitePlayerQuest { get; set; }
+        public PlayerQuestDetails BlackPlayerQuest { get; set; }
         public bool QuestCompleted { get; set; }
         public QuestDetails? CompletedQuest { get; set; }
         public GameViewModel() { }
