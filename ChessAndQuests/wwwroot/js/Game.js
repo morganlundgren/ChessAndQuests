@@ -127,9 +127,8 @@ function onDragStart(source, piece) {
         return false;
     }
 
-
-    if ((game.turn() === 'w' && piece.startsWith('b')) ||
-        (game.turn() === 'b' && piece.startsWith('w'))) {
+    if ((currentTurnPlayerId === whitePlayerId && piece.startsWith('b')) ||
+        (currentTurnPlayerId === blackPlayerId && piece.startsWith('w'))) {
         return false;
     }
     highlightLegalMoves(source); // highlight legal moves from the selected square
@@ -234,7 +233,7 @@ function handleQuestReward(questReward) {
         case "UNDO":
             enableUndoMove();
             break;
-        case "EXTRA_TIME": 
+        case "EXTRA_TURN": 
             addExtraMoveToPlayer();
             break;
         case "HIGHLIGHT_TREATS":
@@ -363,7 +362,6 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
             if (board) board.resize();
         });
 
-
         updateActivePlayer();
     }
 });
@@ -380,12 +378,12 @@ connection.on("ReceiveLatestFen", (state) => { //3
     board.position(state.currentFEN);
     currentTurnPlayerId = state.turnPlayerId;
 
-    if (state.quest && state.playerQuestStatus ===1) {
-        updateQuestUI(state);
-        handleQuestReward(state.quest);
+    if (state.questCompleted) {
+       // updateQuestUI(state);
+       // handleQuestReward(state.quest);
     }
-    else if (state.Quest) {
-        updateQuestUI(state);
+    else if (state.currentQuest) {
+        //updateQuestUI(state);
     }
     
 
@@ -397,6 +395,7 @@ connection.on("ReceiveLatestFen", (state) => { //3
     
 
     //här ska hantering av quest göras också
+    console.log("currentPlayer:", currentTurnPlayerId)
 
     updateActivePlayer();
 });

@@ -182,7 +182,7 @@ namespace ChessAndQuests.Controllers
             {
                 GameKey = gameKey,
                 CurrentFEN = gameDetails.CurrentFEN,
-                Quest = quest,
+                CurrentQuest = quest,
                 PlayerQuestCurrentMove = playerQuest.PlayerQuestCurrentMove,
                 PlayerQuestStatus = playerQuest.PlayerQuestStatus,
                 PlayerQuestProgressMoves = playerQuest.ProgressMoves,
@@ -244,6 +244,8 @@ namespace ChessAndQuests.Controllers
             {
                 game.turnId = (gamevm.TurnPlayerId == game.PlayerWhiteId) ? game.PlayerBlackId.Value : game.PlayerWhiteId; // 6 uppdatera vems tur det är
             }
+            game.CurrentFEN = questLogic.SetTurn(game.CurrentFEN, game.turnId, game);
+
             iGame = gameMethods.UpdateGame(game, out error);
             if (iGame == 0)
             {
@@ -252,10 +254,11 @@ namespace ChessAndQuests.Controllers
             gamevm.TurnPlayerId = game.turnId; //uppdatera gamevm med ny turnplayerid
             gamevm.CurrentFEN = game.CurrentFEN;
             gamevm.PlayerQuestCurrentMove = questResult.PlayerQuest.PlayerQuestCurrentMove;
-            gamevm.PlayerQuestStatus = questResult.PlayerQuest.PlayerQuestStatus;
             gamevm.PlayerQuestProgressMoves = questResult.PlayerQuest.ProgressMoves;
             gamevm.PlayerQuestPlayerId = questResult.PlayerQuest.PlayerId;
-            gamevm.Quest = questResult.QuestInfo; 
+            gamevm.CurrentQuest = questResult.QuestInfo; 
+            gamevm.CompletedQuest = questResult.CompletedQuest;
+            gamevm.QuestCompleted = questResult.QuestCompleted;
 
             //notify clients in the game group about the move
             await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", gamevm);

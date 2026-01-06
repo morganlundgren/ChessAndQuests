@@ -15,13 +15,14 @@
         public string MovedPiece { get; set; }
         public string CapturedPiece { get; set; }
 
-        public QuestDetails Quest { get; set; }
+        public QuestDetails CurrentQuest { get; set; }
         public int PlayerQuestStatus { get; set; }
         public int PlayerQuestCurrentMove { get; set; }
         public int PlayerQuestProgressMoves { get; set; }
 
         public int PlayerQuestPlayerId { get; set; }
-
+        public bool QuestCompleted { get; set; }
+        public QuestDetails? CompletedQuest { get; set; }
         public GameViewModel() { }
     }
 }
