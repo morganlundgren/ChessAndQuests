@@ -8,6 +8,8 @@
         public int MoveNumber { get; set; }
         public string FromSquare { get; set; }
         public string ToSquare { get; set; }
+        public char MovedPiece { get; set; }
+        public char? CapturedPiece { get; set; }
 
     }
 }

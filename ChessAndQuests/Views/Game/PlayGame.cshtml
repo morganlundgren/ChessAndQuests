@@ -2,10 +2,28 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor Accessor
 
-<div id="gamekey" 
-     data-game-key="@Model.GameKey"
+<div id="gamekey"
+     data-game-key="@Model.GameKey">
  </div>
 
+ <div style="display: none">
+    @* Black player box *@
+    <div class="player-card black" id="blackCard">
+        <div class="player-color">BLACK</div>
+        <div class="player-name" id="playerBlack">
+            @Model.PlayerBlackName
+        </div>
+    </div>
+
+    @* White player box *@
+
+    <div class="player-card white" id="whiteCard">
+        <div class="player-color">WHITE</div>
+        <div class="player-name" id="playerWhite">
+            @Model.PlayerWhiteName
+        </div>
+    </div>
+ </div>
 
 
 @{
@@ -34,34 +52,48 @@
     <div id="gameOverOverlay">
         <div class="gameOverBox" id="gameOverMessage"></div>
         <a asp-controller="Home" asp-action ="Index" class="backButton">Back to home</a>
-        <button asp-controller="Home" asp-action ="Index" class="backButton">Back to home</button>
         @ViewBag.ErrorDelete
+
     </div>
+    @* overlay promotion *@
+    <div id="promotionOverlay">
+        <div class="promotionBox">
+            <div class="promotionButtons">
+                <button data-piece="q">Queen</button>
+                <button data-piece="r">Rook</button>
+                <button data-piece="b">Bishop</button>
+                <button data-piece="n">Knight</button>
+            </div>
+        </div>
+    </div>
+
 
 <header id="letsplay">Lets play chess!</header>
 
-<header>Lets play chess!</header>
 
-    <div class="board-container">
-        @* Black player box *@
-        <div class="player-card black">
-            <div class="player-color">BLACK</div>
-            <div class="player-name" id="playerBlack">
-                @Model.PlayerBlackName
+    <section id="gameInfo">
+        <div class="move-container">
+            <div id="lastMoveText">
+
             </div>
         </div>
 
-        <div id="board"></div>
+        <div class="board-container">
+        
+            <div id="playerTop"></div>
 
-        @* White player box *@
-        <div class="player-card white">
-            <div class="player-color">WHITE</div>
-            <div class="player-name" id="playerWhite">
-                @Model.PlayerWhiteName
+            <div id="board"></div>
+
+            <div id="playerBottom"></div>
+
+        </div>
+        <div class="quest-container">
+            <div class="quest-scroll">
+
             </div>
         </div>
+    </section>
 
-    </div>
 
     <div style="text-align:center; margin-top:1rem;">
         <button id="forfeitButton" class="forfeitButton">Forfeit Game</button>
