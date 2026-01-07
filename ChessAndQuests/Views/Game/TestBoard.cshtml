@@ -34,13 +34,24 @@
 
         </div>
         <div class="quest-container">
-            <div class="quest-scroll""></div>
+            <div class="quest-scroll">
+                <div id="quest">
+                    <h2 id="questTitle">Pawn Collector</h2>
+                    <p id="questDescription">Be the first to take a pawn!</p>
+                </div>
+                <div id="playerQuest">
+                    <p id="myPlayerQuest"> 0 / 10</p>
+                    <p id="myQuestProgress"> 0/3</p>
+                    <p id="opponentQuestProgress"> 1/3</p>
+                </div>
+            </div>
         </div>
     </section>
 
 </body>
 @section Scripts {
     <script src="~/js/chessboard.js"></script>
+   
     <script>
         var board = ChessBoard('board', {
             position: 'start',

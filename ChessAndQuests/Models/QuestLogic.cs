@@ -29,7 +29,7 @@ namespace ChessAndQuests.Models
 
         public QuestResult HandleMove(PlayerQuestDetails playerQuest, GameViewModel gameViewModel)
         {
-
+          
             var quest = questMethods.GetQuestDetails(playerQuest.QuestId, out string err);
             if (quest == null)
                 return null;
@@ -40,6 +40,8 @@ namespace ChessAndQuests.Models
 
             bool questCompleted = false;
             
+
+
             playerQuest.PlayerQuestCurrentMove++;
 
             //specificera ifall en spelare får köra igen. Det måste skicka med i questResult.
@@ -91,7 +93,10 @@ namespace ChessAndQuests.Models
 
                 case 8: // Capture Pawn (ta 3 bönder) //här är logiken lite tokig.
                     if (gameViewModel.CapturedPiece == "p")
-                    if (playerQuest.PlayerQuestCurrentMove >= 3)
+                    {
+                        playerQuest.ProgressMoves++;
+                    }
+                    if (playerQuest.ProgressMoves >= 3)
                         questCompleted = true;
                     break;
 
@@ -107,29 +112,48 @@ namespace ChessAndQuests.Models
                  }
             playerQuestMethods.UpdatePlayerQuest(playerQuest, out _);
 
-            if (questCompleted)
-            {
-               playerQuest = CompleteQuest(playerQuest);
-            }
-            return new QuestResult
+            QuestResult questResult = new QuestResult
             {
                 PlayerQuest = playerQuest,
                 QuestCompleted = questCompleted,
                 QuestInfo = quest,
-                //ExtraTurnPlayerId = //det som ska specificeras i dem questen, annars null
-            };
+            }; ;
 
+            if (questCompleted)
+            {
+                questResult = CompleteQuest(playerQuest);
+            }
+            return questResult;
         }
         //ska inte anropa singalR. Ska skicka tillbaka den uppdaterade playerquesten, och questets reward och sen anropa från controllern
-        private PlayerQuestDetails CompleteQuest(PlayerQuestDetails pq)
+        private QuestResult CompleteQuest(PlayerQuestDetails pq)
         {
+            int? extraTurnPlayerId = null;
             pq.PlayerQuestStatus = 1; // markera quest som klar
             playerQuestMethods.UpdatePlayerQuest(pq, out _);
-          
+            var completedQuest = questMethods.GetQuestDetails(pq.QuestId, out _);
+
+            switch (completedQuest.QuestRewards)
+            {
+                case "EXTRA_TURN":
+                    extraTurnPlayerId = pq.PlayerId;
+                    break;
+            }
+     
             // Uppdatera quest-status i DB
             int nextQuestId = pq.QuestId + 1;
             playerQuestMethods.NextQuest(pq.GameId, nextQuestId, out _);
-            return pq;
+            
+            var nextQuest = questMethods.GetQuestDetails(nextQuestId, out _);
+            var nextPLayerQuest = playerQuestMethods.GetPlayerQuestByGameandPlayer(pq.GameId, pq.PlayerId, out _);
+            return new QuestResult
+            {
+                PlayerQuest = nextPLayerQuest,
+                QuestCompleted = true,
+                QuestInfo = nextQuest,
+                CompletedQuest = completedQuest,
+                ExtraTurnPlayerId = extraTurnPlayerId
+            };
 
         }
 
@@ -155,6 +179,28 @@ namespace ChessAndQuests.Models
         private bool ThreatensOpponentPiece(GameViewModel gamevm)
         {
             return true;
+        }
+
+        // Uppdatera FEN-strängen för att sätta rätt spelares tur, genom att skicka vems tur det ska vara
+        public string SetTurn (string fen, int turnPlayerId, GameDetails game)
+        {
+            var fenParts = fen.Split(' ', StringSplitOptions.RemoveEmptyEntries); //delar upp fensträngen i olika delar 
+
+            if (fenParts.Length < 2)
+            {
+                return fen; // Ogiltigt FEN-format
+            }
+            if (turnPlayerId == game.PlayerWhiteId) // Ändrar fen strängen ifall en spelare får köra igen.
+            {
+                fenParts[1] = "w"; // Vit tur
+            }
+            else
+            {
+                fenParts[1] = "b"; // Svart tur
+            }
+            fen = string.Join(" ", fenParts);
+            return fen;
+
         }
     }
 }

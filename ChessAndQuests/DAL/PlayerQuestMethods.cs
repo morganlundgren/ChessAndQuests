@@ -59,13 +59,14 @@ namespace ChessAndQuests.DAL
         // Update playerQuest status or current move
         public int UpdatePlayerQuest(PlayerQuestDetails playerQuest, out string errormsg)
         {
-            string sqlString = "UPDATE tbl_player_quest SET pq_currentmoves = @CurrentMoves, pq_status = @Status, pq_progressmoves = @Progress WHERE pl_id = @PlayerId AND qu_id = @QuestId";
+            string sqlString = "UPDATE tbl_player_quest SET pq_currentmoves = @CurrentMoves, pq_status = @Status, pq_progressmoves = @Progress WHERE pl_id = @PlayerId AND qu_id = @QuestId AND gm_id = @GameId";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
             sqlCommand.Parameters.AddWithValue("@CurrentMoves", playerQuest.PlayerQuestCurrentMove);
             sqlCommand.Parameters.AddWithValue("@Status", playerQuest.PlayerQuestStatus);
             sqlCommand.Parameters.AddWithValue("@PlayerId", playerQuest.PlayerId);
             sqlCommand.Parameters.AddWithValue("@QuestId", playerQuest.QuestId);
             sqlCommand.Parameters.AddWithValue("@Progress", playerQuest.ProgressMoves);
+            sqlCommand.Parameters.AddWithValue("@GameId", playerQuest.GameId);
             try
             {
                 sqlConnection.Open();

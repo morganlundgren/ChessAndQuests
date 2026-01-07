@@ -127,9 +127,8 @@ function onDragStart(source, piece) {
         return false;
     }
 
-
-    if ((game.turn() === 'w' && piece.startsWith('b')) ||
-        (game.turn() === 'b' && piece.startsWith('w'))) {
+    if ((currentTurnPlayerId === whitePlayerId && piece.startsWith('b')) ||
+        (currentTurnPlayerId === blackPlayerId && piece.startsWith('w'))) {
         return false;
     }
     highlightLegalMoves(source); // highlight legal moves from the selected square
@@ -229,12 +228,43 @@ function deleteGameOnMate() {
 }
 
 // ---------------- QUEST LOGIC FUNCTIONS ----------------
+function getQuestPerspective(state) {
+    let myQuest, opponentQuest;
+
+    if (currentPlayerId === whitePlayerId) {
+        myQuest = state.whitePlayerQuest;
+        opponentQuest = state.blackPlayerQuest;
+    } else {
+        myQuest = state.blackPlayerQuest;
+        opponentQuest = state.whitePlayerQuest;
+    }
+
+    return { myQuest, opponentQuest };
+}
+
+function updateQuestProgress(currentQuest, myQuest, opponentQuest)
+{
+    document.getElementById("questTitle").textContent = currentQuest.questName;
+    document.getElementById("questDescription").textContent = currentQuest.questDescription;
+
+    document.getElementById("myPlayerQuest").textContent = `${myQuest.playerQuestCurrentMove} / ${currentQuest.questMaxMoves}`;
+
+    if (1) { /*questet använder progressmoves MÅSTE FIXAS */
+        document.getElementById("myQuestProgress").style.display = "block";
+        document.getElementById("myQuestProgress").textContent = `${myQuest.progressMoves} / ${currentQuest.questMaxMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
+        document.getElementById("opponentQuestProgress").style.display = "block";
+        document.getElementById("opponentQuestProgress").textContent = `${opponentQuest.progressMoves} / ${currentQuest.questMaxMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
+    } else {
+        document.getElementById("myQuestProgress").style.display = "none";
+        document.getElementById("opponentQuestProgress").style.display = "none";
+    }
+}
 function handleQuestReward(questReward) {
     switch (questReward) {
         case "UNDO":
             enableUndoMove();
             break;
-        case "EXTRA_TIME": 
+        case "EXTRA_TURN": 
             addExtraMoveToPlayer();
             break;
         case "HIGHLIGHT_TREATS":
@@ -249,7 +279,7 @@ function handleQuestReward(questReward) {
 
 function getThreatenedSquares(game) {
     const threatenedSquares = new Set();
-    const opponentColor = (game.turn() === 'w') ? 'b' : 'w';
+    const opponentColor = (game.turn() === 'w') ? 'b' : 'w'; //nej mpste hanteras via currentTurnPlayerId
 
     game.SQUARES.forEach(square => {
         const piece = game.get(square);
@@ -300,8 +330,8 @@ function addExtraMoveToPlayer() {
     connection.invoke("RequestUndo", gameKey);// måste hämta fen-strängen innan ens drag gjordes. 
     undoAvailable = false                     // dessutom kolla ifall det är ens tur eller inte
     document.getElementById("undoButton").disabled = true; 
-});  */                                                      
-                                                         
+});                                                  
+  */                                                       
 
 
 
@@ -363,7 +393,6 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
             if (board) board.resize();
         });
 
-
         updateActivePlayer();
     }
 });
@@ -380,12 +409,14 @@ connection.on("ReceiveLatestFen", (state) => { //3
     board.position(state.currentFEN);
     currentTurnPlayerId = state.turnPlayerId;
 
-    if (state.quest && state.playerQuestStatus ===1) {
-        updateQuestUI(state);
-        handleQuestReward(state.quest);
+     const { myQuest, opponentQuest } = getQuestPerspective(state);
+
+    if (state.questCompleted) {
+        updateQuestProgress(state.currentQuest, myQuest, opponentQuest);
+        //handleQuestReward(state);
     }
-    else if (state.Quest) {
-        updateQuestUI(state);
+    else if (state.currentQuest) {
+        updateQuestProgress(state.currentQuest, myQuest, opponentQuest);
     }
     
 
@@ -397,6 +428,7 @@ connection.on("ReceiveLatestFen", (state) => { //3
     
 
     //här ska hantering av quest göras också
+    console.log("currentPlayer:", currentTurnPlayerId)
 
     updateActivePlayer();
 });
