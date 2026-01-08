@@ -8,6 +8,7 @@
         public int QuestMaxMoves { get; set; }
 
         public string QuestRewards { get; set; }  
+        public int? QuestMaxProgressMoves { get; set; }
         public QuestDetails() { }
 
     }

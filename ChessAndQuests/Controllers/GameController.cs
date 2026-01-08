@@ -241,7 +241,7 @@ namespace ChessAndQuests.Controllers
                 game.turnId = questResult.ExtraTurnPlayerId.Value; // behåll samma spelare
             }
             else
-            {                 //kanske ska använda game.turnId här också?
+            {       
                 game.turnId = (gamevm.TurnPlayerId == game.PlayerWhiteId) ? game.PlayerBlackId.Value : game.PlayerWhiteId; // 6 uppdatera vems tur det är
             }
             game.CurrentFEN = questLogic.SetTurn(game.CurrentFEN, game.turnId, game);

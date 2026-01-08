@@ -249,11 +249,11 @@ function updateQuestProgress(currentQuest, myQuest, opponentQuest)
 
     document.getElementById("myPlayerQuest").textContent = `${myQuest.playerQuestCurrentMove} / ${currentQuest.questMaxMoves}`;
 
-    if (1) { /*questet använder progressmoves MÅSTE FIXAS */
+    if (currentQuest.questMaxProgressMoves.) { /*questet använder progressmoves MÅSTE FIXAS */
         document.getElementById("myQuestProgress").style.display = "block";
-        document.getElementById("myQuestProgress").textContent = `${myQuest.progressMoves} / ${currentQuest.questMaxMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
+        document.getElementById("myQuestProgress").textContent = `${myQuest.progressMoves} / ${currentQuest.questMaxProgressMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
         document.getElementById("opponentQuestProgress").style.display = "block";
-        document.getElementById("opponentQuestProgress").textContent = `${opponentQuest.progressMoves} / ${currentQuest.questMaxMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
+        document.getElementById("opponentQuestProgress").textContent = `${opponentQuest.progressMoves} / ${currentQuest.questMaxProgressMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
     } else {
         document.getElementById("myQuestProgress").style.display = "none";
         document.getElementById("opponentQuestProgress").style.display = "none";
@@ -426,9 +426,6 @@ connection.on("ReceiveLatestFen", (state) => { //3
             `${state.fromSquare} → ${state.toSquare}`;
     }
     
-
-    //här ska hantering av quest göras också
-    console.log("currentPlayer:", currentTurnPlayerId)
 
     updateActivePlayer();
 });

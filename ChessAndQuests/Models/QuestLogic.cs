@@ -54,6 +54,11 @@ namespace ChessAndQuests.Models
                         questCompleted = true;
                         
                     }
+                    if (playerQuest.PlayerQuestCurrentMove >= quest.QuestMaxMoves)
+                    {
+                        questCompleted = true;
+                    }
+                        
                     break;
 
                 case 2: // Knight March
@@ -133,6 +138,9 @@ namespace ChessAndQuests.Models
             playerQuestMethods.UpdatePlayerQuest(pq, out _);
             var completedQuest = questMethods.GetQuestDetails(pq.QuestId, out _);
 
+          
+                
+
             switch (completedQuest.QuestRewards)
             {
                 case "EXTRA_TURN":
@@ -146,6 +154,17 @@ namespace ChessAndQuests.Models
             
             var nextQuest = questMethods.GetQuestDetails(nextQuestId, out _);
             var nextPLayerQuest = playerQuestMethods.GetPlayerQuestByGameandPlayer(pq.GameId, pq.PlayerId, out _);
+            if (pq.PlayerQuestCurrentMove >= completedQuest.QuestMaxMoves)
+            {
+                return new QuestResult
+                {
+                    PlayerQuest = nextPLayerQuest,
+                    QuestCompleted = true,
+                    QuestInfo = nextQuest,
+                    CompletedQuest = completedQuest,
+                    ExtraTurnPlayerId = null
+                };
+            }
             return new QuestResult
             {
                 PlayerQuest = nextPLayerQuest,
