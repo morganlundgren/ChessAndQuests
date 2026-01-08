@@ -249,7 +249,7 @@ function updateQuestProgress(currentQuest, myQuest, opponentQuest)
 
     document.getElementById("myPlayerQuest").textContent = `${myQuest.playerQuestCurrentMove} / ${currentQuest.questMaxMoves}`;
 
-    if (currentQuest.questMaxProgressMoves.) { /*questet använder progressmoves MÅSTE FIXAS */
+    if (currentQuest.questMaxProgressMoves) { /*questet använder progressmoves MÅSTE FIXAS */
         document.getElementById("myQuestProgress").style.display = "block";
         document.getElementById("myQuestProgress").textContent = `${myQuest.progressMoves} / ${currentQuest.questMaxProgressMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
         document.getElementById("opponentQuestProgress").style.display = "block";
@@ -268,23 +268,23 @@ function handleQuestReward(state) {
             
             if (currentPlayerId === state.questWinnerId) {
                 setInterval(() => {
-                document.getElementById("questConfirmation").style.display = "block";
-                document.getElementById("questConfirmation").textContent = "You have earned an extra turn! Please make your next move.";
+                    document.getElementById("questConfirmation").style.display = "block";
+                    document.getElementById("questConfirmation").textContent = "You have earned an extra turn! Please make your next move.";
                 }, 3000);
             }
-            else if (currentPlayerId !== state.questWinnerId){
-                    setInterval(() => {
-                        document.getElementById("questConfirmation").style.display = "block";
-                        document.getElementById("questConfirmation").textContent = "You´re opponent earned an extra turn! Watch out!";
-                    }, 3000);
+            else if (currentPlayerId !== state.questWinnerId) {
+                setInterval(() => {
+                    document.getElementById("questConfirmation").style.display = "block";
+                    document.getElementById("questConfirmation").style.color = "green";
+                    document.getElementById("questConfirmation").textContent = "You´re opponent earned an extra turn! Watch out!";
+                }, 3000);
             } else {
                 setInterval(() => {
                     document.getElementById("questConfirmation").style.display = "block";
+                    document.getElementById("questConfirmation").style.color = "red";
                     document.getElementById("questConfirmation").textContent = "No one finished the quest, prepare for the next one.";
                 }, 3000);
-
-
-            
+            }
                 
             break;
         case "HIGHLIGHT_TREATS":
