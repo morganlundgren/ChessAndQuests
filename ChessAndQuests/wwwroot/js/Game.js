@@ -436,8 +436,8 @@ connection.on("ReceiveLatestFen", (state) => { //3
 
     if (state.fromSquare&& state.toSquare) {
         highlightLastMove(state.fromSquare, state.toSquare);
-        document.getElementById("lastMoveText").textContent =
-            `${state.fromSquare} → ${state.toSquare}`;
+        document.getElementById("lastMoveText").textContent = 
+            `Latest move: ${state.fromSquare} → ${state.toSquare}`;
     }
     
 
