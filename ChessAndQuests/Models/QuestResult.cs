@@ -7,6 +7,7 @@
         public QuestDetails QuestInfo { get; set; }
         public QuestDetails? CompletedQuest { get; set; }
         public int? ExtraTurnPlayerId { get; set; }
+        public int? QuestWinnerId { get; set; }
         public QuestResult() { }
     }
 }

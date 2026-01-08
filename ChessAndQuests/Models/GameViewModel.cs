@@ -24,6 +24,7 @@
         public PlayerQuestDetails BlackPlayerQuest { get; set; }
         public bool QuestCompleted { get; set; }
         public QuestDetails? CompletedQuest { get; set; }
+        public int? QuestWinnerId { get; set; }
         public GameViewModel() { }
     }
 }

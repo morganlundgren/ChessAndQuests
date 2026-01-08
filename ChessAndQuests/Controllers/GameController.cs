@@ -262,6 +262,7 @@ namespace ChessAndQuests.Controllers
             gamevm.CurrentQuest = questResult?.QuestInfo;
             gamevm.CompletedQuest = questResult?.CompletedQuest;
             gamevm.QuestCompleted = questResult?.QuestCompleted ?? false;
+            gamevm.QuestWinnerId = questResult?.QuestWinnerId ?? null;
 
             //notify clients in the game group about the move
             await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", gamevm);
