@@ -28,19 +28,21 @@ body.play-game-page {
 }
 #gameInfo {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 29vw 32vw 29vw;
     grid-template-areas: "move board quest";
-    width: 100vw;
+    width: 96vw;
     justify-self: center;
-    align-content: center;
+    align-items: center;
+    justify-items: center;
     margin-top: 1vh;
+    gap: 2vw;
 }
 .move-container {
     
     grid-area: move;
     background: rgba(10, 10, 20, 0.9);
     width: 20vw;
-    height: 45vh;
+    height: 25vh;
     border-radius: 1vw;
     border: 1px solid #f4d187;
 }
@@ -369,14 +371,22 @@ body.play-game-page {
     }
 
 .forfeitButton {
-    background-color: #e74c3c; 
-    color: #fff;
+    font-size: 0.95rem;
+    color: #ffffff;
+    font-family: 'Cinzel', serif;
+    background-color: #e03e3e;
+    opacity: 0.5;
+    height: 4vw;
+    width: 10vw;
+    border: 1px solid grey;
+    border-radius: 1vw;
 }
 
     .forfeitButton:hover {
         background-color: #c0392b;
         transform: translateY(-2px);
         box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+        cursor: pointer;
     }
 
 
