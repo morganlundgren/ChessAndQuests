@@ -40,6 +40,8 @@ namespace ChessAndQuests.Controllers
         public IActionResult CreateGame(string gamekey, int playerId)
         {
             GameMethods gameMethods = new GameMethods();
+            QuestMethods questMethods = new QuestMethods();
+            PlayerQuestMethods playerQuestMethods = new PlayerQuestMethods();
             //hämta fensträng för startposition
             GameDetails newGame = new GameDetails();
             {
@@ -49,9 +51,11 @@ namespace ChessAndQuests.Controllers
                 newGame.status = 0;
                 newGame.turnId = playerId;
             }
-            int i = 0;
-            string error = "";
 
+            int iGame = 0;
+            string error = "";
+            int ipq = 0;
+          
 
             if (gameMethods.GetGameByKey(gamekey, out error) != null)
             {
@@ -59,17 +63,35 @@ namespace ChessAndQuests.Controllers
                 return View();
             }
             
-            i = gameMethods.CreateGame(newGame, out error);
+            iGame = gameMethods.CreateGame(newGame, out error);
 
-            if (i == 0)
+            if (iGame == 0)
             {
                 ViewBag.ErrorGame = "Error creating game: " + error;
                 return View();
             }
+            newGame = gameMethods.GetGameByKey(newGame.GameKey, out error);
             PlayerMethods playerMethods = new PlayerMethods();
             var player = playerMethods.GetById(playerId, out error);
 
-            return RedirectToAction("PlayGame", "Game", new { gameKey = newGame.GameKey });
+            var firstQuest = questMethods.GetAllQuests(out error)?.FirstOrDefault();
+            var firstPlayerQuest = new PlayerQuestDetails
+            {
+                PlayerId = playerId,
+                QuestId = firstQuest.QuestID,
+                GameId = newGame.GameId,
+                PlayerQuestStatus = 0,
+                PlayerQuestCurrentMove = 0,
+                ProgressMoves = 0
+            };
+            ipq = playerQuestMethods.CreatePlayerQuest(firstPlayerQuest, out error);
+            if (ipq == 0)
+            {
+                ViewBag.ErrorGame = error;
+                return View();
+            }
+
+            return RedirectToAction("PlayGame", "Game", new { gameKey = newGame.GameKey, quest = firstQuest, playerQuest = firstPlayerQuest });
         }
 
 
@@ -94,8 +116,11 @@ namespace ChessAndQuests.Controllers
         {
 
             GameMethods gameMethods = new GameMethods();
+            QuestMethods questMethods = new QuestMethods();
+            PlayerQuestMethods playerQuestMethods = new PlayerQuestMethods();
             string error = "";
-            int i = 0;
+            int ipq = 0;
+            int iGame = 0;
             GameDetails gameToJoin = gameMethods.GetGameByKey(gamekey, out error);
 
             if (gameToJoin == null)
@@ -111,19 +136,35 @@ namespace ChessAndQuests.Controllers
             PlayerMethods playerMethods = new PlayerMethods();
             var player = playerMethods.GetById(playerId, out error);
             gameToJoin.PlayerBlackId = playerId;
-            i = gameMethods.UpdateGame(gameToJoin, out error);
-            if (i == 0)
+            iGame = gameMethods.UpdateGame(gameToJoin, out error);
+            if (iGame == 0)
             {
                 ViewBag.ErrorJoin = "Error joining game: " + error;
                 return View();
             }
 
+            var firstQuest = questMethods.GetAllQuests(out error)?.FirstOrDefault();
+            var firstPlayerQuest = new PlayerQuestDetails
+            {
+                PlayerId = playerId,
+                QuestId = firstQuest.QuestID,
+                GameId = gameToJoin.GameId,
+                PlayerQuestStatus = 0,
+                PlayerQuestCurrentMove = 0,
+                ProgressMoves = 0
+            };
+            ipq = playerQuestMethods.CreatePlayerQuest(firstPlayerQuest, out error);
+            if (ipq == 0)
+            {
+                ViewBag.playerQuest = error;
+                return View();
+            }
 
-            return RedirectToAction("PlayGame", "Game", new { gameKey = gameToJoin.GameKey });
+            return RedirectToAction("PlayGame", "Game", new { gameKey = gameToJoin.GameKey, quest = firstQuest, playerQuest = firstPlayerQuest });
         }
 
         [HttpGet]
-        public IActionResult PlayGame(string gameKey)
+        public IActionResult PlayGame(string gameKey, QuestDetails quest, PlayerQuestDetails playerQuest)
         {
             if (HttpContext.Session.GetString("PlayerUsername") == null)
             {
@@ -135,11 +176,16 @@ namespace ChessAndQuests.Controllers
 
             gameDetails = gameMethods.GetGameByKey(gameKey, out error);
 
+
+
             var model = new GameViewModel
             {
                 GameKey = gameKey,
-                CurrentFEN = gameDetails.CurrentFEN
-
+                CurrentFEN = gameDetails.CurrentFEN,
+                CurrentQuest = quest,
+                PlayerQuestCurrentMove = playerQuest.PlayerQuestCurrentMove,
+                PlayerQuestStatus = playerQuest.PlayerQuestStatus,
+                PlayerQuestProgressMoves = playerQuest.ProgressMoves,
             };
 
             return View(model);
@@ -151,6 +197,10 @@ namespace ChessAndQuests.Controllers
             //get game by key
             var moveMethods = new MoveMethods();
             var gameMethods = new GameMethods();
+            var questMethods = new QuestMethods();
+            var playerquestsMethods = new PlayerQuestMethods();
+            var questLogic = new QuestLogic(_gameHubContext);
+
             string error = "";
             int iGame = 0;
             int iMove = 0;
@@ -158,21 +208,11 @@ namespace ChessAndQuests.Controllers
             int moveNumber =1;
             if (game == null) {ViewBag.Game("Game not found: " + error);}
 
-            //update game's current fen
-            game.CurrentFEN = gamevm.CurrentFEN?.Trim() ?? game.CurrentFEN;
-            game.turnId = (gamevm.TurnPlayerId == game.PlayerWhiteId) ? game.PlayerBlackId.Value : game.PlayerWhiteId; // 6 uppdatera vems tur det är
-
-            iGame = gameMethods.UpdateGame(game, out error);
-            if (iGame == 0)
-            {
-               ViewBag.updateGame("Error updating game: " + error);
-            }
-
             var previousMoves = moveMethods.GetMoves(game.GameId, out error); // get previous moves by player HERE!!!
 
             moveNumber = previousMoves != null ? previousMoves.Count + 1 : moveNumber;
 
-            var moveDetails = new MoveDetails
+            var move = new MoveDetails
             {
                 GameId = game.GameId,
                 FromSquare = gamevm.FromSquare,
@@ -181,14 +221,50 @@ namespace ChessAndQuests.Controllers
                 MoveNumber = moveNumber
             };
 
-            iMove = moveMethods.create(moveDetails, out error);
+            iMove = moveMethods.create(move, out error);
             if (iMove == 0)
             {
                 ViewBag.errorMove = error;
             }
 
+            
+
+            //quest logic handling
+            var activePlayerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, gamevm.TurnPlayerId, out error);
+            var questResult = questLogic.HandleMove(activePlayerQuest, gamevm); //skicka med moveDetails istället.
+                                                                          // Gamevm används bara mellan vyn och kontroller
+
+            //update game's current fen
+            game.CurrentFEN = gamevm.CurrentFEN?.Trim() ?? game.CurrentFEN;
+            if (questResult.ExtraTurnPlayerId.HasValue)
+            {
+                game.turnId = questResult.ExtraTurnPlayerId.Value; // behåll samma spelare
+            }
+            else
+            {                 //kanske ska använda game.turnId här också?
+                game.turnId = (gamevm.TurnPlayerId == game.PlayerWhiteId) ? game.PlayerBlackId.Value : game.PlayerWhiteId; // 6 uppdatera vems tur det är
+            }
+            game.CurrentFEN = questLogic.SetTurn(game.CurrentFEN, game.turnId, game);
+
+            iGame = gameMethods.UpdateGame(game, out error);
+            if (iGame == 0)
+            {
+               ViewBag.updateGame("Error updating game: " + error);
+            }
+
+            var whitePlayerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, game.PlayerWhiteId, out error);
+            var blackPlayerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, game.PlayerBlackId.Value, out error);
+
+            gamevm.TurnPlayerId = game.turnId; //uppdatera gamevm med ny turnplayerid
+            gamevm.CurrentFEN = game.CurrentFEN;
+            gamevm.WhitePlayerQuest = whitePlayerQuest;
+            gamevm.BlackPlayerQuest = blackPlayerQuest;
+            gamevm.CurrentQuest = questResult?.QuestInfo;
+            gamevm.CompletedQuest = questResult?.CompletedQuest;
+            gamevm.QuestCompleted = questResult?.QuestCompleted ?? false;
+
             //notify clients in the game group about the move
-            await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN, game.turnId);
+            await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", gamevm);
 
             return Ok();
         }

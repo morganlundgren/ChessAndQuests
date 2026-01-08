@@ -8,8 +8,8 @@
 CREATE TABLE [tbl_game]
 (
 	[gm_id] INT NOT NULL PRIMARY KEY,
-	[pl_wh_id] INT NOT NULL FOREIGN KEY REFERENCES [tbl_player](pl_id),
-	[pl_bl_id] INT NOT NULL FOREIGN KEY REFERENCES [tbl_player](pl_id),
+	[pl_white_id] INT NOT NULL FOREIGN KEY REFERENCES [tbl_player](pl_id),
+	[pl_black_id] INT NULL  FOREIGN KEY REFERENCES [tbl_player](pl_id),
 	[gm_key] NVARCHAR(100) NOT NULL,
 	[gm_current_fen] NVARCHAR(1000) NOT NULL,
 	[gm_status] INT NOT NULL,
@@ -20,11 +20,11 @@ CREATE TABLE [tbl_game]
 CREATE TABLE [tbl_move]
 (
 	[mv_id] INT NOT NULL PRIMARY KEY,
-	[gm_id] INT NOT NULL FOREIGN KEY REFERENCES [tbl_game](gm_id),
-	[pl_mv_id] INT NOT NULL FOREIGN KEY REFERENCES [tbl_player](pl_id),
-	[mv_nu] INT NOT NULL,
-	[mv_fr_sq] NVARCHAR(5) NOT NULL,
-	[mv_to_sq] NVARCHAR(5) NOT NULL,
+	[gm_id] INT NOT NULL FOREIGN KEY REFERENCES [tbl_game](gm_id) ON DELETE CASCADE,
+	[pl_move_id] INT NOT NULL FOREIGN KEY REFERENCES [tbl_player](pl_id),
+	[mv_number] INT NOT NULL,
+	[mv_fr_square] NVARCHAR(5) NOT NULL,
+	[mv_to_square] NVARCHAR(5) NOT NULL,
 	
 );
 
@@ -42,7 +42,7 @@ CREATE TABLE [tbl_quest]
 CREATE TABLE [tbl_player_quest]
 (
 	[plqu_id] INT NOT NULL PRIMARY KEY,
-	[gm_id] INT NOT NULL FOREIGN KEY REFERENCES [tbl_game](gm_id),
+	[gm_id] INT NOT NULL FOREIGN KEY REFERENCES [tbl_game](gm_id) ON DELETE CASCADE,
 	[pl_id] INT NOT NULL FOREIGN KEY REFERENCES [tbl_player](pl_id),
 	[qu_id] INT NOT NULL FOREIGN KEY REFERENCES [tbl_quest](qu_id),
 	[pq_status] INT NOT NULL,

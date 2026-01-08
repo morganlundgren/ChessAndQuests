@@ -70,10 +70,13 @@
 
 <header id="letsplay">Lets play chess!</header>
 
-<header>Lets play chess!</header>
 
     <section id="gameInfo">
-        <div class="moves-container"></div>
+        <div class="move-container">
+            <div id="lastMoveText">
+
+            </div>
+        </div>
 
         <div class="board-container">
         
@@ -84,7 +87,19 @@
             <div id="playerBottom"></div>
 
         </div>
-        <div class="quest-containter"></div>
+        <div class="quest-container">
+            <div class="quest-scroll">
+                <div id="quest">
+                    <h2 id="questTitle"></h2>
+                    <p id="questDescription"></p>
+                </div>
+                <div id="playerQuest">
+                    <p id="myPlayerQuest"></p>
+                    <p id="myQuestProgress"></p>
+                    <p id="opponentQuestProgress"></p>
+                </div>
+            </div>
+        </div>
     </section>
 
 

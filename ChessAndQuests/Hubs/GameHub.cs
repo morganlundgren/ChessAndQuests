@@ -1,4 +1,5 @@
 ﻿using ChessAndQuests.DAL;
+using ChessAndQuests.Models;
 using Microsoft.AspNetCore.SignalR;
 namespace ChessAndQuests.Hubs
 {
@@ -37,7 +38,13 @@ namespace ChessAndQuests.Hubs
         {
             var game = _gameMethods.GetGameByKey(gameKey, out _);
             if (gameKey == null) return;
-            await Clients.Group(gameKey).SendAsync("ReceiveLatestFen", game.CurrentFEN, game.turnId); //2
+            GameViewModel gamevm = new GameViewModel
+            {
+     
+                CurrentFEN = game.CurrentFEN,
+                TurnPlayerId = game.turnId
+            };
+            await Clients.Group(gameKey).SendAsync("ReceiveLatestFen", gamevm); //2
 
 
         }

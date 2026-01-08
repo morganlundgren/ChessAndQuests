@@ -8,5 +8,6 @@
         public int QuestId { get; set; }
         public int PlayerQuestStatus { get; set; }
         public int PlayerQuestCurrentMove { get; set; }
+        public int ProgressMoves { get; set; }
     }
 }

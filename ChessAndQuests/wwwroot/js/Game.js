@@ -9,6 +9,9 @@ let whitePlayerId = null;
 let blackPlayerId = null;
 let currentTurnPlayerId = null;
 let pendingPromotion = null;
+let undoAvailable = false;
+let extraMoveAvalible = false;
+let threatMovesLeft = 0;
 
 let winnerImage = "url('../Images/winner.png')";
 let loserImage = "url('../Images/loser.png')";
@@ -20,7 +23,7 @@ let stalemateImage = "url('../Images/stalemate.png')";
 
 
 
-//-------------------------------- PROMOTION HANDLING (not working) ------------------------------   
+//-------------------------------- PROMOTION HANDLING  ------------------------------   
 function isPromotionMove(source, target) {
     const piece = game.get(source)
     if (!piece) return false;
@@ -72,8 +75,44 @@ function completePromotion(promotion) {
         return 'snapback';
     }
 
-    sendMoveToServer(from, to, game.fen());
+    sendMoveToServer(from, to, game.fen(), move.piece, move.captured);
     checkGameEnd();
+}
+//-------------------------------- Highlight squares------------------------------
+function clearLegalMovesHighlights() {
+    document.querySelectorAll('.square-legal-move')
+        .forEach(el => el.classList.remove('square-legal-move')); //clear all highlights
+}
+
+function highlightLegalMoves(source) {
+
+    clearLegalMovesHighlights(); // clear highlight of previously selected piece
+
+    const moves = game.moves({ // chess.js function for getting legal moves. 
+        square: source,
+        verbose: true    //verbose:true returns objects with from/to (move obejcts)
+    });
+    moves.forEach(m => {
+        const square = document.querySelector(`.square-${m.to}`);
+        if (square) {
+            square.classList.add('square-legal-move');// use he move objects "to" to highlight squares (legal moves))
+        }
+    });
+}
+
+function clearLastMoveHighlight() {
+    document.querySelectorAll('.square-last-move')
+        .forEach(el => el.classList.remove('square-last-move')); //clear all highlights
+}
+
+function highlightLastMove(from, to) {
+    clearLastMoveHighlight();
+
+    const fromSquare = document.querySelector(`.square-${from}`);
+    const toSquare = document.querySelector(`.square-${to}`);
+
+    if (fromSquare) fromSquare.classList.add('square-last-move');
+    if (toSquare) toSquare.classList.add('square-last-move');
 }
 
 // ---------------- FUNCTIONS FOR CHESSBOARD.JS ----------------
@@ -88,20 +127,28 @@ function onDragStart(source, piece) {
         return false;
     }
 
-
-    if ((game.turn() === 'w' && piece.startsWith('b')) ||
-        (game.turn() === 'b' && piece.startsWith('w'))) {
+    if ((currentTurnPlayerId === whitePlayerId && piece.startsWith('b')) ||
+        (currentTurnPlayerId === blackPlayerId && piece.startsWith('w'))) {
         return false;
     }
+    highlightLegalMoves(source); // highlight legal moves from the selected square
 
 
 }
 function onDrop(source, target) { //4
 
+    clearLegalMovesHighlights(); // clear highlights when a piece is dropped
     if (source === target) {
 
         return 'snapback';
     }
+
+    // check if treatmoves are active
+   /* if (threatHighlightMovesLeft > 0) {
+        const threatened = getThreatenedPieces(game);
+        threatened.forEach(square => highlightSquare(square));
+        threatMovesLeft--;
+    }*/
 
     // Promotion handling (not working)
 
@@ -120,7 +167,7 @@ function onDrop(source, target) { //4
         // ogiltigt drag → snapback
         return 'snapback';
     }
-    sendMoveToServer(source, target, game.fen());
+    sendMoveToServer(source, target, game.fen(), move.piece, move.captured);
     checkGameEnd();
 }
 
@@ -153,7 +200,7 @@ function updateActivePlayer() {
 
 
 
-function sendMoveToServer(from, to, fen) {//5
+function sendMoveToServer(from, to, fen, piece, captured) {//5
     fetch('/Game/MakeMove', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -162,12 +209,12 @@ function sendMoveToServer(from, to, fen) {//5
             FromSquare: from,
             ToSquare: to,
             CurrentFEN: fen,
-            TurnPlayerId: currentPlayerId
+            TurnPlayerId: currentPlayerId,
+            MovedPiece: piece,
+            CapturedPiece: captured
         })
     });
 }
-
-
 
 function deleteGameOnMate() {
 
@@ -179,6 +226,114 @@ function deleteGameOnMate() {
         })
     });
 }
+
+// ---------------- QUEST LOGIC FUNCTIONS ----------------
+function getQuestPerspective(state) {
+    let myQuest, opponentQuest;
+
+    if (currentPlayerId === whitePlayerId) {
+        myQuest = state.whitePlayerQuest;
+        opponentQuest = state.blackPlayerQuest;
+    } else {
+        myQuest = state.blackPlayerQuest;
+        opponentQuest = state.whitePlayerQuest;
+    }
+
+    return { myQuest, opponentQuest };
+}
+
+function updateQuestProgress(currentQuest, myQuest, opponentQuest)
+{
+    document.getElementById("questTitle").textContent = currentQuest.questName;
+    document.getElementById("questDescription").textContent = currentQuest.questDescription;
+
+    document.getElementById("myPlayerQuest").textContent = `${myQuest.playerQuestCurrentMove} / ${currentQuest.questMaxMoves}`;
+
+    if (1) { /*questet använder progressmoves MÅSTE FIXAS */
+        document.getElementById("myQuestProgress").style.display = "block";
+        document.getElementById("myQuestProgress").textContent = `${myQuest.progressMoves} / ${currentQuest.questMaxMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
+        document.getElementById("opponentQuestProgress").style.display = "block";
+        document.getElementById("opponentQuestProgress").textContent = `${opponentQuest.progressMoves} / ${currentQuest.questMaxMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
+    } else {
+        document.getElementById("myQuestProgress").style.display = "none";
+        document.getElementById("opponentQuestProgress").style.display = "none";
+    }
+}
+function handleQuestReward(questReward) {
+    switch (questReward) {
+        case "UNDO":
+            enableUndoMove();
+            break;
+        case "EXTRA_TURN": 
+            addExtraMoveToPlayer();
+            break;
+        case "HIGHLIGHT_TREATS":
+            highlightTreatPieces();
+            break;
+        default:
+            console.log("Unknown quest reward:", questReward);
+    }
+}
+
+// get threatened squares
+
+function getThreatenedSquares(game) {
+    const threatenedSquares = new Set();
+    const opponentColor = (game.turn() === 'w') ? 'b' : 'w'; //nej mpste hanteras via currentTurnPlayerId
+
+    game.SQUARES.forEach(square => {
+        const piece = game.get(square);
+
+        if (piece && piece.color === opponentColor) {
+            const moves = game.moves({ square: square, verbose: true });
+
+            moves.forEach(move => {
+                threatenedSquares.add(move.to);
+            });
+        }
+    });
+
+    return Array.from(threatenedSquares);
+}
+
+// highlight threatened pieces
+function getThreatenedPieces(game) {
+    threatMovesLeft = 5; // reset counter
+    const threatenedSquares = getThreatenedSquares(game);
+
+    return threatenedSquares.filter(square => {
+        const piece = game.get(square);
+        return piece && piece.color === game.turn();
+    });
+}
+
+
+// button enabling for undo move
+function enableUndoMove() {
+    undoAvailable = true;
+    document.getElementById("undoButton").disabled = false;
+}
+
+
+// add extra move to player
+
+function addExtraMoveToPlayer() {
+    extraMoveAvalible = true;
+    alert("You have earned an extra move! Go ahead and make another move.");
+}
+
+
+// wait for click 
+/*document.getElementById("undoButton").addEventListener("click", () => {
+    if (!undoAvailable) return;
+
+    connection.invoke("RequestUndo", gameKey);// måste hämta fen-strängen innan ens drag gjordes. 
+    undoAvailable = false                     // dessutom kolla ifall det är ens tur eller inte
+    document.getElementById("undoButton").disabled = true; 
+});                                                  
+  */                                                       
+
+
 
 
 // ---------------- SIGNALR CONNECTION ----------------
@@ -238,20 +393,43 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
             if (board) board.resize();
         });
 
-
         updateActivePlayer();
     }
 });
 
-connection.on("ReceiveLatestFen", (fen, turnPlayerId) => { //3
-    console.log("ReceviveFen:", fen);
+connection.on("ReceiveLatestFen", (state) => { //3
+    console.log("ReceviveFen:", state.currentFEN);
+
+    clearLegalMovesHighlights(); // only used for safety reasons
 
     if (game === null) {
         game = new Chess(start_fen);
     }
-    game.load(fen);
-    board.position(fen);
-    currentTurnPlayerId = turnPlayerId;
+    game.load(state.currentFEN);
+    board.position(state.currentFEN);
+    currentTurnPlayerId = state.turnPlayerId;
+
+     const { myQuest, opponentQuest } = getQuestPerspective(state);
+
+    if (state.questCompleted) {
+        updateQuestProgress(state.currentQuest, myQuest, opponentQuest);
+        //handleQuestReward(state);
+    }
+    else if (state.currentQuest) {
+        updateQuestProgress(state.currentQuest, myQuest, opponentQuest);
+    }
+    
+
+    if (state.fromSquare&& state.toSquare) {
+        highlightLastMove(state.fromSquare, state.toSquare);
+        document.getElementById("lastMoveText").textContent =
+            `${state.fromSquare} → ${state.toSquare}`;
+    }
+    
+
+    //här ska hantering av quest göras också
+    console.log("currentPlayer:", currentTurnPlayerId)
+
     updateActivePlayer();
 });
 
@@ -277,6 +455,8 @@ document.getElementById("forfeitButton").addEventListener("click", () => {
         deleteGameOnMate();
     }
 });
+
+
 
 
 
