@@ -36,6 +36,7 @@ namespace ChessAndQuests.DAL
                     questDetails.QuestDescription = Convert.ToString(reader["qu_description"]);
                     questDetails.QuestMaxMoves = Convert.ToUInt16(reader["qu_max_moves"]);
                     questDetails.QuestRewards = Convert.ToString(reader["qu_reward"]);
+                    questDetails.QuestMaxProgressMoves = (reader["qu_max_progress_moves"]) != DBNull.Value ? Convert.ToUInt16(reader["qu_max_progress_moves"]) : null;
                     questDetailsList.Add(questDetails);
                 }
                 errormsg = "";
@@ -74,6 +75,8 @@ namespace ChessAndQuests.DAL
                     questDetails.QuestDescription = Convert.ToString(reader["qu_description"]);
                     questDetails.QuestMaxMoves = Convert.ToUInt16(reader["qu_max_moves"]);
                     questDetails.QuestRewards = Convert.ToString(reader["qu_reward"]);
+                    questDetails.QuestMaxProgressMoves = (reader["qu_max_progress_moves"]) != DBNull.Value ? Convert.ToUInt16(reader["qu_max_progress_moves"]) : null;
+
                 }
                 errormsg = "";
                 return questDetails;
