@@ -259,16 +259,36 @@ function updateQuestProgress(currentQuest, myQuest, opponentQuest)
         document.getElementById("opponentQuestProgress").style.display = "none";
     }
 }
-function handleQuestReward(questReward) {
-    switch (questReward) {
+function handleQuestReward(state) {
+    switch (state.completedQuest.questRewards) {
         case "UNDO":
             enableUndoMove();
             break;
         case "EXTRA_TURN": 
-            addExtraMoveToPlayer();
+            
+            if (currentPlayerId === state.questWinnerId) {
+                setInterval(() => {
+                document.getElementById("questConfirmation").style.display = "block";
+                document.getElementById("questConfirmation").textContent = "You have earned an extra turn! Please make your next move.";
+                }, 3000);
+            }
+            else if (currentPlayerId !== state.questWinnerId){
+                    setInterval(() => {
+                        document.getElementById("questConfirmation").style.display = "block";
+                        document.getElementById("questConfirmation").textContent = "You´re opponent earned an extra turn! Watch out!";
+                    }, 3000);
+            } else {
+                setInterval(() => {
+                    document.getElementById("questConfirmation").style.display = "block";
+                    document.getElementById("questConfirmation").textContent = "No one finished the quest, prepare for the next one.";
+                }, 3000);
+
+
+            
+                
             break;
         case "HIGHLIGHT_TREATS":
-            highlightTreatPieces();
+            //highlightTreatPieces();
             break;
         default:
             console.log("Unknown quest reward:", questReward);
@@ -314,13 +334,6 @@ function enableUndoMove() {
     document.getElementById("undoButton").disabled = false;
 }
 
-
-// add extra move to player
-
-function addExtraMoveToPlayer() {
-    extraMoveAvalible = true;
-    alert("You have earned an extra move! Go ahead and make another move.");
-}
 
 
 // wait for click 
@@ -412,8 +425,9 @@ connection.on("ReceiveLatestFen", (state) => { //3
      const { myQuest, opponentQuest } = getQuestPerspective(state);
 
     if (state.questCompleted) {
+        handleQuestReward(state);
         updateQuestProgress(state.currentQuest, myQuest, opponentQuest);
-        //handleQuestReward(state);
+
     }
     else if (state.currentQuest) {
         updateQuestProgress(state.currentQuest, myQuest, opponentQuest);
