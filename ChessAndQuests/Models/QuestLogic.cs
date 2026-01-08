@@ -43,78 +43,80 @@ namespace ChessAndQuests.Models
 
 
             playerQuest.PlayerQuestCurrentMove++;
-
-            //specificera ifall en spelare får köra igen. Det måste skicka med i questResult.
-            switch (playerQuest.QuestId)
-
+            if (playerQuest.PlayerQuestCurrentMove >= quest.QuestMaxMoves)
             {
-                case 1: // pawn collector
-                    if (gameViewModel.CapturedPiece == "p")
-                    {
-                        questCompleted = true;
-                        
-                    }
-                    if (playerQuest.PlayerQuestCurrentMove >= quest.QuestMaxMoves)
-                    {
-                        questCompleted = true;
-                    }
-                        
-                    break;
+                questCompleted = true;
+            }
+            else {
+                switch (playerQuest.QuestId)
 
-                case 2: // Knight March
-                    if (gameViewModel.MovedPiece == "n")
-                        playerQuest.ProgressMoves++;
-                    else
-                        playerQuest.ProgressMoves = 0;
+                {
+                    case 1: // pawn collector
+                        if (gameViewModel.CapturedPiece == "p")
+                        {
+                            questCompleted = true;
 
-                    if (playerQuest.ProgressMoves >= 3)
-                        questCompleted = true;
-                    break;
+                        }
 
-                case 3: // First Capture
-                    if (!string.IsNullOrEmpty(gameViewModel.CapturedPiece))
-                        questCompleted = true; //borde vara quest nr1
-                    break;
 
-                case 4: // Center Control
-                    if (IsCenterSquare(gameViewModel.ToSquare))
-                        questCompleted = true;
-                    break;
+                        break;
 
-                case 5: // Queen's Move
-                    if (gameViewModel.MovedPiece == "q" && Distance(gameViewModel.FromSquare, gameViewModel.ToSquare) >= 2)
-                        questCompleted = true;
-                    break;
+                    case 2: // Knight March
+                        if (gameViewModel.MovedPiece == "n")
+                            playerQuest.ProgressMoves++;
+                        else
+                            playerQuest.ProgressMoves = 0;
 
-                case 6: // Rook Rampage
-                    if (gameViewModel.MovedPiece == "r" && HorizontalDistance(gameViewModel.FromSquare, gameViewModel.ToSquare) >= 2)
-                        questCompleted = true;
-                    break;
+                        if (playerQuest.ProgressMoves >= 3)
+                            questCompleted = true;
 
-                case 7: // Knight Pressure
-                    if (gameViewModel.MovedPiece == "n" && ThreatensOpponentPiece(gameViewModel))
-                        questCompleted = true;
-                    break;
+                        break;
 
-                case 8: // Capture Pawn (ta 3 bönder) //här är logiken lite tokig.
-                    if (gameViewModel.CapturedPiece == "p")
-                    {
-                        playerQuest.ProgressMoves++;
-                    }
-                    if (playerQuest.ProgressMoves >= 3)
-                        questCompleted = true;
-                    break;
+                    case 3: // First Capture
+                        if (!string.IsNullOrEmpty(gameViewModel.CapturedPiece))
+                            questCompleted = true; //borde vara quest nr1
+                        break;
 
-                case 9: // Table Has Turned
-                    if (gameViewModel.MovedPiece == "k")
-                        playerQuest.ProgressMoves++;
-                    else
-                        playerQuest.ProgressMoves = 0;
+                    case 4: // Center Control
+                        if (IsCenterSquare(gameViewModel.ToSquare))
+                            questCompleted = true;
+                        break;
 
-                    if (playerQuest.ProgressMoves >= 5)
-                        questCompleted = true;
-                    break;
-                 }
+                    case 5: // Queen's Move
+                        if (gameViewModel.MovedPiece == "q" && Distance(gameViewModel.FromSquare, gameViewModel.ToSquare) >= 2)
+                            questCompleted = true;
+                        break;
+
+                    case 6: // Rook Rampage
+                        if (gameViewModel.MovedPiece == "r" && HorizontalDistance(gameViewModel.FromSquare, gameViewModel.ToSquare) >= 2)
+                            questCompleted = true;
+                        break;
+
+                    case 7: // Knight Pressure
+                        if (gameViewModel.MovedPiece == "n" && ThreatensOpponentPiece(gameViewModel))
+                            questCompleted = true;
+                        break;
+
+                    case 8: // Capture Pawn (ta 3 bönder) //här är logiken lite tokig.
+                        if (gameViewModel.CapturedPiece == "p")
+                        {
+                            playerQuest.ProgressMoves++;
+                        }
+                        if (playerQuest.ProgressMoves >= 3)
+                            questCompleted = true;
+                        break;
+
+                    case 9: // Table Has Turned
+                        if (gameViewModel.MovedPiece == "k")
+                            playerQuest.ProgressMoves++;
+                        else
+                            playerQuest.ProgressMoves = 0;
+
+                        if (playerQuest.ProgressMoves >= 5)
+                            questCompleted = true;
+                        break;
+                }
+            }
             playerQuestMethods.UpdatePlayerQuest(playerQuest, out _);
 
             QuestResult questResult = new QuestResult
