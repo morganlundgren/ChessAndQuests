@@ -38,11 +38,12 @@ body.play-game-page {
     gap: 2vw;
 }
 .move-container {
-    
     grid-area: move;
     background: rgba(10, 10, 20, 0.9);
     width: 20vw;
     height: 25vh;
+    text-align: center;
+    align-content: center;
     border-radius: 1vw;
     border: 1px solid #f4d187;
 }
@@ -56,6 +57,7 @@ body.play-game-page {
     font-family: 'Cinzel', serif;
     color: #f4d187;
     font-size: 2rem;
+    white-space: pre-line;
 }
 
 .board-container {
@@ -67,14 +69,14 @@ body.play-game-page {
 }
 .quest-container {
     grid-area: quest;
-    height: 70vh;
     display: flex;
-    justify-content: center;
     align-items: center;
+    flex-direction: column;
+    
 }
 .quest-scroll {
     width: 35vw;
-    height: 60vh;
+    height: 40vw;
     background-image: url('/images/questRoll.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
@@ -374,8 +376,7 @@ body.play-game-page {
     font-size: 0.95rem;
     color: #ffffff;
     font-family: 'Cinzel', serif;
-    background-color: #e03e3e;
-    opacity: 0.5;
+    background-color: #e03e3e80;
     height: 4vw;
     width: 10vw;
     border: 1px solid grey;
