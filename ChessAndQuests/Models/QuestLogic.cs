@@ -162,7 +162,8 @@ namespace ChessAndQuests.Models
                     QuestCompleted = true,
                     QuestInfo = nextQuest,
                     CompletedQuest = completedQuest,
-                    ExtraTurnPlayerId = null
+                    ExtraTurnPlayerId = null,
+                    QuestWinnerId = null
                 };
             }
             return new QuestResult
