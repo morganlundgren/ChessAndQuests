@@ -37,8 +37,16 @@ body.play-game-page {
     margin-top: 1vh;
     gap: 2vw;
 }
-.move-container {
+
+#leftSideContainer {
     grid-area: move;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.move-container {
     background: rgba(10, 10, 20, 0.9);
     width: 20vw;
     height: 25vh;
@@ -50,10 +58,28 @@ body.play-game-page {
 
 #questConfirmation {
     background-image: url('/images/questConfirmation.png');
-    grid-area: move;
+    width: 20vw;
+    height: 20vw;
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: center;
     display: none;
-    font-weight: bold;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    text-align:center;
 }
+
+#questConfirmation p {
+        font-family: 'Cinzel', serif;
+        color: #3a2a14;
+        font-size: 0.9rem;
+        margin: 4rem;
+        text-align: center;
+        white-space: pre-line;
+        font-weight: 600;
+}
+
 
 #lastMoveText {
     font-family: 'Cinzel', serif;

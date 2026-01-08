@@ -267,17 +267,17 @@ function handleQuestReward(state) {
         case "EXTRA_TURN": 
             
             if (currentPlayerId === state.questWinnerId) {
-                document.getElementById("questConfirmation").style.display = "block";
-                document.getElementById("questConfirmation").style.color = "green";
-                document.getElementById("questConfirmation").textContent = "You have earned an extra turn! Please make your next move.";
+                document.getElementById("questConfirmation").style.display = "flex";
+                document.getElementById("questConfirmationText").style.color = "green";
+                document.getElementById("questConfirmationText").textContent = "You have earned an extra turn! Please make your next move.";
             }
-            else if (currentPlayerId !== state.questWinnerId) {
-                document.getElementById("questConfirmation").style.display = "block";
-                document.getElementById("questConfirmation").style.color = "red";
-                document.getElementById("questConfirmation").textContent = "You´re opponent earned an extra turn! Watch out!";
-            } else {
-                document.getElementById("questConfirmation").style.display = "block";
-                document.getElementById("questConfirmation").textContent = "No one finished the quest, prepare for the next one.";
+            else if (currentPlayerId !== state.questWinnerId && state.questWinnerId) {
+                document.getElementById("questConfirmation").style.display = "flex";
+                document.getElementById("questConfirmationText").style.color = "red";
+                document.getElementById("questConfirmationText").textContent = "You´re opponent earned an extra turn! Watch out!";
+            } else if (!state.questWinnerId){
+                document.getElementById("questConfirmation").style.display = "flex";
+                document.getElementById("questConfirmationText").textContent = "No one finished the quest, prepare for the next one.";
             }
                 
             break;
