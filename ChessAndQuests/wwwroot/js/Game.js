@@ -247,13 +247,13 @@ function updateQuestProgress(currentQuest, myQuest, opponentQuest)
     document.getElementById("questTitle").textContent = currentQuest.questName;
     document.getElementById("questDescription").textContent = currentQuest.questDescription;
 
-    document.getElementById("myPlayerQuest").textContent = `${myQuest.playerQuestCurrentMove} / ${currentQuest.questMaxMoves}`;
+    document.getElementById("myPlayerQuest").textContent = `Moves left: ${currentQuest.questMaxMoves - myQuest.playerQuestCurrentMove}`;
 
     if (currentQuest.questMaxProgressMoves) { /*questet använder progressmoves MÅSTE FIXAS */
         document.getElementById("myQuestProgress").style.display = "block";
-        document.getElementById("myQuestProgress").textContent = `${myQuest.progressMoves} / ${currentQuest.questMaxProgressMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
+        document.getElementById("myQuestProgress").textContent = `My progress: ${myQuest.progressMoves} / ${currentQuest.questMaxProgressMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
         document.getElementById("opponentQuestProgress").style.display = "block";
-        document.getElementById("opponentQuestProgress").textContent = `${opponentQuest.progressMoves} / ${currentQuest.questMaxProgressMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
+        document.getElementById("opponentQuestProgress").textContent = `Oppenent progress: ${opponentQuest.progressMoves} / ${currentQuest.questMaxProgressMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
     } else {
         document.getElementById("myQuestProgress").style.display = "none";
         document.getElementById("opponentQuestProgress").style.display = "none";
