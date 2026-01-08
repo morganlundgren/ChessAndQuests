@@ -30,17 +30,24 @@ body.play-game-page {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     grid-template-areas: "move board quest";
-    width:100vw;
-    justify-self:center;
-    margin-top:1vh; 
+    width: 100vw;
+    justify-self: center;
+    align-content: center;
+    margin-top: 1vh;
 }
 .move-container {
+    
     grid-area: move;
     background: rgba(10, 10, 20, 0.9);
     width: 20vw;
     height: 45vh;
     border-radius: 1vw;
     border: 1px solid #f4d187;
+}
+
+#questConfirmation {
+    display: none;
+    font-weight: bold;
 }
 
 #lastMoveText {
