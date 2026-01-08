@@ -247,13 +247,13 @@ function updateQuestProgress(currentQuest, myQuest, opponentQuest)
     document.getElementById("questTitle").textContent = currentQuest.questName;
     document.getElementById("questDescription").textContent = currentQuest.questDescription;
 
-    document.getElementById("myPlayerQuest").textContent = `Moves left: ${currentQuest.questMaxMoves - myQuest.playerQuestCurrentMove}`;
+    document.getElementById("myPlayerQuest").textContent = `Moves left:\n${currentQuest.questMaxMoves - myQuest.playerQuestCurrentMove}`;
 
     if (currentQuest.questMaxProgressMoves) { /*questet använder progressmoves MÅSTE FIXAS */
         document.getElementById("myQuestProgress").style.display = "block";
-        document.getElementById("myQuestProgress").textContent = `My progress: ${myQuest.progressMoves} / ${currentQuest.questMaxProgressMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
+        document.getElementById("myQuestProgress").textContent = `My progress:\n${myQuest.progressMoves} / ${currentQuest.questMaxProgressMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
         document.getElementById("opponentQuestProgress").style.display = "block";
-        document.getElementById("opponentQuestProgress").textContent = `Oppenent progress: ${opponentQuest.progressMoves} / ${currentQuest.questMaxProgressMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
+        document.getElementById("opponentQuestProgress").textContent = `Oppenent progress:\n${opponentQuest.progressMoves} / ${currentQuest.questMaxProgressMoves}`;/*kravet för progressMoves MÅSTE FIXAS*/
     } else {
         document.getElementById("myQuestProgress").style.display = "none";
         document.getElementById("opponentQuestProgress").style.display = "none";
@@ -267,23 +267,17 @@ function handleQuestReward(state) {
         case "EXTRA_TURN": 
             
             if (currentPlayerId === state.questWinnerId) {
-                setInterval(() => {
-                    document.getElementById("questConfirmation").style.display = "block";
-                    document.getElementById("questConfirmation").textContent = "You have earned an extra turn! Please make your next move.";
-                }, 3000);
+                document.getElementById("questConfirmation").style.display = "block";
+                document.getElementById("questConfirmation").style.color = "green";
+                document.getElementById("questConfirmation").textContent = "You have earned an extra turn! Please make your next move.";
             }
             else if (currentPlayerId !== state.questWinnerId) {
-                setInterval(() => {
-                    document.getElementById("questConfirmation").style.display = "block";
-                    document.getElementById("questConfirmation").style.color = "green";
-                    document.getElementById("questConfirmation").textContent = "You´re opponent earned an extra turn! Watch out!";
-                }, 3000);
+                document.getElementById("questConfirmation").style.display = "block";
+                document.getElementById("questConfirmation").style.color = "red";
+                document.getElementById("questConfirmation").textContent = "You´re opponent earned an extra turn! Watch out!";
             } else {
-                setInterval(() => {
-                    document.getElementById("questConfirmation").style.display = "block";
-                    document.getElementById("questConfirmation").style.color = "red";
-                    document.getElementById("questConfirmation").textContent = "No one finished the quest, prepare for the next one.";
-                }, 3000);
+                document.getElementById("questConfirmation").style.display = "block";
+                document.getElementById("questConfirmation").textContent = "No one finished the quest, prepare for the next one.";
             }
                 
             break;
@@ -431,6 +425,7 @@ connection.on("ReceiveLatestFen", (state) => { //3
     }
     else if (state.currentQuest) {
         updateQuestProgress(state.currentQuest, myQuest, opponentQuest);
+        document.getElementById("questConfirmation").style.display = "none";
     }
     
 
