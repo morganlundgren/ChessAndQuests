@@ -31,16 +31,21 @@ body.play-game-page {
     grid-template-columns: 1fr auto 1fr;
     grid-template-areas: "move board quest";
     width:100vw;
-    justify-self:center;
     padding: 0 5vw 0 5vw;
 }
 .move-container {
     grid-area: move;
     background: rgba(10, 10, 20, 0.9);
     width: 20vw;
-    height: 70vh;
+    height: 45vh;
     border-radius: 1vw;
     border: 1px solid #f4d187;
+}
+
+#lastMoveText {
+    font-family: 'Cinzel', serif;
+    color: #f4d187;
+    font-size: 2rem;
 }
 
 .board-container {
