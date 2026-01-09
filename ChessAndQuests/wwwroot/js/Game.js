@@ -268,12 +268,12 @@ function handleQuestReward(state) {
             
             if (currentPlayerId === state.questWinnerId) {
                 document.getElementById("questConfirmation").style.display = "flex";
-                document.getElementById("questConfirmationText").style.color = "green";
+                document.getElementById("questConfirmationText").style.color = "#2F5D3A";
                 document.getElementById("questConfirmationText").textContent = "You have earned an extra turn! Please make your next move.";
             }
             else if (currentPlayerId !== state.questWinnerId && state.questWinnerId) {
                 document.getElementById("questConfirmation").style.display = "flex";
-                document.getElementById("questConfirmationText").style.color = "red";
+                document.getElementById("questConfirmationText").style.color = "#7A2E2E";
                 document.getElementById("questConfirmationText").textContent = "You´re opponent earned an extra turn! Watch out!";
             } else if (!state.questWinnerId){
                 document.getElementById("questConfirmation").style.display = "flex";
