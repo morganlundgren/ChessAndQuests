@@ -252,6 +252,21 @@ function handleQuestReward(questState) { // funkar inte helt plötsligt?
     switch (questState.completedQuest.questRewards) {
         case "UNDO":
             enableUndoMove();
+            if (currentPlayerId === questState.questWinnerId) {
+                document.getElementById("questConfirmation").style.display = "flex";
+                document.getElementById("questConfirmationText").style.color = "green";
+                document.getElementById("questConfirmationText").textContent = "You have earned the ability to undo your last move! Use it wisely.";
+            }
+            else if (currentPlayerId !== questState.questWinnerId && questState.questWinnerId) {
+                document.getElementById("questConfirmation").style.display = "flex";
+                document.getElementById("questConfirmationText").style.color = "red";
+                document.getElementById("questConfirmationText").textContent = "Your opponent has earned an undo ability! Stay alert.";
+            } else if (!questState.questWinnerId) {
+                document.getElementById("questConfirmation").style.display = "flex";
+                document.getElementById("questConfirmationText").textContent = "No one finished the quest, prepare for the next one.";
+            }
+
+
             break;
         case "EXTRA_TURN": 
             
@@ -294,21 +309,22 @@ function handleQuestReward(questState) { // funkar inte helt plötsligt?
 
 function getThreatenedSquares(opponentColor) {
     const threatenedSquares = new Set();
+    const originalTurn = game._turn;
+    game._turn = opponentColor; 
 
     SQUARES.forEach(square => {
         const piece = game.get(square);
-        console.log("square?", square)
-        console.log("piece?",piece)
-
+  
         if (piece && piece.color === opponentColor) {
             const moves = game.moves({ square: square, verbose: true });
-
+            console.log("moves?", moves)
             moves.forEach(move => {
                 threatenedSquares.add(move.to);
             });
         }
     });
-    console.log("Threatened squares:", threatenedSquares);
+    game._turn = originalTurn;
+    console.log("Threatened squares:", threatenedSquares);  
     return Array.from(threatenedSquares);
 }
 
@@ -316,14 +332,8 @@ function getThreatenedSquares(opponentColor) {
 function getThreatenedPieces(playerQuest) {
     const myColor = playerQuest.playerId === whitePlayerId ? 'w' : 'b'; // fixa logik så att dt visas även när en motståndare gör ett drag
     const opponentColor = myColor === 'w' ? 'b' : 'w';
-    let threatenedSquares = null;
-    if (playerQuest.threatHighlightActivated) {
-        threatenedSquares = getThreatenedSquares(opponentColor)
-    } else {
-        threatenedSquares = getThreatenedSquares (myColor)
-    }
 
-
+    let threatenedSquares = getThreatenedSquares(opponentColor)
     console.log("Threatened squares 1:", threatenedSquares);
 
     return threatenedSquares.filter(square => {
@@ -339,10 +349,10 @@ function clearThreatHighlights() {
 function UpdateThreatHighlights(myQuest, opponentQuest) {
 
     clearThreatHighlights();
-    console.log("UpdateThreatHighlights called", myQuest);
+    console.log("UpdateThreatHighlights called", myQuest, myQuest.playerId);
     let threatenedSquares = null;
 
-    if (!myQuest || !myQuest.threatHighlightActivated || opponentQuest.threatHighlightActivated) {
+    if (!myQuest || !myQuest.threatHighlightActivated) {
         console.log("Threat highlights not active or myQuest missing");
         return;
     }
@@ -363,20 +373,20 @@ function UpdateThreatHighlights(myQuest, opponentQuest) {
 // button enabling for undo move
 function enableUndoMove() {
     undoAvailable = true;
-    document.getElementById("undoButton").disabled = false;
+    document.getElementById("undoButtonOverlay").display = "flex";
 }
 
 
 
 // wait for click 
-/*document.getElementById("undoButton").addEventListener("click", () => {
+document.getElementById("undoButton").addEventListener("click", () => {
     if (!undoAvailable) return;
 
     connection.invoke("RequestUndo", gameKey);// måste hämta fen-strängen innan ens drag gjordes. 
     undoAvailable = false                     // dessutom kolla ifall det är ens tur eller inte
-    document.getElementById("undoButton").disabled = true; 
+    document.getElementById("undoButtonOverlay").display= "none"; 
 });                                                  
-  */                                                       
+                                            
 
 
 
@@ -459,7 +469,6 @@ connection.on("ReceiveLatestFen", (state) => { //3
         document.getElementById("lastMoveText").textContent = 
             `Latest move:\n${state.fromSquare} → ${state.toSquare}`;
     }
-    
 
     updateActivePlayer();
 });

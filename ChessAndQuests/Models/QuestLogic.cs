@@ -235,6 +235,11 @@ namespace ChessAndQuests.Models
             return fen;
 
         }
+        /*public string GetLastMove()
+        {
+
+            return fenToRestore
+        }*/
     }
 }
 
