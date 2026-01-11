@@ -82,7 +82,9 @@ namespace ChessAndQuests.Controllers
                 GameId = newGame.GameId,
                 PlayerQuestStatus = 0,
                 PlayerQuestCurrentMove = 0,
-                ProgressMoves = 0
+                ProgressMoves = 0,
+                ThreatHighlightActivated = false,
+                ThreatHighlightMovesLeft = 0
             };
             ipq = playerQuestMethods.CreatePlayerQuest(firstPlayerQuest, out error);
             if (ipq == 0)
@@ -151,7 +153,9 @@ namespace ChessAndQuests.Controllers
                 GameId = gameToJoin.GameId,
                 PlayerQuestStatus = 0,
                 PlayerQuestCurrentMove = 0,
-                ProgressMoves = 0
+                ProgressMoves = 0,
+                ThreatHighlightActivated = false,
+                ThreatHighlightMovesLeft = 0
             };
             ipq = playerQuestMethods.CreatePlayerQuest(firstPlayerQuest, out error);
             if (ipq == 0)
@@ -211,7 +215,7 @@ namespace ChessAndQuests.Controllers
             var previousMoves = moveMethods.GetMoves(game.GameId, out error); // get previous moves by player HERE!!!
 
             moveNumber = previousMoves != null ? previousMoves.Count + 1 : moveNumber;
-
+            //ska spara alla fen strängar;
             var move = new MoveDetails
             {
                 GameId = game.GameId,
@@ -254,18 +258,26 @@ namespace ChessAndQuests.Controllers
 
             var whitePlayerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, game.PlayerWhiteId, out error);
             var blackPlayerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, game.PlayerBlackId.Value, out error);
-
-            gamevm.TurnPlayerId = game.turnId; //uppdatera gamevm med ny turnplayerid
-            gamevm.CurrentFEN = game.CurrentFEN;
-            gamevm.WhitePlayerQuest = whitePlayerQuest;
-            gamevm.BlackPlayerQuest = blackPlayerQuest;
-            gamevm.CurrentQuest = questResult?.QuestInfo;
-            gamevm.CompletedQuest = questResult?.CompletedQuest;
-            gamevm.QuestCompleted = questResult?.QuestCompleted ?? false;
-            gamevm.QuestWinnerId = questResult?.QuestWinnerId ?? null;
+            
+            //samma sak för UNDO
 
             //notify clients in the game group about the move
-            await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", gamevm);
+            await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", new MoveInfoDTO
+            {
+                FromSquare = move.FromSquare,
+                ToSquare = move.ToSquare,
+                CurrentFEN = game.CurrentFEN,
+                TurnPlayerId = game.turnId
+            });
+            await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("UpdateQuest", new QuestUpdateDTO
+            {
+                WhitePlayerQuest = whitePlayerQuest,
+                BlackPlayerQuest = blackPlayerQuest,
+                QuestCompleted = questResult?.QuestCompleted ?? false,
+                CurrentQuest = questResult.QuestInfo,
+                CompletedQuest = questResult.CompletedQuest,
+                QuestWinnerId = questResult?.QuestWinnerId ?? null
+            });
 
             return Ok();
         }

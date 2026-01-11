@@ -9,5 +9,7 @@
         public int PlayerQuestStatus { get; set; }
         public int PlayerQuestCurrentMove { get; set; }
         public int ProgressMoves { get; set; }
+        public bool ThreatHighlightActivated { get; set; }
+        public int ThreatHighlightMovesLeft { get; set; }
     }
 }

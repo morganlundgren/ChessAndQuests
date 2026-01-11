@@ -8,6 +8,7 @@
         public QuestDetails? CompletedQuest { get; set; }
         public int? ExtraTurnPlayerId { get; set; }
         public int? QuestWinnerId { get; set; }
+        public int? ThreatHighlightMovesLeft { get; set; }
         public QuestResult() { }
     }
 }

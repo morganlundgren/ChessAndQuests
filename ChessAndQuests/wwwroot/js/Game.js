@@ -20,9 +20,6 @@ let stalemateImage = "url('../Images/stalemate.png')";
 
 
 
-
-
-
 //-------------------------------- PROMOTION HANDLING  ------------------------------   
 function isPromotionMove(source, target) {
     const piece = game.get(source)
@@ -143,15 +140,6 @@ function onDrop(source, target) { //4
         return 'snapback';
     }
 
-    // check if treatmoves are active
-   /* if (threatHighlightMovesLeft > 0) {
-        const threatened = getThreatenedPieces(game);
-        threatened.forEach(square => highlightSquare(square));
-        threatMovesLeft--;
-    }*/
-
-    // Promotion handling (not working)
-
     if (isPromotionMove(source, target)) {
         showPromotionDialog(source, target);
         return;
@@ -228,15 +216,15 @@ function deleteGameOnMate() {
 }
 
 // ---------------- QUEST LOGIC FUNCTIONS ----------------
-function getQuestPerspective(state) {
+function getQuestPerspective(questState) {
     let myQuest, opponentQuest;
 
     if (currentPlayerId === whitePlayerId) {
-        myQuest = state.whitePlayerQuest;
-        opponentQuest = state.blackPlayerQuest;
+        myQuest = questState.whitePlayerQuest;
+        opponentQuest = questState.blackPlayerQuest;
     } else {
-        myQuest = state.blackPlayerQuest;
-        opponentQuest = state.whitePlayerQuest;
+        myQuest = questState.blackPlayerQuest;
+        opponentQuest = questState.whitePlayerQuest;
     }
 
     return { myQuest, opponentQuest };
@@ -259,30 +247,43 @@ function updateQuestProgress(currentQuest, myQuest, opponentQuest)
         document.getElementById("opponentQuestProgress").style.display = "none";
     }
 }
-function handleQuestReward(state) {
-    switch (state.completedQuest.questRewards) {
+function handleQuestReward(questState) { // funkar inte helt plötsligt?
+    console.log ("reward:",questState.completedQuest.questRewards)
+    switch (questState.completedQuest.questRewards) {
         case "UNDO":
             enableUndoMove();
             break;
         case "EXTRA_TURN": 
             
-            if (currentPlayerId === state.questWinnerId) {
+            if (currentPlayerId === questState.questWinnerId) {
                 document.getElementById("questConfirmation").style.display = "flex";
                 document.getElementById("questConfirmationText").style.color = "green";
                 document.getElementById("questConfirmationText").textContent = "You have earned an extra turn! Please make your next move.";
             }
-            else if (currentPlayerId !== state.questWinnerId && state.questWinnerId) {
+            else if (currentPlayerId !== questState.questWinnerId && questState.questWinnerId) {
                 document.getElementById("questConfirmation").style.display = "flex";
                 document.getElementById("questConfirmationText").style.color = "red";
                 document.getElementById("questConfirmationText").textContent = "You´re opponent earned an extra turn! Watch out!";
-            } else if (!state.questWinnerId){
+            } else if (!questState.questWinnerId){
                 document.getElementById("questConfirmation").style.display = "flex";
                 document.getElementById("questConfirmationText").textContent = "No one finished the quest, prepare for the next one.";
             }
                 
             break;
-        case "HIGHLIGHT_TREATS":
-            //highlightTreatPieces();
+        case "HIGHLIGHT_THREATS":
+            if (currentPlayerId === questState.questWinnerId) {
+                document.getElementById("questConfirmation").style.display = "flex";
+                document.getElementById("questConfirmationText").style.color = "green";
+                document.getElementById("questConfirmationText").textContent = "You can now see your threatened pieces for the next 5 moves!";
+            }
+            else if (currentPlayerId !== questState.questWinnerId && questState.questWinnerId) {
+                document.getElementById("questConfirmation").style.display = "flex";
+                document.getElementById("questConfirmationText").style.color = "red";
+                document.getElementById("questConfirmationText").textContent = "You´re opponent now can see who you are threatining.";
+            } else if (!questState.questWinnerId) {
+                document.getElementById("questConfirmation").style.display = "flex";
+                document.getElementById("questConfirmationText").textContent = "No one finished the quest, prepare for the next one.";
+            }
             break;
         default:
             console.log("Unknown quest reward:", questReward);
@@ -291,12 +292,13 @@ function handleQuestReward(state) {
 
 // get threatened squares
 
-function getThreatenedSquares(game) {
+function getThreatenedSquares(opponentColor) {
     const threatenedSquares = new Set();
-    const opponentColor = (game.turn() === 'w') ? 'b' : 'w'; //nej mpste hanteras via currentTurnPlayerId
 
-    game.SQUARES.forEach(square => {
+    SQUARES.forEach(square => {
         const piece = game.get(square);
+        console.log("square?", square)
+        console.log("piece?",piece)
 
         if (piece && piece.color === opponentColor) {
             const moves = game.moves({ square: square, verbose: true });
@@ -306,19 +308,55 @@ function getThreatenedSquares(game) {
             });
         }
     });
-
+    console.log("Threatened squares:", threatenedSquares);
     return Array.from(threatenedSquares);
 }
 
 // highlight threatened pieces
-function getThreatenedPieces(game) {
-    threatMovesLeft = 5; // reset counter
-    const threatenedSquares = getThreatenedSquares(game);
+function getThreatenedPieces(playerQuest) {
+    const myColor = playerQuest.playerId === whitePlayerId ? 'w' : 'b'; // fixa logik så att dt visas även när en motståndare gör ett drag
+    const opponentColor = myColor === 'w' ? 'b' : 'w';
+    let threatenedSquares = null;
+    if (playerQuest.threatHighlightActivated) {
+        threatenedSquares = getThreatenedSquares(opponentColor)
+    } else {
+        threatenedSquares = getThreatenedSquares (myColor)
+    }
+
+
+    console.log("Threatened squares 1:", threatenedSquares);
 
     return threatenedSquares.filter(square => {
         const piece = game.get(square);
-        return piece && piece.color === game.turn();
+        console.log(piece)
+        if (!piece) return false ;
+        return piece.color === myColor;
     });
+}
+function clearThreatHighlights() {
+    document.querySelectorAll('.square-threats').forEach(el => el.classList.remove('square-threats'));
+}
+function UpdateThreatHighlights(myQuest, opponentQuest) {
+
+    clearThreatHighlights();
+    console.log("UpdateThreatHighlights called", myQuest);
+    let threatenedSquares = null;
+
+    if (!myQuest || !myQuest.threatHighlightActivated || opponentQuest.threatHighlightActivated) {
+        console.log("Threat highlights not active or myQuest missing");
+        return;
+    }
+   
+    threatenedSquares = getThreatenedPieces(myQuest);
+
+    if (myQuest.threatHighlightActivated) {
+
+        threatenedSquares.forEach(square => {
+            const squareElement = document.querySelector(`.square-${square}`);
+            if (squareElement) { squareElement.classList.add('square-threats') }
+        });
+    } 
+    
 }
 
 
@@ -416,19 +454,6 @@ connection.on("ReceiveLatestFen", (state) => { //3
     board.position(state.currentFEN);
     currentTurnPlayerId = state.turnPlayerId;
 
-     const { myQuest, opponentQuest } = getQuestPerspective(state);
-
-    if (state.questCompleted) {
-        handleQuestReward(state);
-        updateQuestProgress(state.currentQuest, myQuest, opponentQuest);
-
-    }
-    else if (state.currentQuest) {
-        updateQuestProgress(state.currentQuest, myQuest, opponentQuest);
-        document.getElementById("questConfirmation").style.display = "none";
-    }
-    
-
     if (state.fromSquare&& state.toSquare) {
         highlightLastMove(state.fromSquare, state.toSquare);
         document.getElementById("lastMoveText").textContent = 
@@ -438,6 +463,24 @@ connection.on("ReceiveLatestFen", (state) => { //3
 
     updateActivePlayer();
 });
+
+connection.on("UpdateQuest", (questState) => {
+
+    const { myQuest, opponentQuest } = getQuestPerspective(questState);
+    console.log("quest completed:", questState.questCompleted);
+    document.getElementById("questConfirmation").style.display = "none";
+
+    if (questState.questCompleted) {
+        handleQuestReward(questState);
+        updateQuestProgress(questState.currentQuest, myQuest, opponentQuest);
+
+    } else {
+        updateQuestProgress(questState.currentQuest, myQuest, opponentQuest);
+
+    }
+    UpdateThreatHighlights(myQuest, opponentQuest);
+});
+
 
 connection.on("GameIsFinished", (result) => {
     document.getElementById("gameOverOverlay").style.display = "flex";

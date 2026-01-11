@@ -19,7 +19,9 @@ namespace ChessAndQuests.DAL
         public int CreatePlayerQuest(PlayerQuestDetails playerQuest, out string errormsg)
             {
             
-            string sqlString = "INSERT INTO tbl_player_quest (gm_id, pl_id, qu_id, pq_currentmoves, pq_status, pq_progressmoves) VALUES (@GameId, @PlayerId, @QuestId, @CurrentMoves, @Status, @Progress)";
+            string sqlString = "INSERT INTO tbl_player_quest" +
+                " (gm_id, pl_id, qu_id, pq_currentmoves, pq_status, pq_progressmoves, pq_threathighlightactivated, pq_threathighlightmovesleft) VALUES" +
+                " (@GameId, @PlayerId, @QuestId, @CurrentMoves, @Status, @Progress, @ThreatHighlightActivated, @ThreatHighlightMovesLeft)";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
             sqlCommand.Parameters.AddWithValue("@GameId", playerQuest.GameId);
             sqlCommand.Parameters.AddWithValue("@PlayerId", playerQuest.PlayerId);
@@ -27,7 +29,9 @@ namespace ChessAndQuests.DAL
             sqlCommand.Parameters.AddWithValue("@CurrentMoves", playerQuest.PlayerQuestCurrentMove);
             sqlCommand.Parameters.AddWithValue("@Status", playerQuest.PlayerQuestStatus);
             sqlCommand.Parameters.AddWithValue("@Progress", playerQuest.ProgressMoves);
-            
+            sqlCommand.Parameters.AddWithValue("@ThreatHighlightActivated", playerQuest.ThreatHighlightActivated);
+            sqlCommand.Parameters.AddWithValue("@ThreatHighlightMovesLeft", playerQuest.ThreatHighlightMovesLeft);
+
             try
             {
                 sqlConnection.Open();
@@ -59,7 +63,9 @@ namespace ChessAndQuests.DAL
         // Update playerQuest status or current move
         public int UpdatePlayerQuest(PlayerQuestDetails playerQuest, out string errormsg)
         {
-            string sqlString = "UPDATE tbl_player_quest SET pq_currentmoves = @CurrentMoves, pq_status = @Status, pq_progressmoves = @Progress WHERE pl_id = @PlayerId AND qu_id = @QuestId AND gm_id = @GameId";
+            string sqlString = "UPDATE tbl_player_quest SET pq_currentmoves = @CurrentMoves, pq_status = @Status, pq_progressmoves = @Progress," +
+                "pq_threathighlightactivated = @ThreatHighlightActivated, pq_threathighlightmovesleft = @ThreatHighlightMovesLeft" +
+                " WHERE pl_id = @PlayerId AND qu_id = @QuestId AND gm_id = @GameId";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
             sqlCommand.Parameters.AddWithValue("@CurrentMoves", playerQuest.PlayerQuestCurrentMove);
             sqlCommand.Parameters.AddWithValue("@Status", playerQuest.PlayerQuestStatus);
@@ -67,6 +73,8 @@ namespace ChessAndQuests.DAL
             sqlCommand.Parameters.AddWithValue("@QuestId", playerQuest.QuestId);
             sqlCommand.Parameters.AddWithValue("@Progress", playerQuest.ProgressMoves);
             sqlCommand.Parameters.AddWithValue("@GameId", playerQuest.GameId);
+            sqlCommand.Parameters.AddWithValue("@ThreatHighlightActivated", playerQuest.ThreatHighlightActivated);
+            sqlCommand.Parameters.AddWithValue("@ThreatHighlightMovesLeft", playerQuest.ThreatHighlightMovesLeft);
             try
             {
                 sqlConnection.Open();
@@ -162,6 +170,8 @@ namespace ChessAndQuests.DAL
                     playerQuest.PlayerQuestCurrentMove = Convert.ToInt32(reader["pq_currentmoves"]);
                     playerQuest.PlayerQuestStatus = Convert.ToInt32(reader["pq_status"]);
                     playerQuest.ProgressMoves = Convert.ToInt32(reader["pq_progressmoves"]);
+                    playerQuest.ThreatHighlightActivated = Convert.ToBoolean(reader["pq_threathighlightactivated"]);
+                    playerQuest.ThreatHighlightMovesLeft = Convert.ToInt32(reader["pq_threathighlightmovesleft"]);
 
                 }
                 errormsg = "";
@@ -183,7 +193,8 @@ namespace ChessAndQuests.DAL
         {
             
 
-            string sqlString = "UPDATE tbl_player_quest SET qu_id = @QuestId, pq_currentmoves = @CurrentMoves, pq_status = @Status, pq_progressmoves = @Progress WHERE gm_id = @GameId";
+            string sqlString = "UPDATE tbl_player_quest SET qu_id = @QuestId, pq_currentmoves = @CurrentMoves, pq_status = @Status," +
+                "pq_progressmoves = @Progress WHERE gm_id = @GameId";
             SqlCommand sqlCommand = new SqlCommand(sqlString, sqlConnection);
             sqlCommand.Parameters.AddWithValue("@GameId", gameId);
             sqlCommand.Parameters.AddWithValue("@CurrentMoves", 0);
