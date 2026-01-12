@@ -269,7 +269,8 @@ namespace ChessAndQuests.Controllers
                 FromSquare = move.FromSquare,
                 ToSquare = move.ToSquare,
                 CurrentFEN = game.CurrentFEN,
-                TurnPlayerId = game.turnId
+                TurnPlayerId = game.turnId,
+                ExtraTurnGranted = extraTurnGranted
             });
             await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("UpdateQuest", new QuestUpdateDTO
             {
@@ -279,7 +280,6 @@ namespace ChessAndQuests.Controllers
                 CurrentQuest = questResult.QuestInfo,
                 CompletedQuest = questResult.CompletedQuest,
                 QuestWinnerId = questResult?.QuestWinnerId ?? null,
-                ExtraTurnGranted = extraTurnGranted
             });
 
             return Ok();

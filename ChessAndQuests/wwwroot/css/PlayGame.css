@@ -18,6 +18,10 @@ color: #e0e0e0 !important;
 header {
     display:none;
 }
+p {
+    margin: 0;
+    padding: 0;
+}
 
 body.play-game-page {
     background-image: url('/images/JoinGameBackground.png');
@@ -70,15 +74,15 @@ body.play-game-page {
     text-align:center;
 }
 
-    #questConfirmation p {
-        font-family: 'Cinzel', serif;
-        color: #3a2a14;
-        font-size: 0.8vw;
-        width: 60%;
-        text-align: center;
-        white-space: pre-line;
-        font-weight: 600;
-    }
+#questConfirmation p {
+    font-family: 'Cinzel', serif;
+    color: #3a2a14;
+    font-size: 0.8vw;
+    width: 60%;
+    text-align: center;
+    white-space: pre-line;
+    font-weight: 600;
+}
 
 
 #lastMoveText {
@@ -118,7 +122,7 @@ body.play-game-page {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 3vw;
+    padding: 1vw 3vw 3vw 0;
 }
 
 #quest,
@@ -127,7 +131,7 @@ body.play-game-page {
     text-align: center;
     font-family: 'Cinzel', serif;
     color: #3a2a14;
-    padding: 1.25vw;
+    padding: 0 1.25vw 0 1.25vw;
     border-radius: 0.5vw;
     box-shadow: inset 0 0 6px rgba(0,0,0,0.25);
 }
@@ -144,15 +148,18 @@ body.play-game-page {
     justify-content: center;
     align-items: center;
     gap: 0.625vw;
+    font-size: 1.2vw;
 }
 
 #questDescription {
     font-size: 1.17vw;
     font-weight: 600;
     line-height: 1.4;
+    margin-bottom:1.25vw;
 }
 #myPlayerQuest {
     font-size: 1.25vw;
+    margin-bottom: 1.25vw;
 }
 
 
@@ -393,6 +400,9 @@ body.play-game-page {
     flex-direction: column;
 
 }
+#undoButtonOverlay {
+    display:none;
+}
 #gameOverMessage {
     background-size: contain;
     width: 32.8vw;
@@ -403,7 +413,7 @@ body.play-game-page {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.95rem;
+    font-size: 1.17vw;
     font-weight: 600;
     color: #000000;
     font-family: 'Cinzel', serif;

@@ -161,6 +161,7 @@ function onDrop(source, target) { //4
 }
 
 function checkGameEnd() {
+    console.log("Check?", game.isCheck(), game.turn());
 
     if (game.isCheckmate()) {
         connection.invoke("NotifyCheckmate", gameKey, currentPlayerId);
@@ -169,7 +170,6 @@ function checkGameEnd() {
         connection.invoke("NotifyStalemate", gameKey);
         deleteGameOnMate();
     } else if (game.isCheck() && extraTurnGranted) {
-
         connection.invoke("NotifyCheckmate", gameKey, currentTurnPlayerId);
     }
 
@@ -458,14 +458,19 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
 connection.on("ReceiveLatestFen", (state) => { //3
 
     clearLegalMovesHighlights(); // only used for safety reasons
-
+    
     if (game === null) {
         game = new Chess(start_fen);
     }
+    if (state.extraTurnGranted) {
+        extraTurnGranted = true;
+        checkGameEnd();
+    }
+
     game.load(state.currentFEN);
     board.position(state.currentFEN);
     currentTurnPlayerId = state.turnPlayerId;
-
+    
     if (state.fromSquare&& state.toSquare) {
         highlightLastMove(state.fromSquare, state.toSquare);
         document.getElementById("lastMoveText").textContent = 
@@ -476,15 +481,9 @@ connection.on("ReceiveLatestFen", (state) => { //3
 });
 
 connection.on("UpdateQuest", (questState) => {
-
-    console.log("Extra Turn?", questState.extraTurnGranted)
-    if (questState.extraTurnGranted) {
-        extraTurnGranted = true;
-        checkGameEnd();
-    }
+    
     const { myQuest, opponentQuest } = getQuestPerspective(questState);
     document.getElementById("questConfirmation").style.display = "none";
-
 
     if (questState.questCompleted) {
         handleQuestReward(questState);

@@ -8,6 +8,5 @@
         public QuestDetails CurrentQuest { get; set; }
         public QuestDetails? CompletedQuest { get; set; }
         public int? QuestWinnerId { get; set; }
-        public bool ExtraTurnGranted { get; set; }
     }
 }
