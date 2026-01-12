@@ -43,13 +43,13 @@ body.play-game-page {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1.875vw;
 }
 
 .move-container {
     background: rgba(10, 10, 20, 0.9);
     width: 20vw;
-    height: 25vh;
+    height: 11.55vw;
     text-align: center;
     align-content: center;
     border-radius: 1vw;
@@ -66,25 +66,25 @@ body.play-game-page {
     display: none;
     flex-direction: column;
     justify-content: center;
-    align-content: center;
+    align-items: center;
     text-align:center;
 }
 
-#questConfirmation p {
+    #questConfirmation p {
         font-family: 'Cinzel', serif;
         color: #3a2a14;
-        font-size: 0.9rem;
-        margin: 4rem;
+        font-size: 0.8vw;
+        width: 60%;
         text-align: center;
         white-space: pre-line;
         font-weight: 600;
-}
+    }
 
 
 #lastMoveText {
     font-family: 'Cinzel', serif;
     color: #f4d187;
-    font-size: 2rem;
+    font-size: 2.5vw;
     white-space: pre-line;
 }
 
@@ -98,7 +98,7 @@ body.play-game-page {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.625vw;
 }
 .quest-container {
     grid-area: quest;
@@ -127,15 +127,15 @@ body.play-game-page {
     text-align: center;
     font-family: 'Cinzel', serif;
     color: #3a2a14;
-    padding: 1rem;
-    border-radius: 0.4rem;
+    padding: 1.25vw;
+    border-radius: 0.5vw;
     box-shadow: inset 0 0 6px rgba(0,0,0,0.25);
 }
 
 #questTitle {
-    font-size: 1.4rem;
+    font-size: 1.75vw;
     font-weight: bold;
-    margin-top: 2rem;
+    margin-top: 2.5vw;
 }
 
 #progressContainer {
@@ -143,21 +143,23 @@ body.play-game-page {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.625vw;
 }
 
 #questDescription {
-    font-size: 0.95rem;
+    font-size: 1.17vw;
     font-weight: 600;
     line-height: 1.4;
+}
+#myPlayerQuest {
+    font-size: 1.25vw;
 }
 
 
 #board {
-    width:32vw;
-    height:32vw;
-
-    margin: 0.5rem 0;
+    width: 32vw;
+    height: 32vw;
+    margin: 0.625vw 0;
 }
 
 .player-card {
@@ -166,7 +168,7 @@ body.play-game-page {
     background-color: rgba(0, 0, 0, 0.6);
     border: 1px solid #f4d187;
     border-radius: 8px;
-    padding: 0.5rem 1rem;
+    padding: 0.625vw 1.25vw;
     color: #f4d187;
     font-family: 'Cinzel', serif;
 }
@@ -183,10 +185,10 @@ body.play-game-page {
 
 
 .player-color {
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
+    font-size: 0.9375vw;
+    letter-spacing: 0.1875vw;
     opacity: 0.8;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.3125vw;
 }
 
 .player-name {
@@ -238,10 +240,10 @@ body.play-game-page {
 .player-card.active::after {
     content: "YOUR TURN";
     position: absolute;
-    top: 8px;
-    right: 12px;
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
+    top: 0.625vw;
+    right: 0.9375vw;
+    font-size: 0.875vw;
+    letter-spacing: 0.15vw;
     opacity: 0.9;
 }
 
@@ -264,7 +266,7 @@ body.play-game-page {
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%);
-    width: 85% !important;
+   width: 85% !important;
     height: 85% !important;
     object-fit: contain !important;
     transition: filter 0.3s ease;
@@ -364,14 +366,14 @@ body.play-game-page {
     height: 32.8vw;
 }
 .waitingBox h2 {
-    font-size: 2rem;
+    font-size: 2.5vw;
     font-weight: 900;
     color: #f4d087;
     text-shadow: 0 0 0.78vw rgba(0,0,0,0.7);
     font-family: 'Cinzel', serif;
 }
 .waitingBox p {
-    font-size: 0.95rem;
+    font-size: 1.17vw;
     color: #d7d7d7;
     font-family: 'Cinzel', serif;
 }
@@ -409,7 +411,7 @@ body.play-game-page {
 }
 
 .forfeitButton {
-    font-size: 0.95rem;
+    font-size: 1.17vw;
     color: #ffffff;
     font-family: 'Cinzel', serif;
     background-color: #e03e3e80;
@@ -452,15 +454,15 @@ body.play-game-page {
 .promotionBox h2 {
     font-family: 'Cinzel', serif;
     color: #f4d187;
-    font-size: 1.45rem; /* slightly smaller than before */
-    margin-bottom: 1rem;
+    font-size: 1.81vw; /* slightly smaller than before */
+    margin-bottom: 1.25vw;
     text-shadow: 0 0 0.5vw rgba(0,0,0,0.7);
     }
 
 .promotionButtons {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.6rem; /* slightly tighter gap */
+    gap: 0.75vw; /* slightly tighter gap */
 }
 
 
@@ -470,8 +472,8 @@ body.play-game-page {
     border-radius: 6px; /* slightly smaller radius */
     color: #f4d187;
     font-family: 'Cinzel', serif;
-    font-size: 0.85rem; /* smaller font like 90% zoom */
-    padding: 0.5rem 0; /* smaller padding */
+    font-size: 1.06vw; /* smaller font like 90% zoom */
+    padding: 0.625vw 0; /* smaller padding */
     cursor: pointer;
     transition: all 0.2s ease;
 }

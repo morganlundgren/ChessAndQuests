@@ -236,13 +236,15 @@ namespace ChessAndQuests.Controllers
             //quest logic handling
             var activePlayerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, gamevm.TurnPlayerId, out error);
             var questResult = questLogic.HandleMove(activePlayerQuest, gamevm); //skicka med moveDetails istället.
-                                                                          // Gamevm används bara mellan vyn och kontroller
+                                                                                // Gamevm används bara mellan vyn och kontroller
+            bool extraTurnGranted = false;
 
             //update game's current fen
             game.CurrentFEN = gamevm.CurrentFEN?.Trim() ?? game.CurrentFEN;
             if (questResult.ExtraTurnPlayerId.HasValue)
             {
                 game.turnId = questResult.ExtraTurnPlayerId.Value; // behåll samma spelare
+                extraTurnGranted = true;
             }
             else
             {       
@@ -276,7 +278,8 @@ namespace ChessAndQuests.Controllers
                 QuestCompleted = questResult?.QuestCompleted ?? false,
                 CurrentQuest = questResult.QuestInfo,
                 CompletedQuest = questResult.CompletedQuest,
-                QuestWinnerId = questResult?.QuestWinnerId ?? null
+                QuestWinnerId = questResult?.QuestWinnerId ?? null,
+                ExtraTurnGranted = extraTurnGranted
             });
 
             return Ok();

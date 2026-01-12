@@ -16,6 +16,7 @@ let threatMovesLeft = 0;
 let winnerImage = "url('../Images/winner.png')";
 let loserImage = "url('../Images/loser.png')";
 let stalemateImage = "url('../Images/stalemate.png')";
+let extraTurnGranted = false;
 
 
 
@@ -167,7 +168,11 @@ function checkGameEnd() {
     } else if (game.isStalemate()) {
         connection.invoke("NotifyStalemate", gameKey);
         deleteGameOnMate();
+    } else if (game.isCheck() && extraTurnGranted) {
+
+        connection.invoke("NotifyCheckmate", gameKey, currentTurnPlayerId);
     }
+
 }
 
 function updateActivePlayer() {
@@ -248,7 +253,7 @@ function updateQuestProgress(currentQuest, myQuest, opponentQuest)
     }
 }
 function handleQuestReward(questState) { // funkar inte helt plötsligt?
-    console.log ("reward:",questState.completedQuest.questRewards)
+
     switch (questState.completedQuest.questRewards) {
         case "UNDO":
             enableUndoMove();
@@ -317,14 +322,12 @@ function getThreatenedSquares(opponentColor) {
   
         if (piece && piece.color === opponentColor) {
             const moves = game.moves({ square: square, verbose: true });
-            console.log("moves?", moves)
             moves.forEach(move => {
                 threatenedSquares.add(move.to);
             });
         }
     });
-    game._turn = originalTurn;
-    console.log("Threatened squares:", threatenedSquares);  
+    game._turn = originalTurn; 
     return Array.from(threatenedSquares);
 }
 
@@ -334,11 +337,11 @@ function getThreatenedPieces(playerQuest) {
     const opponentColor = myColor === 'w' ? 'b' : 'w';
 
     let threatenedSquares = getThreatenedSquares(opponentColor)
-    console.log("Threatened squares 1:", threatenedSquares);
+
 
     return threatenedSquares.filter(square => {
         const piece = game.get(square);
-        console.log(piece)
+
         if (!piece) return false ;
         return piece.color === myColor;
     });
@@ -453,7 +456,6 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
 });
 
 connection.on("ReceiveLatestFen", (state) => { //3
-    console.log("ReceviveFen:", state.currentFEN);
 
     clearLegalMovesHighlights(); // only used for safety reasons
 
@@ -475,9 +477,14 @@ connection.on("ReceiveLatestFen", (state) => { //3
 
 connection.on("UpdateQuest", (questState) => {
 
+    console.log("Extra Turn?", questState.extraTurnGranted)
+    if (questState.extraTurnGranted) {
+        extraTurnGranted = true;
+        checkGameEnd();
+    }
     const { myQuest, opponentQuest } = getQuestPerspective(questState);
-    console.log("quest completed:", questState.questCompleted);
     document.getElementById("questConfirmation").style.display = "none";
+
 
     if (questState.questCompleted) {
         handleQuestReward(questState);
