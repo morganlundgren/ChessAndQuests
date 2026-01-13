@@ -1177,10 +1177,14 @@ function beginDraggingPiece(source, piece, x, y) {
   // create the dragged piece
   draggedPieceEl.attr('src', buildPieceImgSrc(piece))
     .css({
-      display: '',
-      position: 'absolute',
-      left: x - (SQUARE_SIZE / 2),
-      top: y - (SQUARE_SIZE / 2)
+        display: '',
+        position: 'absolute',
+        left: x - (SQUARE_SIZE / 2),
+        top: y - (SQUARE_SIZE / 2),
+        width: SQUARE_SIZE + 'px',
+        height: SQUARE_SIZE + 'px',
+        objectFit: 'contain',
+        boxSizing: 'border-box'
     });
 
   if (source !== 'spare') {
@@ -1194,7 +1198,7 @@ function updateDraggedPiece(x, y) {
   // put the dragged piece over the mouse cursor
   draggedPieceEl.css({
     left: x - (SQUARE_SIZE / 2),
-    top: y - (SQUARE_SIZE / 2)
+      top: y - (SQUARE_SIZE / 2),
   });
 
   // get location
@@ -1436,8 +1440,8 @@ widget.resize = function() {
 
   // set drag piece size
   draggedPieceEl.css({
-    height: SQUARE_SIZE,
-    width: SQUARE_SIZE
+      height: SQUARE_SIZE * 0.85 + 'px',
+      width: SQUARE_SIZE * 0.85 + 'px'
   });
 
   // spare pieces

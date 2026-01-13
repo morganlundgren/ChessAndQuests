@@ -6,5 +6,6 @@
         public string ToSquare { get; set; }
         public string CurrentFEN { get; set; }
         public int TurnPlayerId { get; set; }
+        public bool ExtraTurnGranted { get; set; }
     }
 }

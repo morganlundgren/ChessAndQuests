@@ -11,6 +11,18 @@ html {
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem, 0 0 0 0.25rem #258cfb;
 }
+.navbar-container {
+
+    display: grid;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "a b";
+    padding: 0 2vw 0 2vw;
+}
+
 
 html {
   position: relative;
@@ -52,7 +64,7 @@ body {
     }
 
     .fantasy-navbar .navbar-logo {
-        height: 26px; /* justera storlek här */
+        height: 4vw; /* justera storlek här */
         width: auto;
         filter: drop-shadow(0 0 6px rgba(0,0,0,0.55));
     }
@@ -81,6 +93,14 @@ body {
         background: rgba(244, 208, 135, 0.16);
         border: 1px solid rgba(244, 208, 135, 0.25);
     }
+#navbarNav {
+    grid-area: b;
+    justify-self:end;
+    padding-right: 2vw
+}
+#logo {
+    grid-area:a;
+}
 
 
 
