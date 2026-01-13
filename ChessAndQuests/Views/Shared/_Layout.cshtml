@@ -22,23 +22,14 @@
     <header>
 
         <nav class="navbar navbar-expand-sm navbar-dark fantasy-navbar">
-            <div class="container">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                    <img src="~/images/logo.png" class="navbar-logo" />
+            <div class="navbar-container">
+                <a class="navbar-brand" id="logo" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/ChessandQuest.png" class="navbar-logo" />
                     ChessAndQuests
                 </a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Game" asp-action="TestBoard">Test Board</a>
-                        </li>
-                    </ul>
+                    <a class="nav-link" asp-controller="Game" asp-action="TestBoard">Test Board</a>
                 </div>
             </div>
         </nav>
