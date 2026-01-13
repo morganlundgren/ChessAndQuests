@@ -452,10 +452,10 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
     }
 });
 
-connection.on("ReceiveLatestFen", (state) => { //3
+connection.on("ReceiveLatestFen", (state) => { 
     console.log("ReceviveFen:", state.currentFEN);
 
-    clearLegalMovesHighlights(); // only used for safety reasons
+    clearLegalMovesHighlights(); 
 
     if (game === null) {
         game = new Chess(start_fen);
