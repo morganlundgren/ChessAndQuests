@@ -24,9 +24,6 @@ namespace ChessAndQuests.Models
 
         }
 
-        //borde vi uppdatera playerquest i databasen också? hur ska det annars visas i vyn? 
-        //(t.ex currentmoves, progressmoves osv)
-
         public QuestResult HandleMove(PlayerQuestDetails playerQuest, GameViewModel gameViewModel)
         {
           
@@ -39,8 +36,16 @@ namespace ChessAndQuests.Models
             }
 
             bool questCompleted = false;
-            
 
+            if (playerQuest.ThreatHighlightActivated)
+            {
+                playerQuest.ThreatHighlightMovesLeft--;
+                if (playerQuest.ThreatHighlightMovesLeft <= 0)
+                {
+                    playerQuest.ThreatHighlightActivated = false;
+                    playerQuest.ThreatHighlightMovesLeft = 0;
+                }
+            }
 
             playerQuest.PlayerQuestCurrentMove++;
             if (playerQuest.PlayerQuestCurrentMove >= quest.QuestMaxMoves)
@@ -57,8 +62,6 @@ namespace ChessAndQuests.Models
                             questCompleted = true;
 
                         }
-
-
                         break;
 
                     case 2: // Knight March
@@ -123,7 +126,7 @@ namespace ChessAndQuests.Models
             {
                 PlayerQuest = playerQuest,
                 QuestCompleted = questCompleted,
-                QuestInfo = quest,
+                QuestInfo = quest
             }; ;
 
             if (questCompleted)
@@ -139,17 +142,23 @@ namespace ChessAndQuests.Models
             pq.PlayerQuestStatus = 1; // markera quest som klar
             playerQuestMethods.UpdatePlayerQuest(pq, out _);
             var completedQuest = questMethods.GetQuestDetails(pq.QuestId, out _);
-
           
-                
 
             switch (completedQuest.QuestRewards)
             {
                 case "EXTRA_TURN":
                     extraTurnPlayerId = pq.PlayerId;
                     break;
+
+                case "HIGHLIGHT_THREATS":
+              
+                    pq.ThreatHighlightActivated = true;
+                    pq.ThreatHighlightMovesLeft = 5; 
+                    break;
+
             }
-     
+            playerQuestMethods.UpdatePlayerQuest(pq, out _);
+
             // Uppdatera quest-status i DB
             int nextQuestId = pq.QuestId + 1;
             playerQuestMethods.NextQuest(pq.GameId, nextQuestId, out _);
@@ -176,6 +185,7 @@ namespace ChessAndQuests.Models
                 CompletedQuest = completedQuest,
                 ExtraTurnPlayerId = extraTurnPlayerId,
                 QuestWinnerId = pq.PlayerId
+
             };
 
         }
@@ -225,6 +235,11 @@ namespace ChessAndQuests.Models
             return fen;
 
         }
+        /*public string GetLastMove()
+        {
+
+            return fenToRestore
+        }*/
     }
 }
 
