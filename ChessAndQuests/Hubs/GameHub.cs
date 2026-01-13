@@ -1,6 +1,8 @@
 ﻿using ChessAndQuests.DAL;
 using ChessAndQuests.Models;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Tasks;
 namespace ChessAndQuests.Hubs
 {
     public class GameHub : Hub
@@ -54,11 +56,28 @@ namespace ChessAndQuests.Hubs
         public async Task NotifyCheckmate(string gameKey, int winnerPlayerId)
         {
             await Clients.Group(gameKey).SendAsync("GameIsFinished", winnerPlayerId);
+            DeleteGame(gameKey);
+
         }
         //Notify clients about stalemate
         public async Task NotifyStalemate(string gameKey)
         {
             await Clients.Group(gameKey).SendAsync("GameIsFinished", "stalemate");
+            DeleteGame(gameKey);
+
+        }
+        private void DeleteGame (string gameKey)
+        {
+            GameMethods gameMethods = new GameMethods();
+            string error = "";
+            int i = 0;
+            GameDetails gameToDelete = gameMethods.GetGameByKey(gameKey, out error);
+            if (gameToDelete != null)
+            {
+                i = gameMethods.DeleteGame(gameToDelete.GameId, out error);
+            }
+            
+            
         }
     }
 }

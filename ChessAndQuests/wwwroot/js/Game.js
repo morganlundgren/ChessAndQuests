@@ -20,7 +20,6 @@ let extraTurnGranted = false;
 
 
 
-
 //-------------------------------- PROMOTION HANDLING  ------------------------------   
 function isPromotionMove(source, target) {
     const piece = game.get(source)
@@ -157,21 +156,20 @@ function onDrop(source, target) { //4
         return 'snapback';
     }
     sendMoveToServer(source, target, game.fen(), move.piece, move.captured);
-    checkGameEnd();
 }
 
 function checkGameEnd() {
     console.log("Check?", game.isCheck(), game.turn());
 
     if (game.isCheckmate()) {
-        connection.invoke("NotifyCheckmate", gameKey, currentPlayerId);
-        deleteGameOnMate();
+        console.log("delete here? ", 1)
+        connection.invoke("NotifyCheckmate", gameKey, currentTurnPlayerId);
     } else if (game.isStalemate()) {
+        console.log("delete here? ", 2)
         connection.invoke("NotifyStalemate", gameKey);
-        deleteGameOnMate();
     } else if (game.isCheck() && extraTurnGranted) {
         connection.invoke("NotifyCheckmate", gameKey, currentTurnPlayerId);
-        deleteGameOnMate();
+        console.log("delete here? ",3)
     }
 
 }
@@ -211,7 +209,7 @@ function sendMoveToServer(from, to, fen, piece, captured) {//5
 }
 
 function deleteGameOnMate() {
-
+    console.log("deleted for real?", true)
     fetch('/Game/DeleteGame', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -465,11 +463,15 @@ connection.on("ReceiveLatestFen", (state) => { //3
     }
     if (state.extraTurnGranted) {
         extraTurnGranted = true;
-        checkGameEnd();
+    } else {
+        extraTurnGranted = false;
     }
+    console.log("Extra turn?", state.extraTurnGranted)
 
+    checkGameEnd();
     game.load(state.currentFEN);
     board.position(state.currentFEN);
+    
     currentTurnPlayerId = state.turnPlayerId;
     
     if (state.fromSquare&& state.toSquare) {
@@ -517,6 +519,7 @@ document.getElementById("forfeitButton").addEventListener("click", () => {
         const winnerId = (currentPlayerId === whitePlayerId) ? blackPlayerId : whitePlayerId;
         connection.invoke("NotifyCheckmate", gameKey, winnerId)
             .catch(err => console.error(err.toString()));
+           
     }
 });
 
