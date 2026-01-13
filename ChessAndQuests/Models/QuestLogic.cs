@@ -221,15 +221,15 @@ namespace ChessAndQuests.Models
 
             if (fenParts.Length < 2)
             {
-                return fen; // Ogiltigt FEN-format
+                return fen; 
             }
             if (turnPlayerId == game.PlayerWhiteId) // Ändrar fen strängen ifall en spelare får köra igen.
             {
-                fenParts[1] = "w"; // Vit tur
+                fenParts[1] = "w"; 
             }
             else
             {
-                fenParts[1] = "b"; // Svart tur
+                fenParts[1] = "b"; 
             }
             fen = string.Join(" ", fenParts);
             return fen;
