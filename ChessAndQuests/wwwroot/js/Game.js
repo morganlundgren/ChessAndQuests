@@ -171,6 +171,7 @@ function checkGameEnd() {
         deleteGameOnMate();
     } else if (game.isCheck() && extraTurnGranted) {
         connection.invoke("NotifyCheckmate", gameKey, currentTurnPlayerId);
+        deleteGameOnMate();
     }
 
 }
@@ -516,7 +517,6 @@ document.getElementById("forfeitButton").addEventListener("click", () => {
         const winnerId = (currentPlayerId === whitePlayerId) ? blackPlayerId : whitePlayerId;
         connection.invoke("NotifyCheckmate", gameKey, winnerId)
             .catch(err => console.error(err.toString()));
-        deleteGameOnMate();
     }
 });
 
