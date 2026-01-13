@@ -234,9 +234,10 @@ namespace ChessAndQuests.Controllers
             
 
             //quest logic handling
+
             var activePlayerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, gamevm.TurnPlayerId, out error);
-            var questResult = questLogic.HandleMove(activePlayerQuest, gamevm); //skicka med moveDetails istället.
-                                                                                // Gamevm används bara mellan vyn och kontroller
+            var questResult = questLogic.HandleMove(activePlayerQuest, gamevm); 
+                                                                             
             bool extraTurnGranted = false;
 
             //update game's current fen
@@ -248,7 +249,7 @@ namespace ChessAndQuests.Controllers
             }
             else
             {       
-                game.turnId = (gamevm.TurnPlayerId == game.PlayerWhiteId) ? game.PlayerBlackId.Value : game.PlayerWhiteId; // 6 uppdatera vems tur det är
+                game.turnId = (gamevm.TurnPlayerId == game.PlayerWhiteId) ? game.PlayerBlackId.Value : game.PlayerWhiteId; 
             }
             game.CurrentFEN = questLogic.SetTurn(game.CurrentFEN, game.turnId, game);
 
