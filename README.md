@@ -37,6 +37,7 @@ Completing a quest grants real in-game rewards that can change the board, reveal
 Only the first player to complete a quest receives the reward.
 
 _**Featured Quests:**_
+
   *Capture your opponent’s pawn first → See all threatened pieces for 5 moves
 		
   *Move the knight for three consecutive turns → Gain an extra turn
@@ -54,6 +55,7 @@ _**Featured Quests:**_
   *Capture three opponent pawns first → Undo one 
 
 _**How It Works:**_
+
   Quests are assigned per game, with only one player able to complete a quest first.
 		
   Progress is tracked server-side in real time.
@@ -66,6 +68,7 @@ _**How It Works:**_
 **🧱 Tech Stack**
 
 _**Backend:**_
+
   *C# / ASP.NET MVC
 		
   *SignalR for real-time communication
@@ -85,6 +88,7 @@ _**Frontend:**_
 		
   
 **🏗️ Architecture Overview**
+
 Server-authoritative design: The server tracks the single source of truth for the board and quests.
 
 _**Client-server flow:**_
@@ -138,6 +142,7 @@ _**To run QuestChess on your machine, you need to set up your own database:**_
 **⚠️ Note: The game will not run correctly without a properly configured database. Make sure the schema matches the tables expected by the application.**
 
 **📌 Deployment**
+
   *Hosted on Microsoft Azure
 	
   *Uses Azure App Service for the web application
