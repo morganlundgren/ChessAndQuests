@@ -187,9 +187,6 @@ namespace ChessAndQuests.Controllers
                 GameKey = gameKey,
                 CurrentFEN = gameDetails.CurrentFEN,
                 CurrentQuest = quest,
-                PlayerQuestCurrentMove = playerQuest.PlayerQuestCurrentMove,
-                PlayerQuestStatus = playerQuest.PlayerQuestStatus,
-                PlayerQuestProgressMoves = playerQuest.ProgressMoves,
             };
 
             return View(model);
