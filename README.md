@@ -162,3 +162,5 @@ _**To run QuestChess on your machine, you need to set up your own database:**_
   *Clock / time control support
 	
   *Showcasing taken pieces
+
+  //The developers, Omar L, Theo W, Morgan L
