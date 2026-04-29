@@ -214,6 +214,7 @@ namespace ChessAndQuests.Controllers
                 ViewBag.Game("Game not found: " + error);
             }
 
+
             var previousMoves = moveMethods.GetMoves(game.GameId, out error); // get previous moves by player
 
             moveNumber = previousMoves != null ? previousMoves.Count + 1 : moveNumber;
