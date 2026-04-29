@@ -399,7 +399,7 @@ document.getElementById("undoButton").addEventListener("click", () => {
 connection.start().then(() => {
     console.log("Connected to SignalR");
     connection.invoke("JoinGameGroup", gameKey);
-    connection.invoke("BrodcastLatestFen", gameKey); //1
+    connection.invoke("BrodcastLatestFen", gameKey); 
 
 });
 
@@ -456,35 +456,40 @@ connection.on("ReceivePlayerNames", (whiteName, blackName, isWaiting, whiteId, b
 });
 
 connection.on("ReceiveLatestFen", (state) => { //3
+    // Safety check
+    clearLegalMovesHighlights(); 
 
-    clearLegalMovesHighlights(); // only used for safety reasons
-
+    // Initialize game engine if null
     if (game === null) {
         game = new Chess(start_fen);
     }
+    // If extra turn, check = checkmate
     if (state.extraTurnGranted) {
         extraTurnGranted = true;
         checkGameEnd();
     }
-
+    // Load the FEN string into the game engine
     game.load(state.currentFEN);
     board.position(state.currentFEN);
     currentTurnPlayerId = state.turnPlayerId;
-    
+
+    // Highlight last move and display move text
     if (state.fromSquare&& state.toSquare) {
         highlightLastMove(state.fromSquare, state.toSquare);
         document.getElementById("lastMoveText").textContent = 
             `Latest move:\n${state.fromSquare} → ${state.toSquare}`;
     }
-
+    // Update active player UI highlight
     updateActivePlayer();
 });
 
 connection.on("UpdateQuest", (questState) => {
-    
+
+    // Get quest state from server
     const { myQuest, opponentQuest } = getQuestPerspective(questState);
     document.getElementById("questConfirmation").style.display = "none";
 
+    // Update quest progress and handle rewards if completed
     if (questState.questCompleted) {
         handleQuestReward(questState);
         updateQuestProgress(questState.currentQuest, myQuest, opponentQuest);
@@ -493,6 +498,7 @@ connection.on("UpdateQuest", (questState) => {
         updateQuestProgress(questState.currentQuest, myQuest, opponentQuest);
 
     }
+    // Update threat highlights if applicable
     UpdateThreatHighlights(myQuest, opponentQuest);
 });
 

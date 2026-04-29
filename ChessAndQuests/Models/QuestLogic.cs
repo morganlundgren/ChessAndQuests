@@ -26,7 +26,7 @@ namespace ChessAndQuests.Models
 
         public QuestResult HandleMove(PlayerQuestDetails playerQuest, GameViewModel gameViewModel)
         {
-          
+            // Get current quest
             var quest = questMethods.GetQuestDetails(playerQuest.QuestId, out string err);
             if (quest == null)
                 return null;
@@ -37,6 +37,7 @@ namespace ChessAndQuests.Models
 
             bool questCompleted = false;
 
+            // Handle Threat Highlight duration
             if (playerQuest.ThreatHighlightActivated)
             {
                 playerQuest.ThreatHighlightMovesLeft--;
@@ -47,6 +48,7 @@ namespace ChessAndQuests.Models
                 }
             }
 
+            // Update quest current moves
             playerQuest.PlayerQuestCurrentMove++;
             if (playerQuest.PlayerQuestCurrentMove >= quest.QuestMaxMoves)
             {
@@ -56,7 +58,7 @@ namespace ChessAndQuests.Models
                 switch (playerQuest.QuestId)
 
                 {
-                    case 1: // pawn collector
+                    case 1: // Pawn collector
                         if (gameViewModel.CapturedPiece == "p")
                         {
                             questCompleted = true;
@@ -77,7 +79,7 @@ namespace ChessAndQuests.Models
 
                     case 3: // First Capture
                         if (!string.IsNullOrEmpty(gameViewModel.CapturedPiece))
-                            questCompleted = true; //borde vara quest nr1
+                            questCompleted = true; 
                         break;
 
                     case 4: // Center Control
@@ -100,7 +102,7 @@ namespace ChessAndQuests.Models
                             questCompleted = true;
                         break;
 
-                    case 8: // Capture Pawn (ta 3 bönder) //här är logiken lite tokig.
+                    case 8: // Capture Pawn (ta 3 bönder) 
                         if (gameViewModel.CapturedPiece == "p")
                         {
                             playerQuest.ProgressMoves++;
@@ -120,6 +122,7 @@ namespace ChessAndQuests.Models
                         break;
                 }
             }
+            // Update player quest in DB
             playerQuestMethods.UpdatePlayerQuest(playerQuest, out _);
 
             QuestResult questResult = new QuestResult
@@ -135,6 +138,7 @@ namespace ChessAndQuests.Models
             }
             return questResult;
         }
+
         //ska inte anropa singalR. Ska skicka tillbaka den uppdaterade playerquesten, och questets reward och sen anropa från controllern
         private QuestResult CompleteQuest(PlayerQuestDetails pq)
         {
@@ -217,13 +221,15 @@ namespace ChessAndQuests.Models
         // Uppdatera FEN-strängen för att sätta rätt spelares tur, genom att skicka vems tur det ska vara
         public string SetTurn (string fen, int turnPlayerId, GameDetails game)
         {
-            var fenParts = fen.Split(' ', StringSplitOptions.RemoveEmptyEntries); //delar upp fensträngen i olika delar 
+            // Split the FEN string into its components
+            var fenParts = fen.Split(' ', StringSplitOptions.RemoveEmptyEntries); 
 
             if (fenParts.Length < 2)
             {
                 return fen; 
             }
-            if (turnPlayerId == game.PlayerWhiteId) // Ändrar fen strängen ifall en spelare får köra igen.
+            // Changes the turn part of the FEN string
+            if (turnPlayerId == game.PlayerWhiteId)  
             {
                 fenParts[1] = "w"; 
             }
@@ -231,9 +237,9 @@ namespace ChessAndQuests.Models
             {
                 fenParts[1] = "b"; 
             }
+            // Reconstruct the FEN string
             fen = string.Join(" ", fenParts);
             return fen;
-
         }
         /*public string GetLastMove()
         {

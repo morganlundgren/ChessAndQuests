@@ -209,13 +209,15 @@ namespace ChessAndQuests.Controllers
             int iGame = 0;
             int iMove = 0;
             var game = gameMethods.GetGameByKey(gamevm.GameKey, out error);
-            int moveNumber =1;
-            if (game == null) {ViewBag.Game("Game not found: " + error);}
+            int moveNumber = 1;
+            if (game == null) {
+                ViewBag.Game("Game not found: " + error);
+            }
 
-            var previousMoves = moveMethods.GetMoves(game.GameId, out error); // get previous moves by player HERE!!!
+            var previousMoves = moveMethods.GetMoves(game.GameId, out error); // get previous moves by player
 
             moveNumber = previousMoves != null ? previousMoves.Count + 1 : moveNumber;
-            //ska spara alla fen strängar;
+            // Add latest move to database
             var move = new MoveDetails
             {
                 GameId = game.GameId,
@@ -231,26 +233,28 @@ namespace ChessAndQuests.Controllers
                 ViewBag.errorMove = error;
             }
 
-            
-
             //quest logic handling
 
             var activePlayerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, gamevm.TurnPlayerId, out error);
+
+            // Update quest progress and check for completion
             var questResult = questLogic.HandleMove(activePlayerQuest, gamevm); 
                                                                              
             bool extraTurnGranted = false;
 
-            //update game's current fen
+            // Update game's current fen
             game.CurrentFEN = gamevm.CurrentFEN?.Trim() ?? game.CurrentFEN;
+            // Quest may grant extra turn
             if (questResult.ExtraTurnPlayerId.HasValue)
             {
-                game.turnId = questResult.ExtraTurnPlayerId.Value; // behåll samma spelare
+                game.turnId = questResult.ExtraTurnPlayerId.Value; // Same player gets another turn
                 extraTurnGranted = true;
             }
-            else
+            else // normal turn switch
             {       
                 game.turnId = (gamevm.TurnPlayerId == game.PlayerWhiteId) ? game.PlayerBlackId.Value : game.PlayerWhiteId; 
             }
+            // Manual turn setting 
             game.CurrentFEN = questLogic.SetTurn(game.CurrentFEN, game.turnId, game);
 
             iGame = gameMethods.UpdateGame(game, out error);
@@ -261,10 +265,9 @@ namespace ChessAndQuests.Controllers
 
             var whitePlayerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, game.PlayerWhiteId, out error);
             var blackPlayerQuest = playerquestsMethods.GetPlayerQuestByGameandPlayer(game.GameId, game.PlayerBlackId.Value, out error);
-            
-            //samma sak för UNDO
 
-            //notify clients in the game group about the move
+
+            // Notify clients in the game group about the move and quest update
             await _gameHubContext.Clients.Group(gamevm.GameKey).SendAsync("ReceiveLatestFen", new MoveInfoDTO
             {
                 FromSquare = move.FromSquare,
